@@ -13,15 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
-import {
-  CalendarIcon,
-  Check,
-  X,
-  Facebook,
-  Instagram,
-  Mail,
-  WhatsApp,
-} from "lucide-react";
+import { CalendarIcon, Check, X, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function DigitalInvitationOrder() {
@@ -61,9 +53,6 @@ export default function DigitalInvitationOrder() {
             Inclui música.
           </p>
           <div className="flex space-x-4 mb-4">
-            <WhatsApp size={24} />
-            <Instagram size={24} />
-            <Facebook size={24} />
             <Mail size={24} />
           </div>
           <div className="grid md:grid-cols-2 gap-4">
@@ -366,17 +355,6 @@ export default function DigitalInvitationOrder() {
               <p>Endereço: Rua das Flores, 123</p>
               <p>Telefone: (11) 1234-5678</p>
               <p>E-mail: contato@convitefloral.com</p>
-            </div>
-            <div>
-              <h3 className="font-bold mb-2">Redes Sociais</h3>
-              <div className="flex space-x-4">
-                <div className="p-2 bg-pink-500 rounded-full hover:bg-pink-400 transition duration-300 ease-in-out">
-                  <Instagram size={24} />
-                </div>
-                <div className="p-2 bg-pink-500 rounded-full hover:bg-pink-400 transition duration-300 ease-in-out">
-                  <Facebook size={24} />
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -56,7 +56,7 @@ export default function ArtigoPage() {
           </div>
 
           <img
-            src="/placeholder.svg?height=400&width=800"
+            src="/next.svg?height=400&width=800"
             alt="TypeScript Generics"
             className="w-full h-64 object-cover rounded-lg mb-6"
           />
@@ -83,12 +83,6 @@ export default function ArtigoPage() {
             e funções.
           </p>
 
-          <pre>
-            <code className="language-typescript">
-              {`function identity<T>(arg: T): T { return arg;}let output = identity<string>("myString");console.log(output);  // "myString"`}
-            </code>
-          </pre>
-
           <p>
             Neste exemplo, <code>T</code> é um tipo genérico que pode ser
             substituído por qualquer tipo quando a função é chamada.
@@ -100,10 +94,6 @@ export default function ArtigoPage() {
             Generics também podem ser usados com interfaces para criar
             estruturas de dados flexíveis:
           </p>
-
-          <pre>
-            <code className="language-typescript">{`interface GenericIdentityFn<T> { (arg: T): T; } function identity<T>(arg: T): T { return arg; } let myIdentity: GenericIdentityFn<number> = identity;`}</code>
-          </pre>
 
           <p>
             Este é apenas o começo do que você pode fazer com generics em
@@ -176,7 +166,7 @@ export default function ArtigoPage() {
               <Card key={post} className="flex flex-col h-full">
                 <CardHeader>
                   <img
-                    src="/placeholder.svg?height=200&width=400"
+                    src="/next.svg?height=200&width=400"
                     alt="Post thumbnail"
                     className="w-full h-48 object-cover rounded-t-lg"
                   />

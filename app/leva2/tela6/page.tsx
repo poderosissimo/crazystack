@@ -10,7 +10,11 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tooltip } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Dialog,
   DialogContent,
@@ -19,10 +23,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Instagram,
-  Facebook,
   MessageCircle,
-  Search,
   Star,
   Heart,
   Share2,
@@ -99,7 +100,7 @@ export default function ConvitesVirtuaisInfantis() {
     >
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 font-['Comic_Sans_MS']">
+          <h1 className="text-5xl font-bold mb-4">
             Convites Virtuais Infantis
           </h1>
           <div className="relative w-full h-40 bg-gradient-to-r from-pink-300 to-purple-300 rounded-lg overflow-hidden mb-8">
@@ -144,10 +145,15 @@ export default function ConvitesVirtuaisInfantis() {
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
                   <span>{convite.nome}</span>
-                  <Tooltip content={`Categoria: ${convite.categoria}`}>
-                    <span className="text-xs px-2 py-1 bg-pink-200 text-pink-800 rounded-full">
-                      {convite.categoria}
-                    </span>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <span className="text-xs px-2 py-1 bg-pink-200 text-pink-800 rounded-full">
+                        {convite.categoria}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Categoria: {convite.categoria}
+                    </TooltipContent>
                   </Tooltip>
                 </CardTitle>
               </CardHeader>
@@ -181,15 +187,17 @@ export default function ConvitesVirtuaisInfantis() {
                   </DialogContent>
                 </Dialog>
                 <div className="flex space-x-2">
-                  <Tooltip content="Favoritar">
-                    <Button size="icon" variant="ghost">
+                  <Tooltip>
+                    <TooltipTrigger>
                       <Heart className="h-4 w-4" />
-                    </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Curtir</TooltipContent>
                   </Tooltip>
-                  <Tooltip content="Compartilhar">
-                    <Button size="icon" variant="ghost">
+                  <Tooltip>
+                    <TooltipTrigger>
                       <Share2 className="h-4 w-4" />
-                    </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Compartilhar</TooltipContent>
                   </Tooltip>
                 </div>
               </CardFooter>
@@ -215,8 +223,6 @@ export default function ConvitesVirtuaisInfantis() {
 
         <footer className="mt-16 text-center">
           <div className="flex justify-center space-x-4 mb-4">
-            <Instagram className="h-6 w-6" />
-            <Facebook className="h-6 w-6" />
             <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm4.83 15.36c-.17.63-.55 1.18-1.06 1.59-.52.4-1.15.64-1.8.66-1.31.04-2.61-.37-3.65-1.17-.96-.74-1.72-1.7-2.22-2.81-.5-1.11-.73-2.32-.69-3.54.04-.64.28-1.25.68-1.75.4-.5.95-.86 1.56-1 .23-.05.46-.07.7-.07.24.01.47.06.69.16.22.1.41.25.55.44l1.22 1.61c.22.29.33.65.31 1.01-.01.36-.15.7-.38.97-.12.14-.25.26-.39.38-.14.11-.29.23-.41.36-.12.13-.18.3-.18.47 0 .17.05.34.14.49.53.97 1.28 1.81 2.19 2.45.2.14.44.2.67.18.24-.02.46-.12.63-.29.17-.17.35-.34.52-.52.18-.18.39-.32.63-.41.24-.09.5-.11.75-.07.25.04.48.15.67.31l1.61 1.24c.2.15.36.36.46.59.1.23.14.49.11.74-.02.26-.08.51-.18.74z" />
             </svg>
