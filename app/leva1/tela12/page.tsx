@@ -1,25 +1,28 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { MapPin, Phone, MessageCircle } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MapPin, Phone, MessageCircle } from "lucide-react";
 
 export default function MovingDay() {
-  const [currentLocation, setCurrentLocation] = useState({ lat: -23.550520, lng: -46.633308 })
-  const [estimatedArrival, setEstimatedArrival] = useState("14:30")
+  const [currentLocation, setCurrentLocation] = useState({
+    lat: -23.55052,
+    lng: -46.633308,
+  });
+  const [estimatedArrival, setEstimatedArrival] = useState("14:30");
 
   useEffect(() => {
     const interval = setInterval(() => {
       // Simular movimento do caminhão
-      setCurrentLocation(prev => ({
+      setCurrentLocation((prev) => ({
         lat: prev.lat + 0.001,
-        lng: prev.lng + 0.001
-      }))
-    }, 5000)
+        lng: prev.lng + 0.001,
+      }));
+    }, 5000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -45,8 +48,12 @@ export default function MovingDay() {
           <CardTitle>Informações da Entrega</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="font-semibold mb-2">Tempo estimado de chegada: {estimatedArrival}</p>
-          <p className="text-sm text-muted-foreground">A equipe está a caminho do seu novo endereço.</p>
+          <p className="font-semibold mb-2">
+            Tempo estimado de chegada: {estimatedArrival}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            A equipe está a caminho do seu novo endereço.
+          </p>
         </CardContent>
       </Card>
       <div className="space-y-4">
@@ -58,5 +65,5 @@ export default function MovingDay() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

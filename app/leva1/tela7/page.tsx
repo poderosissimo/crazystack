@@ -183,10 +183,10 @@ export default function Test() {
                 <Badge
                   variant={
                     service.rating >= 4
-                      ? "success"
+                      ? "default"
                       : service.rating >= 3
-                      ? "warning"
-                      : "destructive"
+                        ? "secondary"
+                        : "destructive"
                   }
                 >
                   {service.rating.toFixed(1)}

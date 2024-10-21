@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Star } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Star } from "lucide-react";
 
 export default function CompletionAndRating() {
-  const [rating, setRating] = useState(0)
-  const [feedback, setFeedback] = useState("")
+  const [rating, setRating] = useState(0);
+  const [feedback, setFeedback] = useState("");
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -24,14 +24,18 @@ export default function CompletionAndRating() {
               <Star
                 key={star}
                 className={`h-8 w-8 cursor-pointer ${
-                  star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                  star <= rating
+                    ? "text-yellow-400 fill-yellow-400"
+                    : "text-gray-300"
                 }`}
                 onClick={() => setRating(star)}
               />
             ))}
           </div>
           <p className="text-center text-sm text-muted-foreground mb-4">
-            {rating > 0 ? `Você avaliou o serviço com ${rating} estrelas` : "Clique para avaliar"}
+            {rating > 0
+              ? `Você avaliou o serviço com ${rating} estrelas`
+              : "Clique para avaliar"}
           </p>
         </CardContent>
       </Card>
@@ -52,5 +56,5 @@ export default function CompletionAndRating() {
       </Card>
       <Button className="w-full">Enviar Avaliação</Button>
     </div>
-  )
+  );
 }

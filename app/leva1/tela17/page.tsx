@@ -1,35 +1,73 @@
-"use client"
-import React, { useState, useRef, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
-import { Switch } from "@/components/ui/switch"
-import { Slider } from "@/components/ui/slider"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { MapPin, MessageSquare, Send, Bell, Video, Phone, Star, FileText, Camera, Share2, DollarSign, Globe, Calendar, AlertTriangle, Gift, ChevronRight, HelpCircle, Bot, X, Clock, BarChart } from "lucide-react"
-import { useTheme } from 'next-themes'
-import dynamic from 'next/dynamic'
-import EmojiPicker from 'emoji-picker-react'
+"use client";
+import React, { useState, useRef, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  MapPin,
+  MessageSquare,
+  Send,
+  Bell,
+  Video,
+  Phone,
+  Star,
+  FileText,
+  Camera,
+  Share2,
+  DollarSign,
+  Globe,
+  Calendar,
+  AlertTriangle,
+  Gift,
+  ChevronRight,
+  HelpCircle,
+  Bot,
+  X,
+  Clock,
+  BarChart,
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
+import EmojiPicker from "emoji-picker-react";
 
 // Importação dinâmica do mapa para evitar problemas de SSR
-const Map = dynamic(() => import('react-map-gl'), { ssr: false })
+const Map = dynamic(() => import("react-map-gl"), { ssr: false });
 
 interface Message {
   id: number;
   text: string;
-  sender: 'user' | 'professional';
+  sender: "user" | "professional";
   timestamp: Date;
 }
 
 export default function AcompanhamentoServico() {
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Olá! Estou a caminho para realizar a mudança.", sender: 'professional', timestamp: new Date(2024, 5, 1, 9, 0) },
-    { id: 2, text: "Ótimo! Tem previsão de chegada?", sender: 'user', timestamp: new Date(2024, 5, 1, 9, 5) },
+    {
+      id: 1,
+      text: "Olá! Estou a caminho para realizar a mudança.",
+      sender: "professional",
+      timestamp: new Date(2024, 5, 1, 9, 0),
+    },
+    {
+      id: 2,
+      text: "Ótimo! Tem previsão de chegada?",
+      sender: "user",
+      timestamp: new Date(2024, 5, 1, 9, 5),
+    },
   ]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -37,7 +75,7 @@ export default function AcompanhamentoServico() {
   const [serviceProgress, setServiceProgress] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showEmergencyButton, setShowEmergencyButton] = useState(false);
-  const [language, setLanguage] = useState('pt-BR');
+  const [language, setLanguage] = useState("pt-BR");
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -46,8 +84,8 @@ export default function AcompanhamentoServico() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setElapsedTime(prev => prev + 1);
-      setServiceProgress(prev => Math.min(prev + 0.1, 100));
+      setElapsedTime((prev) => prev + 1);
+      setServiceProgress((prev) => Math.min(prev + 0.1, 100));
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -57,42 +95,44 @@ export default function AcompanhamentoServico() {
       const userMessage: Message = {
         id: messages.length + 1,
         text: newMessage,
-        sender: 'user',
+        sender: "user",
         timestamp: new Date(),
       };
       setMessages([...messages, userMessage]);
-      setNewMessage('');
+      setNewMessage("");
       setIsTyping(true);
-      
+
       setTimeout(() => {
         const professionalMessage: Message = {
           id: messages.length + 2,
           text: "Entendi. Estou fazendo o possível para chegar o mais rápido. Obrigado pela paciência!",
-          sender: 'professional',
+          sender: "professional",
           timestamp: new Date(),
         };
-        setMessages(prev => [...prev, professionalMessage]);
+        setMessages((prev) => [...prev, professionalMessage]);
         setIsTyping(false);
       }, 2000);
     }
   };
 
   const handleEmojiClick = (emojiObject: any) => {
-    setNewMessage(prev => prev + emojiObject.emoji);
+    setNewMessage((prev) => prev + emojiObject.emoji);
   };
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle className="text-2xl font-bold">Acompanhamento do Serviço</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            Acompanhamento do Serviço
+          </CardTitle>
           <div className="flex items-center space-x-2">
             <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="w-[100px]">
@@ -105,8 +145,10 @@ export default function AcompanhamentoServico() {
               </SelectContent>
             </Select>
             <Switch
-              checked={theme === 'dark'}
-              onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              checked={theme === "dark"}
+              onCheckedChange={() =>
+                setTheme(theme === "dark" ? "light" : "dark")
+              }
             />
           </div>
         </div>
@@ -152,14 +194,17 @@ export default function AcompanhamentoServico() {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
-                    className={`cursor-pointer ${star <= rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                    className={`cursor-pointer ${star <= rating ? "text-yellow-400 fill-current" : "text-gray-300"}`}
                     onClick={() => setRating(star)}
                   />
                 ))}
               </div>
             </div>
-            <Button className="mt-4" onClick={() => setShowEmergencyButton(!showEmergencyButton)}>
-              {showEmergencyButton ? 'Ocultar' : 'Mostrar'} Botão de Emergência
+            <Button
+              className="mt-4"
+              onClick={() => setShowEmergencyButton(!showEmergencyButton)}
+            >
+              {showEmergencyButton ? "Ocultar" : "Mostrar"} Botão de Emergência
             </Button>
             {showEmergencyButton && (
               <Button variant="destructive" className="mt-2 w-full">
@@ -174,14 +219,14 @@ export default function AcompanhamentoServico() {
                 <div
                   key={message.id}
                   className={`mb-2 ${
-                    message.sender === 'user' ? 'text-right' : 'text-left'
+                    message.sender === "user" ? "text-right" : "text-left"
                   }`}
                 >
                   <div
                     className={`inline-block p-2 rounded-lg ${
-                      message.sender === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
+                      message.sender === "user"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white"
                     }`}
                   >
                     {message.text}
@@ -201,14 +246,17 @@ export default function AcompanhamentoServico() {
               <div ref={chatEndRef} />
             </ScrollArea>
             <div className="flex space-x-2 mt-2">
-              <Button variant="outline" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+              <Button
+                variant="outline"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              >
                 😊
               </Button>
               <Input
                 placeholder="Digite sua mensagem..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
               />
               <Button onClick={handleSendMessage}>
                 <Send size={18} />
@@ -227,9 +275,9 @@ export default function AcompanhamentoServico() {
                 initialViewState={{
                   longitude: -46.6333,
                   latitude: -23.5505,
-                  zoom: 11
+                  zoom: 11,
                 }}
-                style={{width: '100%', height: '100%'}}
+                style={{ width: "100%", height: "100%" }}
                 mapStyle="mapbox://styles/mapbox/streets-v11"
                 mapboxAccessToken="YOUR_MAPBOX_ACCESS_TOKEN"
               >
@@ -240,7 +288,10 @@ export default function AcompanhamentoServico() {
           <TabsContent value="gallery">
             <div className="grid grid-cols-3 gap-4">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
+                <div
+                  key={i}
+                  className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center"
+                >
                   <Camera size={32} className="text-gray-400" />
                 </div>
               ))}
@@ -290,7 +341,7 @@ export default function AcompanhamentoServico() {
             Próximos Serviços
           </p>
           <ul className="list-disc list-inside">
-            <li>Limpeza -   15/06/2024</li>
+            <li>Limpeza - 15/06/2024</li>
             <li>Pintura - 22/06/2024</li>
           </ul>
         </div>
@@ -301,7 +352,9 @@ export default function AcompanhamentoServico() {
             Programa de Recompensas
           </p>
           <p>Pontos acumulados: 150</p>
-          <Button variant="outline" className="mt-2">Ver recompensas</Button>
+          <Button variant="outline" className="mt-2">
+            Ver recompensas
+          </Button>
         </div>
 
         <div className="border rounded-lg p-4 mt-4">
@@ -326,7 +379,9 @@ export default function AcompanhamentoServico() {
             <Bot className="mr-2" size={18} />
             Suporte
           </p>
-          <Button variant="outline" className="w-full">Iniciar chat com assistente virtual</Button>
+          <Button variant="outline" className="w-full">
+            Iniciar chat com assistente virtual
+          </Button>
         </div>
 
         <div className="border rounded-lg p-4 mt-4">
@@ -334,7 +389,9 @@ export default function AcompanhamentoServico() {
             <X className="mr-2" size={18} />
             Cancelar Serviço
           </p>
-          <Button variant="destructive" className="w-full">Solicitar cancelamento</Button>
+          <Button variant="destructive" className="w-full">
+            Solicitar cancelamento
+          </Button>
         </div>
 
         <div className="border rounded-lg p-4 mt-4">
@@ -350,9 +407,11 @@ export default function AcompanhamentoServico() {
             <BarChart className="mr-2" size={18} />
             Relatórios
           </p>
-          <Button variant="outline" className="w-full">Gerar relatório do serviço</Button>
+          <Button variant="outline" className="w-full">
+            Gerar relatório do serviço
+          </Button>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
