@@ -38,9 +38,9 @@ export default function BijouxOrderForm() {
   };
 
   return (
-    <div className="min-h-screen bg-purple-50">
+    <div className="min-h-screen bg-purple-50 bg-opacity-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+CjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgZmlsbD0iI2ZmZjFmMiI+PC9yZWN0Pgo8Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZjMGNiIiBzdHJva2Utd2lkdGg9IjIiPjwvY2lyY2xlPgo8cGF0aCBkPSJNMzAgMTBjNS41IDAgMTAgNC41IDEwIDEwcy00LjUgMTAtMTAgMTAtMTAtNC41LTEwLTEwIDQuNS0xMCAxMC0xMHoiIGZpbGw9IiNmZmMwY2IiIG9wYWNpdHk9IjAuMyI+PC9wYXRoPgo8L3N2Zz4=')]">
       {/* Header */}
-      <header className="bg-gradient-to-r from-purple-400 to-purple-300 text-white p-4 md:p-8">
+      <header className="bg-gradient-to-r from-purple-400 to-purple-300 text-white p-4 md:p-8 animate-fade-in-down">
         <div className="max-w-4xl mx-auto">
           <img
             src="/biju2.png"
@@ -50,7 +50,7 @@ export default function BijouxOrderForm() {
           <h1 className="text-3xl md:text-5xl font-bold mb-2">
             Bijuteria Personalizada - Ana Miranda Bijoux
           </h1>
-          <div className="bg-purple-500 text-white inline-block px-6 py-3 rounded-full font-bold text-2xl shadow-lg">
+          <div className="bg-purple-600 text-white inline-block px-6 py-3 rounded-full font-bold text-2xl shadow-lg transform -rotate-2">
             A partir de R$150
           </div>
         </div>
