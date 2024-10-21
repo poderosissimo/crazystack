@@ -1,181 +1,146 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import {
-  Star,
-  MessageCircle,
-  ChevronRight,
-  Truck,
-  Package,
-  Wrench,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import React, { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { ArrowLeft, CreditCard, Calendar, Lock, User } from "lucide-react"
 
-export default function ServiceProviderProfile() {
-  const theme = "dark";
-  const [mounted, setMounted] = useState(false);
+interface CreditCardPaymentProps {
+  totalAmount: number;
+  onBack: () => void;
+  onPaymentComplete: () => void;
+}
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export default function CreditCardPayment({ totalAmount, onBack, onPaymentComplete }: CreditCardPaymentProps) {
+  const [cardNumber, setCardNumber] = useState('')
+  const [expiryDate, setExpiryDate] = useState('')
+  const [cvv, setCvv] = useState('')
+  const [cardholderName, setCardholderName] = useState('')
 
-  if (!mounted) {
-    return null;
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Here you would typically integrate with a payment gateway
+    // For this example, we'll just simulate a successful payment
+    console.log('Payment processed')
+    onPaymentComplete()
   }
 
-  function setTheme(arg0: string): void {}
+  const formatCardNumber = (value: string) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+    const matches = v.match(/\d{4,16}/g)
+    const match = matches && matches[0] || ''
+    const parts = []
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4))
+    }
+    if (parts.length) {
+      return parts.join(' ')
+    } else {
+      return value
+    }
+  }
+
+  const formatExpiryDate = (value: string) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+    if (v.length >= 2) {
+      return `${v.slice(0, 2)}/${v.slice(2, 4)}`
+    }
+    return v
+  }
 
   return (
-    <div className="container mx-auto p-4 space-y-6 bg-background min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-primary">
-          Perfil do Prestador de Serviço
-        </h1>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        >
-          {theme === "dark" ? "🌞" : "🌙"}
-        </Button>
-      </div>
-
-      <Card className="shadow-lg">
-        <CardHeader className="bg-primary/10">
-          <CardTitle className="text-2xl text-primary">
-            Informações Pessoais
-          </CardTitle>
+    <div className="min-h-screen bg-pink-50 bg-opacity-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+CjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgZmlsbD0iI2ZmZjFmMiI+PC9yZWN0Pgo8Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZjMGNiIiBzdHJva2Utd2lkdGg9IjIiPjwvY2lyY2xlPgo8cGF0aCBkPSJNMzAgMTBjNS41IDAgMTAgNC41IDEwIDEwcy00LjUgMTAtMTAgMTAtMTAtNC41LTEwLTEwIDQuNS0xMCAxMC0xMHoiIGZpbGw9IiNmZmMwY2IiIG9wYWNpdHk9IjAuMyI+PC9wYXRoPgo8L3N2Zz4=')] p-4 md:p-8 flex items-center justify-center">
+      <Card className="w-full max-w-[95%] md:max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-pink-400 to-pink-300 text-white p-4 md:p-6">
+          <CardTitle className="text-xl md:text-2xl font-bold">Pagamento com Cartão de Crédito</CardTitle>
+          <CardDescription className="text-pink-100 text-sm md:text-base">
+            Insira os detalhes do seu cartão para finalizar o pedido
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 pt-6">
-          <Avatar className="w-32 h-32 border-4 border-primary">
-            <AvatarImage src="/placeholder.svg" alt="João Silva" />
-            <AvatarFallback className="text-2xl">JS</AvatarFallback>
-          </Avatar>
-          <div className="text-center md:text-left">
-            <h2 className="text-2xl font-semibold text-primary mb-2">
-              João Silva
-            </h2>
-            <Button variant="outline" className="mb-4">
-              <MessageCircle className="mr-2 h-4 w-4" /> Contatar via WhatsApp
+        <form onSubmit={handleSubmit}>
+          <CardContent className="p-4 md:p-6 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="cardNumber" className="flex items-center space-x-2">
+                <CreditCard className="w-4 h-4" />
+                <span>Número do Cartão</span>
+              </Label>
+              <Input
+                id="cardNumber"
+                placeholder="1234 5678 9012 3456"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                maxLength={19}
+                className="transition duration-200 ease-in-out focus:ring-2 focus:ring-pink-300 hover:border-pink-300"
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="expiryDate" className="flex items-center space-x-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>Data de Expiração</span>
+                </Label>
+                <Input
+                  id="expiryDate"
+                  placeholder="MM/AA"
+                  value={expiryDate}
+                  onChange={(e) => setExpiryDate(formatExpiryDate(e.target.value))}
+                  maxLength={5}
+                  className="transition duration-200 ease-in-out focus:ring-2 focus:ring-pink-300 hover:border-pink-300"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="cvv" className="flex items-center space-x-2">
+                  <Lock className="w-4 h-4" />
+                  <span>CVV</span>
+                </Label>
+                <Input
+                  id="cvv"
+                  placeholder="123"
+                  value={cvv}
+                  onChange={(e) => setCvv(e.target.value)}
+                  maxLength={4}
+                  className="transition duration-200 ease-in-out focus:ring-2 focus:ring-pink-300 hover:border-pink-300"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="cardholderName" className="flex items-center space-x-2">
+                <User className="w-4 h-4" />
+                <span>Nome no Cartão</span>
+              </Label>
+              <Input
+                id="cardholderName"
+                placeholder="Nome Completo"
+                value={cardholderName}
+                onChange={(e) => setCardholderName(e.target.value)}
+                className="transition duration-200 ease-in-out focus:ring-2 focus:ring-pink-300 hover:border-pink-300"
+              />
+            </div>
+            <div className="bg-pink-50 p-4 rounded-md">
+              <p className="text-lg font-semibold text-pink-600">Total a Pagar: R$ {totalAmount.toFixed(2)}</p>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col sm:flex-row justify-between p-4 md:p-6 bg-pink-50 space-y-4 sm:space-y-0">
+            <Button 
+              type="button"
+              variant="outline" 
+              onClick={onBack}
+              className="w-full sm:w-auto flex items-center justify-center space-x-2 hover:bg-pink-100 py-2 px-4"
+            >
+              <ArrowLeft size={16} />
+              <span>Voltar</span>
             </Button>
-            <h3 className="font-semibold text-lg mb-2">Especialidades:</h3>
-            <div className="flex flex-wrap justify-center md:justify-start gap-2">
-              <Badge variant="secondary">
-                <Truck className="mr-1 h-4 w-4" /> Mudanças residenciais
-              </Badge>
-              <Badge variant="secondary">
-                <Package className="mr-1 h-4 w-4" /> Transporte de itens frágeis
-              </Badge>
-              <Badge variant="secondary">
-                <Wrench className="mr-1 h-4 w-4" /> Montagem e desmontagem de
-                móveis
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-lg">
-        <CardHeader className="bg-primary/10">
-          <CardTitle className="text-2xl text-primary">
-            Avaliações e Feedback
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="flex items-center space-x-4 mb-6">
-            <div className="text-4xl font-bold text-primary">4.5</div>
-            <div className="flex">
-              {[1, 2, 3, 4].map((i) => (
-                <Star key={i} className="w-6 h-6 fill-yellow-400" />
-              ))}
-              <Star className="w-6 h-6 fill-muted stroke-muted-foreground" />
-            </div>
-            <div className="text-sm text-muted-foreground">
-              (120 avaliações)
-            </div>
-          </div>
-          <div className="space-y-4">
-            <Card className="bg-primary/5">
-              <CardContent className="py-3">
-                <p className="text-sm italic">
-                  "Excelente serviço, muito cuidadoso com os móveis e
-                  extremamente pontual. Recomendo!"
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="bg-primary/5">
-              <CardContent className="py-3">
-                <p className="text-sm italic">
-                  "Pontual, eficiente e profissional. Fez a mudança em tempo
-                  recorde sem nenhum dano. Ótimo trabalho!"
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-          <Button variant="link" className="mt-4">
-            Ver mais comentários <ChevronRight className="ml-1 h-4 w-4" />
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-lg">
-        <CardHeader className="bg-primary/10">
-          <CardTitle className="text-2xl text-primary">
-            Contato e Especialidades
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <MessageCircle className="h-5 w-5 text-primary" />
-            <span className="font-semibold">+55 11 91234-5678</span>
-          </div>
-          <Button variant="outline" className="mb-6">
-            <MessageCircle className="mr-2 h-4 w-4" /> Abrir Chat no WhatsApp
-          </Button>
-          <h3 className="font-semibold text-lg mb-2">Especialidades:</h3>
-          <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-            <li>Mudanças residenciais</li>
-            <li>Transporte de itens frágeis</li>
-            <li>Montagem e desmontagem de móveis</li>
-          </ul>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-lg">
-        <CardHeader className="bg-primary/10">
-          <CardTitle className="text-2xl text-primary">
-            Histórico de Serviços
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <p className="text-lg font-semibold mb-4">
-            Total de Serviços Realizados:{" "}
-            <span className="text-primary">250</span>
-          </p>
-          <h3 className="font-semibold text-lg mb-2">Serviços Recentes:</h3>
-          <ul className="space-y-2">
-            <li className="flex items-center">
-              <Truck className="mr-2 h-4 w-4 text-primary" />
-              <span>Mudança residencial (Janeiro/2024)</span>
-            </li>
-            <li className="flex items-center">
-              <Package className="mr-2 h-4 w-4 text-primary" />
-              <span>Transporte de equipamentos (Fevereiro/2024)</span>
-            </li>
-            <li className="flex items-center">
-              <Truck className="mr-2 h-4 w-4 text-primary" />
-              <span>Mudança comercial (Março/2024)</span>
-            </li>
-          </ul>
-          <Button variant="link" className="mt-4">
-            Ver histórico completo <ChevronRight className="ml-1 h-4 w-4" />
-          </Button>
-        </CardContent>
+            <Button 
+              type="submit"
+              className="w-full sm:w-auto bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white py-2 px-4"
+            >
+              Pagar Agora
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
     </div>
-  );
+  )
 }
