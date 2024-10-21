@@ -19,8 +19,16 @@ interface CreditCardPaymentProps {
   onBack: () => void;
   onPaymentComplete: () => void;
 }
-
-export default function CreditCardPayment({
+export default function Page() {
+  return (
+    <CreditCardPayment
+      totalAmount={85}
+      onBack={() => {}}
+      onPaymentComplete={() => {}}
+    />
+  );
+}
+function CreditCardPayment({
   totalAmount,
   onBack,
   onPaymentComplete,

@@ -33,8 +33,32 @@ interface ConfirmationScreenProps {
   onEdit: () => void;
   onSubmit: () => void;
 }
-
-export default function ConfirmationScreen({
+export default function Page() {
+  return (
+    <ConfirmationScreen
+      orderData={{
+        childName: "Maria",
+        childAge: "5 anos",
+        eventDate: "15/10/2021",
+        eventTime: "15h",
+        eventLocation: "Casa da Maria",
+        confirmationPhrase: "Maria, você é muito especial!",
+        confirmationDate: "10/10/2021",
+        confirmationPhone: "(11) 99999-9999",
+        removeCredits: true,
+        changeMusic: false,
+        urgencyFee: true,
+        requesterName: "João",
+        requesterPhone: "(11) 99999-9999",
+        requesterEmail: "ssddsd@sasa.com",
+        photoFileName: "foto-maria.jpg",
+      }}
+      onEdit={() => {}}
+      onSubmit={() => {}}
+    />
+  );
+}
+function ConfirmationScreen({
   orderData,
   onEdit,
   onSubmit,
