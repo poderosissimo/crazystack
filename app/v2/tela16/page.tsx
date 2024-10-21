@@ -1,61 +1,111 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarIcon, Upload, CheckCircle, Clock, Star } from "lucide-react"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Progress } from "@/components/ui/progress"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CalendarIcon, Upload, CheckCircle, Clock, Star } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function Component() {
-  const [activeTab, setActiveTab] = useState("solicitar")
+  const [activeTab, setActiveTab] = useState("solicitar");
   const [orcamentos, setOrcamentos] = useState([
-    { id: 1, empresa: "Mudanças Rápidas", preco: 1500, tempoResposta: "2 horas", descricao: "Serviço completo de mudança", status: "Pendente" },
-    { id: 2, empresa: "TransLar", preco: 1300, tempoResposta: "4 horas", descricao: "Mudança com embalagem incluída", status: "Aceito" },
-    { id: 3, empresa: "MudaFácil", preco: 1700, tempoResposta: "1 hora", descricao: "Serviço premium de mudança", status: "Concluído" },
-  ])
-  const [showContract, setShowContract] = useState(false)
-  const [selectedOrcamento, setSelectedOrcamento] = useState(null)
-  const [showEvaluation, setShowEvaluation] = useState(false)
+    {
+      id: 1,
+      empresa: "Mudanças Rápidas",
+      preco: 1500,
+      tempoResposta: "2 horas",
+      descricao: "Serviço completo de mudança",
+      status: "Pendente",
+    },
+    {
+      id: 2,
+      empresa: "TransLar",
+      preco: 1300,
+      tempoResposta: "4 horas",
+      descricao: "Mudança com embalagem incluída",
+      status: "Aceito",
+    },
+    {
+      id: 3,
+      empresa: "MudaFácil",
+      preco: 1700,
+      tempoResposta: "1 hora",
+      descricao: "Serviço premium de mudança",
+      status: "Concluído",
+    },
+  ]);
+  const [showContract, setShowContract] = useState(false);
+  const [selectedOrcamento, setSelectedOrcamento] = useState(null);
+  const [showEvaluation, setShowEvaluation] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setActiveTab("visualizar")
-  }
+    e.preventDefault();
+    setActiveTab("visualizar");
+  };
 
   const handleAcceptQuote = (orcamento) => {
-    setSelectedOrcamento(orcamento)
-    setShowContract(true)
-  }
+    setSelectedOrcamento(orcamento);
+    setShowContract(true);
+  };
 
   const handleSignContract = () => {
-    setOrcamentos(orcamentos.map(o => 
-      o.id === selectedOrcamento.id ? {...o, status: "Aceito"} : o
-    ))
-    setShowContract(false)
-  }
+    setOrcamentos(
+      orcamentos.map((o) =>
+        o.id === selectedOrcamento.id ? { ...o, status: "Aceito" } : o,
+      ),
+    );
+    setShowContract(false);
+  };
 
   const handleEvaluate = (orcamento) => {
-    setSelectedOrcamento(orcamento)
-    setShowEvaluation(true)
-  }
+    setSelectedOrcamento(orcamento);
+    setShowEvaluation(true);
+  };
 
   const handleSubmitEvaluation = (e: React.FormEvent) => {
-    e.preventDefault()
-    setOrcamentos(orcamentos.map(o => 
-      o.id === selectedOrcamento.id ? {...o, status: "Avaliado"} : o
-    ))
-    setShowEvaluation(false)
-  }
+    e.preventDefault();
+    setOrcamentos(
+      orcamentos.map((o) =>
+        o.id === selectedOrcamento.id ? { ...o, status: "Avaliado" } : o,
+      ),
+    );
+    setShowEvaluation(false);
+  };
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-4xl mx-auto">
+    <Tabs
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="w-full max-w-4xl mx-auto"
+    >
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="solicitar">Solicitar Orçamento</TabsTrigger>
         <TabsTrigger value="visualizar">Visualizar Orçamentos</TabsTrigger>
@@ -64,7 +114,10 @@ export default function Component() {
         <Card>
           <CardHeader>
             <CardTitle>Solicitar Orçamento de Mudança</CardTitle>
-            <CardDescription>Preencha os detalhes da sua mudança para receber orçamentos personalizados.</CardDescription>
+            <CardDescription>
+              Preencha os detalhes da sua mudança para receber orçamentos
+              personalizados.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,43 +145,76 @@ export default function Component() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="endereco-origem">Endereço de Origem</Label>
-                <Input id="endereco-origem" placeholder="Digite o endereço completo de origem" required />
+                <Input
+                  id="endereco-origem"
+                  placeholder="Digite o endereço completo de origem"
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="endereco-destino">Endereço de Destino</Label>
-                <Input id="endereco-destino" placeholder="Digite o endereço completo de destino" required />
+                <Input
+                  id="endereco-destino"
+                  placeholder="Digite o endereço completo de destino"
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="num-comodos">Número de Cômodos</Label>
                 <Input id="num-comodos" type="number" min="1" required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="itens-especiais">Itens Especiais (opcional)</Label>
-                <Textarea id="itens-especiais" placeholder="Descreva móveis pesados, itens frágeis, etc." />
+                <Label htmlFor="itens-especiais">
+                  Itens Especiais (opcional)
+                </Label>
+                <Textarea
+                  id="itens-especiais"
+                  placeholder="Descreva móveis pesados, itens frágeis, etc."
+                />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="necessidades-adicionais">Necessidades Adicionais (opcional)</Label>
-                <Textarea id="necessidades-adicionais" placeholder="Embalagem, desmontagem de móveis, etc." />
+                <Label htmlFor="necessidades-adicionais">
+                  Necessidades Adicionais (opcional)
+                </Label>
+                <Textarea
+                  id="necessidades-adicionais"
+                  placeholder="Embalagem, desmontagem de móveis, etc."
+                />
               </div>
               <div className="space-y-2">
                 <Label>Anexar Fotos (opcional)</Label>
                 <div className="flex items-center justify-center w-full">
-                  <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                  <label
+                    htmlFor="dropzone-file"
+                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                  >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       <Upload className="w-10 h-10 mb-3 text-gray-400" />
                       <p className="mb-2 text-sm text-gray-500">
-                        <span className="font-semibold">Clique para fazer upload</span> ou arraste e solte
+                        <span className="font-semibold">
+                          Clique para fazer upload
+                        </span>{" "}
+                        ou arraste e solte
                       </p>
-                      <p className="text-xs text-gray-500">PNG, JPG, GIF (MAX. 800x400px)</p>
+                      <p className="text-xs text-gray-500">
+                        PNG, JPG, GIF (MAX. 800x400px)
+                      </p>
                     </div>
-                    <input id="dropzone-file" type="file" className="hidden" multiple />
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      className="hidden"
+                      multiple
+                    />
                   </label>
                 </div>
               </div>
             </form>
           </CardContent>
           <CardFooter>
-            <Button type="submit" onClick={handleSubmit}>Solicitar Orçamentos</Button>
+            <Button type="submit" onClick={handleSubmit}>
+              Solicitar Orçamentos
+            </Button>
           </CardFooter>
         </Card>
       </TabsContent>
@@ -136,7 +222,9 @@ export default function Component() {
         <Card>
           <CardHeader>
             <CardTitle>Orçamentos Recebidos</CardTitle>
-            <CardDescription>Compare os orçamentos das empresas de mudança.</CardDescription>
+            <CardDescription>
+              Compare os orçamentos das empresas de mudança.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -144,27 +232,45 @@ export default function Component() {
                 <Card key={orcamento.id}>
                   <CardHeader>
                     <CardTitle>{orcamento.empresa}</CardTitle>
-                    <CardDescription>Tempo de resposta: {orcamento.tempoResposta}</CardDescription>
+                    <CardDescription>
+                      Tempo de resposta: {orcamento.tempoResposta}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-2xl font-bold">R$ {orcamento.preco.toFixed(2)}</p>
+                    <p className="text-2xl font-bold">
+                      R$ {orcamento.preco.toFixed(2)}
+                    </p>
                     <p className="text-gray-600">{orcamento.descricao}</p>
                     <div className="mt-4">
-                      <p className="font-semibold">Status: {orcamento.status}</p>
-                      <Progress value={
-                        orcamento.status === "Pendente" ? 25 :
-                        orcamento.status === "Aceito" ? 50 :
-                        orcamento.status === "Concluído" ? 75 :
-                        orcamento.status === "Avaliado" ? 100 : 0
-                      } className="mt-2" />
+                      <p className="font-semibold">
+                        Status: {orcamento.status}
+                      </p>
+                      <Progress
+                        value={
+                          orcamento.status === "Pendente"
+                            ? 25
+                            : orcamento.status === "Aceito"
+                              ? 50
+                              : orcamento.status === "Concluído"
+                                ? 75
+                                : orcamento.status === "Avaliado"
+                                  ? 100
+                                  : 0
+                        }
+                        className="mt-2"
+                      />
                     </div>
                   </CardContent>
                   <CardFooter>
                     {orcamento.status === "Pendente" && (
-                      <Button onClick={() => handleAcceptQuote(orcamento)}>Aceitar Orçamento</Button>
+                      <Button onClick={() => handleAcceptQuote(orcamento)}>
+                        Aceitar Orçamento
+                      </Button>
                     )}
                     {orcamento.status === "Concluído" && (
-                      <Button onClick={() => handleEvaluate(orcamento)}>Avaliar Serviço</Button>
+                      <Button onClick={() => handleEvaluate(orcamento)}>
+                        Avaliar Serviço
+                      </Button>
                     )}
                   </CardFooter>
                 </Card>
@@ -179,7 +285,8 @@ export default function Component() {
           <DialogHeader>
             <DialogTitle>Contrato Digital</DialogTitle>
             <DialogDescription>
-              Revise e assine o contrato para a mudança com {selectedOrcamento?.empresa}
+              Revise e assine o contrato para a mudança com{" "}
+              {selectedOrcamento?.empresa}
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4">
@@ -211,7 +318,12 @@ export default function Component() {
                 <Label>Pontualidade</Label>
                 <RadioGroup defaultValue="4" className="flex space-x-1">
                   {[1, 2, 3, 4, 5].map((value) => (
-                    <RadioGroupItem key={value} value={value.toString()} id={`pontualidade-${value}`} className="sr-only peer" />
+                    <RadioGroupItem
+                      key={value}
+                      value={value.toString()}
+                      id={`pontualidade-${value}`}
+                      className="sr-only peer"
+                    />
                   ))}
                   {[1, 2, 3, 4, 5].map((value) => (
                     <Label
@@ -219,7 +331,9 @@ export default function Component() {
                       htmlFor={`pontualidade-${value}`}
                       className="flex items-center justify-center w-8 h-8 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-full peer-checked:bg-blue-600 peer-checked:text-white hover:bg-gray-50 cursor-pointer"
                     >
-                      <Star className={`w-4 h-4 ${value <= 4 ? 'fill-current' : ''}`} />
+                      <Star
+                        className={`w-4 h-4 ${value <= 4 ? "fill-current" : ""}`}
+                      />
                     </Label>
                   ))}
                 </RadioGroup>
@@ -228,7 +342,12 @@ export default function Component() {
                 <Label>Qualidade do Serviço</Label>
                 <RadioGroup defaultValue="4" className="flex space-x-1">
                   {[1, 2, 3, 4, 5].map((value) => (
-                    <RadioGroupItem key={value} value={value.toString()} id={`qualidade-${value}`} className="sr-only peer" />
+                    <RadioGroupItem
+                      key={value}
+                      value={value.toString()}
+                      id={`qualidade-${value}`}
+                      className="sr-only peer"
+                    />
                   ))}
                   {[1, 2, 3, 4, 5].map((value) => (
                     <Label
@@ -236,14 +355,19 @@ export default function Component() {
                       htmlFor={`qualidade-${value}`}
                       className="flex items-center justify-center w-8 h-8 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-full peer-checked:bg-blue-600 peer-checked:text-white hover:bg-gray-50 cursor-pointer"
                     >
-                      <Star className={`w-4 h-4 ${value <= 4 ? 'fill-current' : ''}`} />
+                      <Star
+                        className={`w-4 h-4 ${value <= 4 ? "fill-current" : ""}`}
+                      />
                     </Label>
                   ))}
                 </RadioGroup>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="comentario">Comentário</Label>
-                <Textarea id="comentario" placeholder="Compartilhe sua experiência..." />
+                <Textarea
+                  id="comentario"
+                  placeholder="Compartilhe sua experiência..."
+                />
               </div>
             </div>
             <DialogFooter>
@@ -253,5 +377,5 @@ export default function Component() {
         </DialogContent>
       </Dialog>
     </Tabs>
-  )
+  );
 }

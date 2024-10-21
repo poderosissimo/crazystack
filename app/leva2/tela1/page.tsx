@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
 import ProductList from "./_components/product-list";
 import RestaurantList from "./_components/restaurant-list";
-import {OrderListStatus} from "./_components/order-status"
+import { OrderListStatus } from "./_components/order-status";
 export default function Page() {
   const products = brazilianProducts;
 
@@ -79,7 +79,7 @@ export default function Page() {
         </div>
         <RestaurantList />
       </div>
-      <OrderListStatus/>
+      <OrderListStatus />
     </>
   );
 }

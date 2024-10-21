@@ -1,9 +1,15 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { CalendarIcon, MapPinIcon, PackageIcon, TruckIcon, CheckCircleIcon } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  CalendarIcon,
+  MapPinIcon,
+  PackageIcon,
+  TruckIcon,
+  CheckCircleIcon,
+} from "lucide-react";
 
 export default function MovingSummary() {
   const moveDetails = {
@@ -13,7 +19,7 @@ export default function MovingSummary() {
     date: "15 de Novembro de 2023",
     items: 42,
     nextStep: "Dia da Mudança",
-  }
+  };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -22,7 +28,11 @@ export default function MovingSummary() {
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
             Status da Mudança
-            <Badge variant={moveDetails.status === "Em andamento" ? "default" : "success"}>
+            <Badge
+              variant={
+                moveDetails.status === "Em andamento" ? "default" : "success"
+              }
+            >
               {moveDetails.status}
             </Badge>
           </CardTitle>
@@ -75,5 +85,5 @@ export default function MovingSummary() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

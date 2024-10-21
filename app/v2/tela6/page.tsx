@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useForm, Controller } from "react-hook-form"
-import { CalendarIcon, Clock, MapPin } from "lucide-react"
-import { format } from "date-fns"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { CalendarIcon, Clock, MapPin } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -14,34 +14,34 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 type FormValues = {
-  serviceType: string[]
-  originAddress: string
-  destinationAddress: string
-  date: Date
-  time: string
-  vehicleType: string[]
-  capacity: string[]
-}
+  serviceType: string[];
+  originAddress: string;
+  destinationAddress: string;
+  date: Date;
+  time: string;
+  vehicleType: string[];
+  capacity: string[];
+};
 
 export default function AdvancedFilters() {
-  const [date, setDate] = useState<Date>()
+  const [date, setDate] = useState<Date>();
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -53,16 +53,18 @@ export default function AdvancedFilters() {
       vehicleType: [],
       capacity: [],
     },
-  })
+  });
 
   function onSubmit(data: FormValues) {
-    console.log(data)
+    console.log(data);
     // Here you would typically send the data to your backend or update the app state
   }
 
   return (
     <div className="container mx-auto p-4 max-w-3xl">
-      <h1 className="text-2xl font-bold mb-6 text-center">Filtros Avançados de Serviços</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">
+        Filtros Avançados de Serviços
+      </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -91,9 +93,9 @@ export default function AdvancedFilters() {
                                     ? field.onChange([...field.value, item])
                                     : field.onChange(
                                         field.value?.filter(
-                                          (value) => value !== item
-                                        )
-                                      )
+                                          (value) => value !== item,
+                                        ),
+                                      );
                                 }}
                               />
                             </FormControl>
@@ -101,7 +103,7 @@ export default function AdvancedFilters() {
                               {item}
                             </FormLabel>
                           </FormItem>
-                        )
+                        );
                       }}
                     />
                   ))}
@@ -163,7 +165,7 @@ export default function AdvancedFilters() {
                             variant={"outline"}
                             className={cn(
                               "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
+                              !field.value && "text-muted-foreground",
                             )}
                           >
                             {field.value ? (
@@ -199,16 +201,24 @@ export default function AdvancedFilters() {
                     <FormLabel>Hora</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione um horário" />
                           </SelectTrigger>
                           <SelectContent>
-                            {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
-                              <SelectItem key={hour} value={`${hour.toString().padStart(2, '0')}:00`}>
-                                {`${hour.toString().padStart(2, '0')}:00`}
-                              </SelectItem>
-                            ))}
+                            {Array.from({ length: 24 }, (_, i) => i).map(
+                              (hour) => (
+                                <SelectItem
+                                  key={hour}
+                                  value={`${hour.toString().padStart(2, "0")}:00`}
+                                >
+                                  {`${hour.toString().padStart(2, "0")}:00`}
+                                </SelectItem>
+                              ),
+                            )}
                           </SelectContent>
                         </Select>
                         <Clock className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -222,7 +232,9 @@ export default function AdvancedFilters() {
           </div>
 
           <div className="space-y-4">
-            <FormLabel className="text-base">4. Tamanho e Tipo de Veículo</FormLabel>
+            <FormLabel className="text-base">
+              4. Tamanho e Tipo de Veículo
+            </FormLabel>
             <FormField
               control={form.control}
               name="vehicleType"
@@ -230,7 +242,11 @@ export default function AdvancedFilters() {
                 <FormItem>
                   <FormLabel>Tipo de Veículo</FormLabel>
                   <div className="grid gap-2">
-                    {["Pequena Caminhonete", "Caminhão Médio", "Caminhão Grande"].map((item) => (
+                    {[
+                      "Pequena Caminhonete",
+                      "Caminhão Médio",
+                      "Caminhão Grande",
+                    ].map((item) => (
                       <FormField
                         key={item}
                         control={form.control}
@@ -249,9 +265,9 @@ export default function AdvancedFilters() {
                                       ? field.onChange([...field.value, item])
                                       : field.onChange(
                                           field.value?.filter(
-                                            (value) => value !== item
-                                          )
-                                        )
+                                            (value) => value !== item,
+                                          ),
+                                        );
                                   }}
                                 />
                               </FormControl>
@@ -259,7 +275,7 @@ export default function AdvancedFilters() {
                                 {item}
                               </FormLabel>
                             </FormItem>
-                          )
+                          );
                         }}
                       />
                     ))}
@@ -275,7 +291,11 @@ export default function AdvancedFilters() {
                 <FormItem>
                   <FormLabel>Capacidade</FormLabel>
                   <div className="grid gap-2">
-                    {["Até 1 Tonelada", "1 a 3 Toneladas", "Acima de 3 Toneladas"].map((item) => (
+                    {[
+                      "Até 1 Tonelada",
+                      "1 a 3 Toneladas",
+                      "Acima de 3 Toneladas",
+                    ].map((item) => (
                       <FormField
                         key={item}
                         control={form.control}
@@ -294,9 +314,9 @@ export default function AdvancedFilters() {
                                       ? field.onChange([...field.value, item])
                                       : field.onChange(
                                           field.value?.filter(
-                                            (value) => value !== item
-                                          )
-                                        )
+                                            (value) => value !== item,
+                                          ),
+                                        );
                                   }}
                                 />
                               </FormControl>
@@ -304,7 +324,7 @@ export default function AdvancedFilters() {
                                 {item}
                               </FormLabel>
                             </FormItem>
-                          )
+                          );
                         }}
                       />
                     ))}
@@ -315,9 +335,11 @@ export default function AdvancedFilters() {
             />
           </div>
 
-          <Button type="submit" className="w-full">Buscar</Button>
+          <Button type="submit" className="w-full">
+            Buscar
+          </Button>
         </form>
       </Form>
     </div>
-  )
+  );
 }

@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { CheckCircle, Circle, Loader2 } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { CheckCircle, Circle, Loader2 } from "lucide-react";
 
 export default function PreparationAndTracking() {
-  const [inventoryComplete, setInventoryComplete] = useState(false)
-  const [packingProgress, setPackingProgress] = useState(0)
+  const [inventoryComplete, setInventoryComplete] = useState(false);
+  const [packingProgress, setPackingProgress] = useState(0);
 
   const steps = [
     { title: "Inventário Digital", complete: inventoryComplete },
     { title: "Embalagem", progress: packingProgress },
     { title: "Agendamento da Equipe", complete: false },
     { title: "Verificação Final", complete: false },
-  ]
+  ];
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -46,11 +46,15 @@ export default function PreparationAndTracking() {
           onClick={() => setInventoryComplete(true)}
           disabled={inventoryComplete}
         >
-          {inventoryComplete ? "Inventário Concluído" : "Iniciar Inventário Digital"}
+          {inventoryComplete
+            ? "Inventário Concluído"
+            : "Iniciar Inventário Digital"}
         </Button>
         <Button
           className="w-full"
-          onClick={() => setPackingProgress(Math.min(packingProgress + 20, 100))}
+          onClick={() =>
+            setPackingProgress(Math.min(packingProgress + 20, 100))
+          }
           disabled={packingProgress === 100}
         >
           {packingProgress === 100 ? (
@@ -64,5 +68,5 @@ export default function PreparationAndTracking() {
         </Button>
       </div>
     </div>
-  )
+  );
 }
