@@ -6,11 +6,9 @@ import 'plyr/dist/plyr.css'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { CheckCircle, PlayCircle, Award } from 'lucide-react'
-import { toast } from "@/components/ui/use-toast"
+import { CheckCircle, PlayCircle } from 'lucide-react'
 
+// Simulated course data
 const courseModules = [
   {
     id: 1,
@@ -38,17 +36,9 @@ const courseModules = [
   }
 ]
 
-const achievements = [
-  { id: 1, title: "Iniciante", description: "Complete sua primeira aula", icon: "🌟" },
-  { id: 2, title: "Dedicado", description: "Assista 5 aulas", icon: "🏆" },
-  { id: 3, title: "Mestre", description: "Complete todos os módulos", icon: "🎓" },
-]
-
 export default function CourseModules() {
   const [activeVideo, setActiveVideo] = useState(null)
   const [completedLessons, setCompletedLessons] = useState([])
-  const [unlockedAchievements, setUnlockedAchievements] = useState([])
-  const [watchedPercentage, setWatchedPercentage] = useState(0)
   const videoRef = useRef(null)
   const playerRef = useRef(null)
 
@@ -56,11 +46,6 @@ export default function CourseModules() {
     if (videoRef.current && !playerRef.current) {
       playerRef.current = new Plyr(videoRef.current, {
         controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-      })
-
-      playerRef.current.on('timeupdate', () => {
-        const progress = (playerRef.current.currentTime / playerRef.current.duration) * 100
-        setWatchedPercentage(progress)
       })
     }
 
@@ -72,38 +57,8 @@ export default function CourseModules() {
   }, [activeVideo])
 
   const handleVideoEnd = () => {
-    if (activeVideo && watchedPercentage >= 90) {
-      const newCompletedLessons = [...completedLessons, activeVideo]
-      setCompletedLessons(newCompletedLessons)
-      checkAchievements(newCompletedLessons)
-    }
-  }
-
-  const checkAchievements = (completedLessons) => {
-    const newAchievements = []
-
-    if (completedLessons.length === 1 && !unlockedAchievements.includes(1)) {
-      newAchievements.push(1)
-    }
-
-    if (completedLessons.length === 5 && !unlockedAchievements.includes(2)) {
-      newAchievements.push(2)
-    }
-
-    const allLessons = courseModules.flatMap(module => module.lessons)
-    if (completedLessons.length === allLessons.length && !unlockedAchievements.includes(3)) {
-      newAchievements.push(3)
-    }
-
-    if (newAchievements.length > 0) {
-      setUnlockedAchievements([...unlockedAchievements, ...newAchievements])
-      newAchievements.forEach(achievementId => {
-        const achievement = achievements.find(a => a.id === achievementId)
-        toast({
-          title: "Conquista Desbloqueada!",
-          description: `${achievement.icon} ${achievement.title}: ${achievement.description}`,
-        })
-      })
+    if (activeVideo) {
+      setCompletedLessons([...completedLessons, activeVideo])
     }
   }
 
@@ -130,12 +85,6 @@ export default function CourseModules() {
             <div className="mb-6">
               <h2 className="text-2xl font-semibold mb-2">{activeVideo.title}</h2>
               <p className="text-gray-600">Duração: {activeVideo.duration}</p>
-              <Progress value={watchedPercentage} className="w-full mt-2" />
-              <p className="text-sm text-gray-600 mt-1">
-                {watchedPercentage < 90
-                  ? `Assista pelo menos 90% da aula para marcá-la como concluída (${Math.round(watchedPercentage)}% assistido)`
-                  : "Você pode marcar esta aula como concluída"}
-              </p>
             </div>
           )}
         </div>
@@ -144,26 +93,6 @@ export default function CourseModules() {
             <h3 className="text-lg font-semibold mb-2">Progresso do Curso</h3>
             <Progress value={progress} className="w-full" />
             <p className="text-sm text-gray-600 mt-2">{completedLessons.length} de {totalLessons} aulas concluídas</p>
-          </div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">Conquistas</h3>
-            <div className="flex flex-wrap gap-2">
-              {achievements.map((achievement) => (
-                <TooltipProvider key={achievement.id}>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Badge variant={unlockedAchievements.includes(achievement.id) ? "default" : "outline"}>
-                        {achievement.icon}
-                      </Badge>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{achievement.title}</p>
-                      <p className="text-xs text-gray-500">{achievement.description}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
-            </div>
           </div>
           <Accordion type="single" collapsible className="w-full">
             {courseModules.map((module) => (
