@@ -1,138 +1,200 @@
 "use client"
 
-import React, { useState } from 'react'
-import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import Plyr from 'plyr'
+import 'plyr/dist/plyr.css'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { CheckCircle, PlayCircle, Award } from 'lucide-react'
+import { toast } from "@/components/ui/use-toast"
 
-// Tipo para representar um item no carrinho
-type CartItem = {
-  id: number
-  name: string
-  price: number
-  quantity: number
-  image: string
-}
-
-// Componente principal do Carrinho de Compras
-export default function CarrinhoDeCompras() {
-  // Estado para armazenar os itens do carrinho
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    { id: 1, name: "Produto 1", price: 50, quantity: 1, image: "/placeholder.svg?height=50&width=50" },
-    { id: 2, name: "Produto 2", price: 30, quantity: 2, image: "/placeholder.svg?height=50&width=50" },
-  ])
-  
-  // Estado para armazenar o CEP e cupom de desconto
-  const [cep, setCep] = useState("")
-  const [cupom, setCupom] = useState("")
-  
-  // Cálculos do carrinho
-  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
-  const frete = cep ? 15 : 0 // Valor fixo de frete para exemplo
-  const desconto = cupom === "DESCONTO10" ? subtotal * 0.1 : 0
-  const total = subtotal + frete - desconto
-
-  // Função para atualizar a quantidade de um item
-  const updateQuantity = (id: number, newQuantity: number) => {
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, quantity: Math.max(0, newQuantity) } : item
-    ).filter(item => item.quantity > 0))
+const courseModules = [
+  {
+    id: 1,
+    title: "Introdução ao Curso",
+    lessons: [
+      { id: 1, title: "Boas-vindas", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "5:20" },
+      { id: 2, title: "Visão Geral do Curso", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "10:15" },
+    ]
+  },
+  {
+    id: 2,
+    title: "Fundamentos",
+    lessons: [
+      { id: 3, title: "Conceitos Básicos", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "15:30" },
+      { id: 4, title: "Primeiros Passos", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "12:45" },
+    ]
+  },
+  {
+    id: 3,
+    title: "Técnicas Avançadas",
+    lessons: [
+      { id: 5, title: "Estratégias Avançadas", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "20:00" },
+      { id: 6, title: "Estudo de Caso", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "18:30" },
+    ]
   }
+]
 
-  // Função para remover um item do carrinho
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter(item => item.id !== id))
-  }
+const achievements = [
+  { id: 1, title: "Iniciante", description: "Complete sua primeira aula", icon: "🌟" },
+  { id: 2, title: "Dedicado", description: "Assista 5 aulas", icon: "🏆" },
+  { id: 3, title: "Mestre", description: "Complete todos os módulos", icon: "🎓" },
+]
 
-  // Função para gerar a mensagem do WhatsApp
-  const generateWhatsAppMessage = () => {
-    let message = "Olá! Gostaria de fazer o seguinte pedido:\n\n"
-    cartItems.forEach(item => {
-      message += `${item.quantity}x ${item.name} - R$ ${(item.price * item.quantity).toFixed(2)}\n`
-    })
-    message += `\nSubtotal: R$ ${subtotal.toFixed(2)}`
-    message += `\nFrete: R$ ${frete.toFixed(2)}`
-    if (desconto > 0) {
-      message += `\nDesconto: R$ ${desconto.toFixed(2)}`
+export default function CourseModules() {
+  const [activeVideo, setActiveVideo] = useState(null)
+  const [completedLessons, setCompletedLessons] = useState([])
+  const [unlockedAchievements, setUnlockedAchievements] = useState([])
+  const [watchedPercentage, setWatchedPercentage] = useState(0)
+  const videoRef = useRef(null)
+  const playerRef = useRef(null)
+
+  useEffect(() => {
+    if (videoRef.current && !playerRef.current) {
+      playerRef.current = new Plyr(videoRef.current, {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+      })
+
+      playerRef.current.on('timeupdate', () => {
+        const progress = (playerRef.current.currentTime / playerRef.current.duration) * 100
+        setWatchedPercentage(progress)
+      })
     }
-    message += `\nTotal: R$ ${total.toFixed(2)}`
-    return encodeURIComponent(message)
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.destroy()
+      }
+    }
+  }, [activeVideo])
+
+  const handleVideoEnd = () => {
+    if (activeVideo && watchedPercentage >= 90) {
+      const newCompletedLessons = [...completedLessons, activeVideo]
+      setCompletedLessons(newCompletedLessons)
+      checkAchievements(newCompletedLessons)
+    }
   }
+
+  const checkAchievements = (completedLessons) => {
+    const newAchievements = []
+
+    if (completedLessons.length === 1 && !unlockedAchievements.includes(1)) {
+      newAchievements.push(1)
+    }
+
+    if (completedLessons.length === 5 && !unlockedAchievements.includes(2)) {
+      newAchievements.push(2)
+    }
+
+    const allLessons = courseModules.flatMap(module => module.lessons)
+    if (completedLessons.length === allLessons.length && !unlockedAchievements.includes(3)) {
+      newAchievements.push(3)
+    }
+
+    if (newAchievements.length > 0) {
+      setUnlockedAchievements([...unlockedAchievements, ...newAchievements])
+      newAchievements.forEach(achievementId => {
+        const achievement = achievements.find(a => a.id === achievementId)
+        toast({
+          title: "Conquista Desbloqueada!",
+          description: `${achievement.icon} ${achievement.title}: ${achievement.description}`,
+        })
+      })
+    }
+  }
+
+  const totalLessons = courseModules.reduce((total, module) => total + module.lessons.length, 0)
+  const progress = (completedLessons.length / totalLessons) * 100
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Carrinho de Compras</h1>
-      
-      {/* Lista de Itens */}
-      <div className="space-y-4 mb-6">
-        {cartItems.map(item => (
-          <div key={item.id} className="flex items-center space-x-4 border-b pb-4">
-            <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded" />
-            <div className="flex-grow">
-              <h3 className="font-semibold">{item.name}</h3>
-              <p className="text-sm text-gray-500">R$ {item.price.toFixed(2)}</p>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Módulos do Curso</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2">
+          {activeVideo ? (
+            <div className="aspect-w-16 aspect-h-9 mb-4">
+              <video ref={videoRef} onEnded={handleVideoEnd}>
+                <source src={activeVideo.videoUrl} type="video/mp4" />
+              </video>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
-                <Minus className="h-4 w-4" />
-              </Button>
-              <span className="w-8 text-center">{item.quantity}</span>
-              <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
-                <Plus className="h-4 w-4" />
-              </Button>
+          ) : (
+            <div className="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center mb-4">
+              <p className="text-gray-500">Selecione uma aula para começar</p>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
+          )}
+          {activeVideo && (
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold mb-2">{activeVideo.title}</h2>
+              <p className="text-gray-600">Duração: {activeVideo.duration}</p>
+              <Progress value={watchedPercentage} className="w-full mt-2" />
+              <p className="text-sm text-gray-600 mt-1">
+                {watchedPercentage < 90
+                  ? `Assista pelo menos 90% da aula para marcá-la como concluída (${Math.round(watchedPercentage)}% assistido)`
+                  : "Você pode marcar esta aula como concluída"}
+              </p>
+            </div>
+          )}
+        </div>
+        <div>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Progresso do Curso</h3>
+            <Progress value={progress} className="w-full" />
+            <p className="text-sm text-gray-600 mt-2">{completedLessons.length} de {totalLessons} aulas concluídas</p>
           </div>
-        ))}
-      </div>
-      
-      {/* Cálculo de Frete */}
-      <div className="mb-4">
-        <Label htmlFor="cep">CEP para cálculo de frete</Label>
-        <Input
-          id="cep"
-          type="text"
-          placeholder="Digite seu CEP"
-          value={cep}
-          onChange={(e) => setCep(e.target.value)}
-          className="mt-1"
-        />
-      </div>
-      
-      {/* Cupom de Desconto */}
-      <div className="mb-4">
-        <Label htmlFor="cupom">Cupom de Desconto</Label>
-        <Input
-          id="cupom"
-          type="text"
-          placeholder="Digite o código do cupom"
-          value={cupom}
-          onChange={(e) => setCupom(e.target.value)}
-          className="mt-1"
-        />
-      </div>
-      
-      {/* Resumo do Pedido */}
-      <div className="bg-gray-100 p-4 rounded-lg mb-4">
-        <h2 className="font-semibold mb-2">Resumo do Pedido</h2>
-        <div className="space-y-1">
-          <p>Subtotal: R$ {subtotal.toFixed(2)}</p>
-          <p>Frete: R$ {frete.toFixed(2)}</p>
-          {desconto > 0 && <p>Desconto: R$ {desconto.toFixed(2)}</p>}
-          <p className="font-bold">Total: R$ {total.toFixed(2)}</p>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Conquistas</h3>
+            <div className="flex flex-wrap gap-2">
+              {achievements.map((achievement) => (
+                <TooltipProvider key={achievement.id}>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Badge variant={unlockedAchievements.includes(achievement.id) ? "default" : "outline"}>
+                        {achievement.icon}
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{achievement.title}</p>
+                      <p className="text-xs text-gray-500">{achievement.description}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ))}
+            </div>
+          </div>
+          <Accordion type="single" collapsible className="w-full">
+            {courseModules.map((module) => (
+              <AccordionItem value={`module-${module.id}`} key={module.id}>
+                <AccordionTrigger>{module.title}</AccordionTrigger>
+                <AccordionContent>
+                  <ul className="space-y-2">
+                    {module.lessons.map((lesson) => (
+                      <li key={lesson.id} className="flex items-center justify-between">
+                        <Button
+                          variant="ghost"
+                          className="text-left flex items-center"
+                          onClick={() => setActiveVideo(lesson)}
+                        >
+                          {completedLessons.some(completed => completed.id === lesson.id) ? (
+                            <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                          ) : (
+                            <PlayCircle className="mr-2 h-4 w-4" />
+                          )}
+                          {lesson.title}
+                        </Button>
+                        <span className="text-sm text-gray-500">{lesson.duration}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </div>
-      
-      {/* Botão para Finalizar Pedido */}
-      <Button
-        className="w-full"
-        onClick={() => window.open(`https://wa.me/5511999999999?text=${generateWhatsAppMessage()}`, '_blank')}
-      >
-        <ShoppingBag className="mr-2 h-4 w-4" /> Finalizar Pedido via WhatsApp
-      </Button>
     </div>
   )
 }

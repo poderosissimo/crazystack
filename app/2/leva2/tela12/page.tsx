@@ -1,147 +1,127 @@
 "use client"
-import { useState } from 'react'
-import { Star, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart } from 'lucide-react'
+
+import { useState, useEffect, useRef } from 'react'
+import Plyr from 'plyr'
+import 'plyr/dist/plyr.css'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { CheckCircle, PlayCircle } from 'lucide-react'
 
-export default function DetalheProduto() {
-  const [currentImage, setCurrentImage] = useState(0)
-  const [quantity, setQuantity] = useState(1)
-
-  const produto = {
-    nome: "Colar de Pérolas Elegance",
-    descricao: "Colar de pérolas cultivadas de água doce, com fecho de prata 925. Comprimento ajustável de 40-45cm. Ideal para ocasiões especiais ou para adicionar um toque de elegância ao seu dia a dia.",
-    preco: 299.99,
-    parcelas: 3,
-    imagens: [
-      "/placeholder.svg?height=400&width=400",
-      "/placeholder.svg?height=400&width=400",
-      "/placeholder.svg?height=400&width=400",
-      "/placeholder.svg?height=400&width=400"
-    ],
-    cores: ["Branco", "Creme", "Rosa claro"],
-    estoque: 5,
-    avaliacoes: [
-      { nome: "Maria S.", comentario: "Lindo colar, superou minhas expectativas!", estrelas: 5 },
-      { nome: "João P.", comentario: "Presente perfeito para minha esposa. Qualidade excelente.", estrelas: 5 },
-      { nome: "Ana R.", comentario: "Bonito, mas achei um pouco caro.", estrelas: 4 }
-    ],
-    produtosRelacionados: [
-      { nome: "Brincos de Pérola", preco: 149.99, imagem: "/placeholder.svg?height=100&width=100" },
-      { nome: "Pulseira de Pérolas", preco: 199.99, imagem: "/placeholder.svg?height=100&width=100" },
-      { nome: "Anel de Pérola", preco: 99.99, imagem: "/placeholder.svg?height=100&width=100" }
+// Simulated course data
+const courseModules = [
+  {
+    id: 1,
+    title: "Introdução ao Curso",
+    lessons: [
+      { id: 1, title: "Boas-vindas", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "5:20" },
+      { id: 2, title: "Visão Geral do Curso", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "10:15" },
+    ]
+  },
+  {
+    id: 2,
+    title: "Fundamentos",
+    lessons: [
+      { id: 3, title: "Conceitos Básicos", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "15:30" },
+      { id: 4, title: "Primeiros Passos", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "12:45" },
+    ]
+  },
+  {
+    id: 3,
+    title: "Técnicas Avançadas",
+    lessons: [
+      { id: 5, title: "Estratégias Avançadas", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "20:00" },
+      { id: 6, title: "Estudo de Caso", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "18:30" },
     ]
   }
+]
 
-  const nextImage = () => {
-    setCurrentImage((prev) => (prev + 1) % produto.imagens.length)
+export default function CourseModules() {
+  const [activeVideo, setActiveVideo] = useState(null)
+  const [completedLessons, setCompletedLessons] = useState([])
+  const videoRef = useRef(null)
+  const playerRef = useRef(null)
+
+  useEffect(() => {
+    if (videoRef.current && !playerRef.current) {
+      playerRef.current = new Plyr(videoRef.current, {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+      })
+    }
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.destroy()
+      }
+    }
+  }, [activeVideo])
+
+  const handleVideoEnd = () => {
+    if (activeVideo) {
+      setCompletedLessons([...completedLessons, activeVideo])
+    }
   }
 
-  const prevImage = () => {
-    setCurrentImage((prev) => (prev - 1 + produto.imagens.length) % produto.imagens.length)
-  }
-
-  const handleWhatsApp = () => {
-    const message = encodeURIComponent(`Olá! Gostaria de encomendar o produto "${produto.nome}" (${quantity} unidade(s)).`)
-    window.open(`https://wa.me/5511999999999?text=${message}`, '_blank')
-  }
+  const totalLessons = courseModules.reduce((total, module) => total + module.lessons.length, 0)
+  const progress = (completedLessons.length / totalLessons) * 100
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Galeria de Imagens */}
-        <div className="relative">
-          <img
-            src={produto.imagens[currentImage]}
-            alt={`${produto.nome} - Imagem ${currentImage + 1}`}
-            className="w-full h-auto rounded-lg shadow-lg"
-          />
-          <button onClick={prevImage} className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md">
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          <button onClick={nextImage} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md">
-            <ChevronRight className="h-6 w-6" />
-          </button>
-          <div className="flex justify-center mt-4 space-x-2">
-            {produto.imagens.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentImage(index)}
-                className={`w-3 h-3 rounded-full ${index === currentImage ? 'bg-primary' : 'bg-gray-300'}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Detalhes do Produto */}
-        <div>
-          <h1 className="text-3xl font-bold mb-4">{produto.nome}</h1>
-          <p className="text-gray-600 mb-4">{produto.descricao}</p>
-          
-          <div className="flex items-center mb-4">
-            <span className="text-2xl font-bold mr-2">R$ {produto.preco.toFixed(2)}</span>
-            <span className="text-sm text-gray-500">
-              ou {produto.parcelas}x de R$ {(produto.preco / produto.parcelas).toFixed(2)} sem juros
-            </span>
-          </div>
-
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2">Cores disponíveis:</h3>
-            <div className="flex space-x-2">
-              {produto.cores.map((cor) => (
-                <button key={cor} className="px-3 py-1 border rounded-full hover:bg-gray-100">{cor}</button>
-              ))}
+      <h1 className="text-3xl font-bold mb-6">Módulos do Curso</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2">
+          {activeVideo ? (
+            <div className="aspect-w-16 aspect-h-9 mb-4">
+              <video ref={videoRef} onEnded={handleVideoEnd}>
+                <source src={activeVideo.videoUrl} type="video/mp4" />
+              </video>
             </div>
-          </div>
-
-          <div className="flex items-center mb-4">
-            <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 border rounded-l-md">
-              <Minus className="h-4 w-4" />
-            </button>
-            <span className="px-4 py-2 border-t border-b">{quantity}</span>
-            <button onClick={() => setQuantity(Math.min(produto.estoque, quantity + 1))} className="p-2 border rounded-r-md">
-              <Plus className="h-4 w-4" />
-            </button>
-            <span className="ml-4 text-sm text-gray-500">
-              {produto.estoque} unidades em estoque
-            </span>
-          </div>
-
-          <Button onClick={handleWhatsApp} className="w-full mb-4">
-            <ShoppingCart className="mr-2 h-4 w-4" /> Encomendar via WhatsApp
-          </Button>
-
-          {/* Avaliações de Clientes */}
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold mb-2">Avaliações dos Clientes</h3>
-            {produto.avaliacoes.map((avaliacao, index) => (
-              <Card key={index} className="p-4 mb-2">
-                <div className="flex items-center mb-2">
-                  <span className="font-semibold mr-2">{avaliacao.nome}</span>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`h-4 w-4 ${i < avaliacao.estrelas ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
-                    ))}
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600">{avaliacao.comentario}</p>
-              </Card>
-            ))}
-          </div>
+          ) : (
+            <div className="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center mb-4">
+              <p className="text-gray-500">Selecione uma aula para começar</p>
+            </div>
+          )}
+          {activeVideo && (
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold mb-2">{activeVideo.title}</h2>
+              <p className="text-gray-600">Duração: {activeVideo.duration}</p>
+            </div>
+          )}
         </div>
-      </div>
-
-      {/* Produtos Relacionados */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-4">Produtos Relacionados</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {produto.produtosRelacionados.map((item, index) => (
-            <Card key={index} className="p-4">
-              <img src={item.imagem} alt={item.nome} className="w-full h-auto mb-2 rounded" />
-              <h3 className="font-semibold">{item.nome}</h3>
-              <p className="text-sm text-gray-600">R$ {item.preco.toFixed(2)}</p>
-            </Card>
-          ))}
+        <div>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Progresso do Curso</h3>
+            <Progress value={progress} className="w-full" />
+            <p className="text-sm text-gray-600 mt-2">{completedLessons.length} de {totalLessons} aulas concluídas</p>
+          </div>
+          <Accordion type="single" collapsible className="w-full">
+            {courseModules.map((module) => (
+              <AccordionItem value={`module-${module.id}`} key={module.id}>
+                <AccordionTrigger>{module.title}</AccordionTrigger>
+                <AccordionContent>
+                  <ul className="space-y-2">
+                    {module.lessons.map((lesson) => (
+                      <li key={lesson.id} className="flex items-center justify-between">
+                        <Button
+                          variant="ghost"
+                          className="text-left flex items-center"
+                          onClick={() => setActiveVideo(lesson)}
+                        >
+                          {completedLessons.some(completed => completed.id === lesson.id) ? (
+                            <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                          ) : (
+                            <PlayCircle className="mr-2 h-4 w-4" />
+                          )}
+                          {lesson.title}
+                        </Button>
+                        <span className="text-sm text-gray-500">{lesson.duration}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </div>
     </div>

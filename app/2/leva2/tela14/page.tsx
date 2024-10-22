@@ -1,243 +1,320 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
-import { Trash2, Plus, Minus, ShoppingBag, Heart, ArrowRight } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import Plyr from 'plyr'
+import 'plyr/dist/plyr.css'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { toast, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { motion, AnimatePresence } from 'framer-motion'
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { CheckCircle, PlayCircle, Award, Star, Link as LinkIcon } from 'lucide-react'
+import { toast } from "@/components/ui/use-toast"
 
-// Tipo para representar um item no carrinho
-type CartItem = {
-  id: number
-  name: string
-  price: number
-  quantity: number
-  image: string
-}
+const courseModules = [
+  {
+    id: 1,
+    title: "Introdução ao Curso",
+    lessons: [
+      {
+        id: 1,
+        title: "Boas-vindas",
+        videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
+        duration: "5:20",
+        xp: 10,
+        description: "Nesta aula, daremos as boas-vindas e apresentaremos uma visão geral do curso.",
+        relatedLinks: [
+          { title: "Guia do Estudante", url: "https://exemplo.com/guia-do-estudante" },
+          { title: "Fórum de Discussão", url: "https://exemplo.com/forum" }
+        ]
+      },
+      {
+        id: 2,
+        title: "Visão Geral do Curso",
+        videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
+        duration: "10:15",
+        xp: 20,
+        description: "Apresentaremos os objetivos do curso e o que você aprenderá em cada módulo.",
+        relatedLinks: [
+          { title: "Estrutura do Curso", url: "https://exemplo.com/estrutura-do-curso" },
+          { title: "Calendário de Aulas", url: "https://exemplo.com/calendario" }
+        ]
+      },
+    ]
+  },
+  {
+    id: 2,
+    title: "Fundamentos",
+    lessons: [
+      {
+        id: 3,
+        title: "Conceitos Básicos",
+        videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
+        duration: "15:30",
+        xp: 30,
+        description: "Aprenda os conceitos fundamentais que serão a base para todo o curso.",
+        relatedLinks: [
+          { title: "Glossário de Termos", url: "https://exemplo.com/glossario" },
+          { title: "Leitura Complementar", url: "https://exemplo.com/leitura-complementar" }
+        ]
+      },
+      {
+        id: 4,
+        title: "Primeiros Passos",
+        videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
+        duration: "12:45",
+        xp: 25,
+        description: "Comece a praticar com exercícios simples para fixar os conceitos aprendidos.",
+        relatedLinks: [
+          { title: "Exercícios Práticos", url: "https://exemplo.com/exercicios" },
+          { title: "Recursos Adicionais", url: "https://exemplo.com/recursos" }
+        ]
+      },
+    ]
+  },
+  {
+    id: 3,
+    title: "Técnicas Avançadas",
+    lessons: [
+      {
+        id: 5,
+        title: "Estratégias Avançadas",
+        videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
+        duration: "20:00",
+        xp: 40,
+        description: "Explore técnicas avançadas para levar suas habilidades ao próximo nível.",
+        relatedLinks: [
+          { title: "Estudo de Caso", url: "https://exemplo.com/estudo-de-caso" },
+          { title: "Artigo Científico", url: "https://exemplo.com/artigo" }
+        ]
+      },
+      {
+        id: 6,
+        title: "Estudo de Caso",
+        videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
+        duration: "18:30",
+        xp: 35,
+        description: "Analise um caso real e aplique os conhecimentos adquiridos no curso.",
+        relatedLinks: [
+          { title: "Dados do Estudo", url: "https://exemplo.com/dados" },
+          { title: "Discussão no Fórum", url: "https://exemplo.com/forum-discussao" }
+        ]
+      },
+    ]
+  }
+]
 
-// Componente principal do Carrinho de Compras
-export default function CarrinhoDeCompras() {
-  // Estado para armazenar os itens do carrinho
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-  
-  // Estado para armazenar o CEP e cupom de desconto
-  const [cep, setCep] = useState("")
-  const [cupom, setCupom] = useState("")
-  
-  // Estado para armazenar itens salvos para depois
-  const [savedItems, setSavedItems] = useState<CartItem[]>([])
+const achievements = [
+  { id: 1, title: "Iniciante", description: "Complete sua primeira aula", icon: "🌟" },
+  { id: 2, title: "Dedicado", description: "Assista 5 aulas", icon: "🏆" },
+  { id: 3, title: "Mestre", description: "Complete todos os módulos", icon: "🎓" },
+]
 
-  // Efeito para carregar dados do localStorage
+const levels = [
+  { name: "Novato", minXP: 0, icon: "🌱" },
+  { name: "Aprendiz", minXP: 50, icon: "🌿" },
+  { name: "Estudante", minXP: 100, icon: "🌳" },
+  { name: "Especialista", minXP: 200, icon: "🌴" },
+  { name: "Mestre", minXP: 300, icon: "🌺" },
+]
+
+export default function CourseModules() {
+  const [activeVideo, setActiveVideo] = useState(null)
+  const [completedLessons, setCompletedLessons] = useState([])
+  const [unlockedAchievements, setUnlockedAchievements] = useState([])
+  const [watchedPercentage, setWatchedPercentage] = useState(0)
+  const [xp, setXP] = useState(0)
+  const [level, setLevel] = useState(levels[0])
+  const videoRef = useRef(null)
+  const playerRef = useRef(null)
+
   useEffect(() => {
-    const savedCart = localStorage.getItem('cartItems')
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart))
-    }
-    const savedForLater = localStorage.getItem('savedItems')
-    if (savedForLater) {
-      setSavedItems(JSON.parse(savedForLater))
-    }
-  }, [])
+    if (videoRef.current && !playerRef.current) {
+      playerRef.current = new Plyr(videoRef.current, {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+      })
 
-  // Efeito para salvar dados no localStorage
+      playerRef.current.on('timeupdate', () => {
+        const progress = (playerRef.current.currentTime / playerRef.current.duration) * 100
+        setWatchedPercentage(progress)
+      })
+    }
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.destroy()
+      }
+    }
+  }, [activeVideo])
+
   useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems))
-    localStorage.setItem('savedItems', JSON.stringify(savedItems))
-  }, [cartItems, savedItems])
-
-  // Cálculos do carrinho
-  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
-  const frete = calcularFrete(cep, subtotal)
-  const desconto = cupom === "DESCONTO10" ? subtotal * 0.1 : 0
-  const total = subtotal + frete - desconto
-
-  // Função para calcular frete (simulação mais realista)
-  function calcularFrete(cep: string, subtotal: number): number {
-    if (!cep) return 0
-    const baseFrete = 10
-    const adicionalPorItem = 2
-    const descontoPorValor = subtotal > 100 ? 5 : 0
-    return baseFrete + (cartItems.length * adicionalPorItem) - descontoPorValor
-  }
-
-  // Função para atualizar a quantidade de um item
-  const updateQuantity = (id: number, newQuantity: number) => {
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
-    ))
-    toast.success('Quantidade atualizada!')
-  }
-
-  // Função para remover um item do carrinho
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter(item => item.id !== id))
-    toast.info('Item removido do carrinho')
-  }
-
-  // Função para salvar um item para comprar depois
-  const saveForLater = (item: CartItem) => {
-    setSavedItems([...savedItems, item])
-    setCartItems(cartItems.filter(cartItem => cartItem.id !== item.id))
-    toast.info('Item salvo para comprar depois')
-  }
-
-  // Função para mover um item salvo de volta para o carrinho
-  const moveToCart = (item: CartItem) => {
-    setCartItems([...cartItems, item])
-    setSavedItems(savedItems.filter(savedItem => savedItem.id !== item.id))
-    toast.success('Item movido para o carrinho')
-  }
-
-  // Função para gerar a mensagem do WhatsApp
-  const generateWhatsAppMessage = () => {
-    let message = "Olá! Gostaria de fazer o seguinte pedido:\n\n"
-    cartItems.forEach(item => {
-      message += `${item.quantity}x ${item.name} - R$ ${(item.price * item.quantity).toFixed(2)}\n`
-    })
-    message += `\nSubtotal: R$ ${subtotal.toFixed(2)}`
-    message += `\nFrete: R$ ${frete.toFixed(2)}`
-    if (desconto > 0) {
-      message += `\nDesconto: R$ ${desconto.toFixed(2)}`
+    const newLevel = levels.reduce((acc, lvl) => (xp >= lvl.minXP ? lvl : acc), levels[0])
+    if (newLevel.name !== level.name) {
+      setLevel(newLevel)
+      toast({
+        title: "Novo Nível Alcançado!",
+        description: `${newLevel.icon} Parabéns! Você atingiu o nível ${newLevel.name}!`,
+      })
     }
-    message += `\nTotal: R$ ${total.toFixed(2)}`
-    return encodeURIComponent(message)
+  }, [xp, level.name])
+
+  const handleVideoEnd = () => {
+    if (activeVideo && watchedPercentage >= 90) {
+      const newCompletedLessons = [...completedLessons, activeVideo]
+      setCompletedLessons(newCompletedLessons)
+      const newXP = xp + activeVideo.xp
+      setXP(newXP)
+      toast({
+        title: "Aula Concluída!",
+        description: `Você ganhou ${activeVideo.xp} XP! Total: ${newXP} XP`,
+      })
+      checkAchievements(newCompletedLessons)
+    }
   }
 
-  // Componente de recomendação de produto
-  const ProductRecommendation = () => (
-    <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-      <h3 className="font-semibold mb-2">Recomendação para você</h3>
-      <div className="flex items-center space-x-4">
-        <img src="/placeholder.svg?height=80&width=80" alt="Produto recomendado" className="w-20 h-20 object-cover rounded" />
-        <div>
-          <p className="font-medium">Produto Recomendado</p>
-          <p className="text-sm text-gray-600">R$ 79,90</p>
-          <Button size="sm" variant="outline" className="mt-2">
-            Adicionar ao Carrinho
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
+  const checkAchievements = (completedLessons) => {
+    const newAchievements = []
+
+    if (completedLessons.length === 1 && !unlockedAchievements.includes(1)) {
+      newAchievements.push(1)
+    }
+
+    if (completedLessons.length === 5 && !unlockedAchievements.includes(2)) {
+      newAchievements.push(2)
+    }
+
+    const allLessons = courseModules.flatMap(module => module.lessons)
+    if (completedLessons.length === allLessons.length && !unlockedAchievements.includes(3)) {
+      newAchievements.push(3)
+    }
+
+    if (newAchievements.length > 0) {
+      setUnlockedAchievements([...unlockedAchievements, ...newAchievements])
+      newAchievements.forEach(achievementId => {
+        const achievement = achievements.find(a => a.id === achievementId)
+        toast({
+          title: "Conquista Desbloqueada!",
+          description: `${achievement.icon} ${achievement.title}: ${achievement.description}`,
+        })
+      })
+    }
+  }
+
+  const totalLessons = courseModules.reduce((total, module) => total + module.lessons.length, 0)
+  const progress = (completedLessons.length / totalLessons) * 100
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Carrinho de Compras</h1>
-      
-      {/* Lista de Itens */}
-      <div className="space-y-4 mb-6">
-        <AnimatePresence>
-          {cartItems.map(item => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="flex items-center space-x-4 border-b pb-4"
-            >
-              <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
-              <div className="flex-grow">
-                <h3 className="font-semibold">{item.name}</h3>
-                <p className="text-sm text-gray-500">R$ {item.price.toFixed(2)}</p>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)} aria-label="Diminuir quantidade">
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-8 text-center">{item.quantity}</span>
-                <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)} aria-label="Aumentar quantidade">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} aria-label="Remover item">
-                <Trash2 className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={() => saveForLater(item)} aria-label="Salvar para depois">
-                <Heart className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-      
-      {/* Cálculo de Frete */}
-      <div className="mb-4">
-        <Label htmlFor="cep">CEP para cálculo de frete</Label>
-        <Input
-          id="cep"
-          type="text"
-          placeholder="Digite seu CEP"
-          value={cep}
-          onChange={(e) => setCep(e.target.value)}
-          className="mt-1"
-          aria-describedby="cep-info"
-        />
-        <p id="cep-info" className="text-sm text-gray-500 mt-1">Digite o CEP para calcular o frete</p>
-      </div>
-      
-      {/* Cupom de Desconto */}
-      <div className="mb-4">
-        <Label htmlFor="cupom">Cupom de Desconto</Label>
-        <Input
-          id="cupom"
-          type="text"
-          placeholder="Digite o código do cupom"
-          value={cupom}
-          onChange={(e) => setCupom(e.target.value)}
-          className="mt-1"
-          aria-describedby="cupom-info"
-        />
-        <p id="cupom-info" className="text-sm text-gray-500 mt-1">Digite DESCONTO10 para 10% de desconto</p>
-      </div>
-      
-      {/* Resumo do Pedido */}
-      <div className="bg-gray-100 p-4 rounded-lg mb-4">
-        <h2 className="font-semibold mb-2">Resumo do Pedido</h2>
-        <div className="space-y-1">
-          <p>Subtotal: R$ {subtotal.toFixed(2)}</p>
-          <p>Frete: R$ {frete.toFixed(2)}</p>
-          {desconto > 0 && <p>Desconto: R$ {desconto.toFixed(2)}</p>}
-          <p className="font-bold">Total: R$ {total.toFixed(2)}</p>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Módulos do Curso</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2">
+          {activeVideo ? (
+            <div className="aspect-w-16 aspect-h-9 mb-4">
+              <video ref={videoRef} onEnded={handleVideoEnd}>
+                <source src={activeVideo.videoUrl} type="video/mp4" />
+              </video>
+            </div>
+          ) : (
+            <div className="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center mb-4">
+              <p className="text-gray-500">Selecione uma aula para começar</p>
+            </div>
+          )}
+          {activeVideo && (
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>{activeVideo.title}</CardTitle>
+                <CardDescription>Duração: {activeVideo.duration}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Progress value={watchedPercentage} className="w-full mb-2" />
+                <p className="text-sm text-gray-600 mb-4">
+                  {watchedPercentage < 90
+                    ? `Assista pelo menos 90% da aula para marcá-la como concluída (${Math.round(watchedPercentage)}% assistido)`
+                    : "Você pode marcar esta aula como concluída"}
+                </p>
+                <p className="mb-4">{activeVideo.description}</p>
+                <h4 className="font-semibold mb-2">Links Relacionados:</h4>
+                <ul className="list-disc list-inside">
+                  {activeVideo.relatedLinks.map((link, index) => (
+                    <li key={index} className="mb-1">
+                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline flex items-center">
+                        <LinkIcon className="w-4 h-4 mr-1" />
+                        {link.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
         </div>
-      </div>
-      
-      {/* Botão para Finalizar Pedido */}
-      <Button
-        className="w-full mb-4"
-        onClick={() => window.open(`https://wa.me/5511999999999?text=${generateWhatsAppMessage()}`, '_blank')}
-      >
-        <ShoppingBag className="mr-2 h-4 w-4" /> Finalizar Pedido via WhatsApp
-      </Button>
-
-      {/* Itens Salvos para Depois */}
-      {savedItems.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Salvos para Depois</h2>
-          <div className="space-y-4">
-            {savedItems.map(item => (
-              <div key={item.id} className="flex items-center space-x-4 border-b pb-4">
-                <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded" />
-                <div className="flex-grow">
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-sm text-gray-500">R$ {item.price.toFixed(2)}</p>
-                </div>
-                <Button variant="outline" size="sm" onClick={() => moveToCart(item)}>
-                  Mover para o Carrinho <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            ))}
+        <div>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Seu Progresso</h3>
+            <div className="flex items-center space-x-2 mb-2">
+              <Star className="text-yellow-400" />
+              <span className="font-medium">{xp} XP</span>
+            </div>
+            <div className="flex items-center space-x-2 mb-2">
+              <Badge variant="secondary">{level.icon} {level.name}</Badge>
+            </div>
+            <Progress value={progress} className="w-full" />
+            <p className="text-sm text-gray-600 mt-2">{completedLessons.length} de {totalLessons} aulas concluídas</p>
           </div>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Conquistas</h3>
+            <div className="flex flex-wrap gap-2">
+              {achievements.map((achievement) => (
+                <TooltipProvider key={achievement.id}>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Badge variant={unlockedAchievements.includes(achievement.id) ? "default" : "outline"}>
+                        {achievement.icon}
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{achievement.title}</p>
+                      <p className="text-xs text-gray-500">{achievement.description}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ))}
+            </div>
+          </div>
+          <Accordion type="single" collapsible className="w-full">
+            {courseModules.map((module) => (
+              <AccordionItem value={`module-${module.id}`} key={module.id}>
+                <AccordionTrigger>{module.title}</AccordionTrigger>
+                <AccordionContent>
+                  <ul className="space-y-2">
+                    {module.lessons.map((lesson) => (
+                      <li key={lesson.id} className="flex items-center justify-between">
+                        <Button
+                          variant="ghost"
+                          className="text-left flex items-center"
+                          onClick={() => setActiveVideo(lesson)}
+                        >
+                          {completedLessons.some(completed => completed.id === lesson.id) ? (
+                            <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                          ) : (
+                            <PlayCircle className="mr-2 h-4 w-4" />
+                          )}
+                          {lesson.title}
+                        </Button>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-gray-500">{lesson.duration}</span>
+                          <Badge variant="outline">{lesson.xp} XP</Badge>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
-      )}
-
-      {/* Recomendação de Produto */}
-      <ProductRecommendation />
-
-      {/* Toast Container para notificações */}
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      </div>
     </div>
   )
 }
