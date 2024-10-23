@@ -1,129 +1,474 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react'
-import Plyr from 'plyr'
-import 'plyr/dist/plyr.css'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { useState, useEffect } from 'react'
+import { Calendar as CalendarIcon, MapPin, Package, Truck, Clock, AlertCircle, Plus, Minus, Tool, Trash } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { CheckCircle, PlayCircle } from 'lucide-react'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Switch } from "@/components/ui/switch"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { Checkbox } from "@/components/ui/checkbox"
+import { cn } from "@/lib/utils"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
 
-// Simulated course data
-const courseModules = [
-  {
-    id: 1,
-    title: "Introdução ao Curso",
-    lessons: [
-      { id: 1, title: "Boas-vindas", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "5:20" },
-      { id: 2, title: "Visão Geral do Curso", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "10:15" },
-    ]
-  },
-  {
-    id: 2,
-    title: "Fundamentos",
-    lessons: [
-      { id: 3, title: "Conceitos Básicos", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "15:30" },
-      { id: 4, title: "Primeiros Passos", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "12:45" },
-    ]
-  },
-  {
-    id: 3,
-    title: "Técnicas Avançadas",
-    lessons: [
-      { id: 5, title: "Estratégias Avançadas", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "20:00" },
-      { id: 6, title: "Estudo de Caso", videoUrl: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", duration: "18:30" },
-    ]
-  }
+type Item = {
+  id: string
+  name: string
+  quantity: number
+  pricePerUnit: number
+  canBeDisassembled: boolean
+  isDisassembly: boolean
+}
+
+const initialItems: Item[] = [
+  { id: '1', name: 'Geladeira', quantity: 0, pricePerUnit: 50, canBeDisassembled: false, isDisassembly: false },
+  { id: '2', name: 'Fogão', quantity: 0, pricePerUnit: 30, canBeDisassembled: false, isDisassembly: false },
+  { id: '3', name: 'Sofá', quantity: 0, pricePerUnit: 40, canBeDisassembled: true, isDisassembly: false },
+  { id: '4', name: 'Cama', quantity: 0, pricePerUnit: 35, canBeDisassembled: true, isDisassembly: false },
+  { id: '5', name: 'Mesa', quantity: 0, pricePerUnit: 25, canBeDisassembled: true, isDisassembly: false },
+  { id: '6', name: 'Cadeira', quantity: 0, pricePerUnit: 10, canBeDisassembled: false, isDisassembly: false },
+  { id: '7', name: 'Guarda-roupa', quantity: 0, pricePerUnit: 45, canBeDisassembled: true, isDisassembly: false },
+  { id: '8', name: 'Máquina de lavar', quantity: 0, pricePerUnit: 40, canBeDisassembled: false, isDisassembly: false },
 ]
 
-export default function CourseModules() {
-  const [activeVideo, setActiveVideo] = useState(null)
-  const [completedLessons, setCompletedLessons] = useState([])
-  const videoRef = useRef(null)
-  const playerRef = useRef(null)
+export default function Component() {
+  const [date, setDate] = useState<Date>()
+  const [isInsuranceAdded, setIsInsuranceAdded] = useState(false)
+  const [items, setItems] = useState<Item[]>(initialItems)
+  const [customItem, setCustomItem] = useState({ name: '', quantity: 0, pricePerUnit: 0, canBeDisassembled: false, isDisassembly: false })
+  const [origin, setOrigin] = useState('')
+  const [destination, setDestination] = useState('')
+  const [distance, setDistance] = useState(0)
+  const [hasElevator, setHasElevator] = useState(false)
+  const [isWeekend, setIsWeekend] = useState(false)
+  const [isRushHour, setIsRushHour] = useState(false)
+  const [fragileItemsCount, setFragileItemsCount] = useState(0)
+
+  const basePrice = 100 // Preço base do serviço
+  const insurancePrice = 50 // Preço do seguro adicional
+  const disassemblyPrice = 20 // Preço por item para montagem/desmontagem
+  const pricePerKm = 2 // Preço por km de distância
+  const elevatorFee = 50 // Taxa para mudanças com elevador
+  const weekendFee = 100 // Taxa adicional para mudanças no fim de semana
+  const rushHourFee = 75 // Taxa adicional para mudanças em horário de pico
+  const fragileItemsFee = 30 // Taxa adicional por item frágil
 
   useEffect(() => {
-    if (videoRef.current && !playerRef.current) {
-      playerRef.current = new Plyr(videoRef.current, {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-      })
+    // Simula o cálculo de distância (normalmente seria feito com uma API de mapas)
+    if (origin && destination) {
+      const simulatedDistance = Math.floor(Math.random() * 50) + 1 // 1 a 50 km
+      setDistance(simulatedDistance)
     }
+  }, [origin, destination])
 
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.destroy()
+  const calculateTotal = () => {
+    const itemsTotal = items.reduce((acc, item) => {
+      let itemCost = item.quantity * item.pricePerUnit
+      if (item.isDisassembly) {
+        itemCost += item.quantity * disassemblyPrice
       }
-    }
-  }, [activeVideo])
+      return acc + itemCost
+    }, 0)
+    const distanceTotal = distance * pricePerKm
+    const additionalFees = 
+      (hasElevator ? elevatorFee : 0) +
+      (isWeekend ? weekendFee : 0) +
+      (isRushHour ? rushHourFee : 0) +
+      (fragileItemsCount * fragileItemsFee)
+    return basePrice + itemsTotal + distanceTotal + additionalFees + (isInsuranceAdded ? insurancePrice : 0)
+  }
 
-  const handleVideoEnd = () => {
-    if (activeVideo) {
-      setCompletedLessons([...completedLessons, activeVideo])
+  const handleQuantityChange = (id: string, change: number) => {
+    setItems(prevItems => prevItems.map(item => 
+      item.id === id ? { ...item, quantity: Math.max(0, item.quantity + change) } : item
+    ))
+  }
+
+  const handleDisassemblyChange = (id: string) => {
+    setItems(prevItems => prevItems.map(item => 
+      item.id === id ? { ...item, isDisassembly: !item.isDisassembly } : item
+    ))
+  }
+
+  const handleAddCustomItem = () => {
+    if (customItem.name && customItem.quantity > 0 && customItem.pricePerUnit > 0) {
+      setItems(prevItems => [...prevItems, { ...customItem, id: Date.now().toString() }])
+      setCustomItem({ name: '', quantity: 0, pricePerUnit: 0, canBeDisassembled: false, isDisassembly: false })
+    } else {
+      alert("Por favor, preencha todos os campos do item personalizado.")
     }
   }
 
-  const totalLessons = courseModules.reduce((total, module) => total + module.lessons.length, 0)
-  const progress = (completedLessons.length / totalLessons) * 100
+  const handleRemoveItem = (id: string) => {
+    setItems(prevItems => prevItems.filter(item => item.id !== id))
+  }
+
+  const sortItemsByQuantity = () => {
+    setItems(prevItems => [...prevItems].sort((a, b) => b.quantity - a.quantity))
+  }
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    console.log("Formulário enviado", { items, total: calculateTotal(), distance })
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Módulos do Curso</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2">
-          {activeVideo ? (
-            <div className="aspect-w-16 aspect-h-9 mb-4">
-              <video ref={videoRef} onEnded={handleVideoEnd}>
-                <source src={activeVideo.videoUrl} type="video/mp4" />
-              </video>
-            </div>
-          ) : (
-            <div className="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center mb-4">
-              <p className="text-gray-500">Selecione uma aula para começar</p>
-            </div>
-          )}
-          {activeVideo && (
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold mb-2">{activeVideo.title}</h2>
-              <p className="text-gray-600">Duração: {activeVideo.duration}</p>
-            </div>
-          )}
+    <div className="container mx-auto p-4 max-w-3xl">
+      <h1 className="text-3xl font-bold mb-6">Detalhes da Mudança e Confirmação</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="grid gap-6 mb-6 sm:grid-cols-1 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Truck className="mr-2 h-5 w-5" />
+                Serviço Selecionado
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">Transportes Silva</span>
+                  <span className="text-lg font-bold text-primary">Preço Base: R$ {basePrice.toFixed(2)}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <MapPin className="mr-2 h-5 w-5" />
+                Endereços
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                <div>
+                  <Label htmlFor="origem">Endereço de Origem</Label>
+                  <Input 
+                    id="origem" 
+                    placeholder="Digite o endereço de origem" 
+                    value={origin}
+                    onChange={(e) => setOrigin(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="destino">Endereço de Destino</Label>
+                  <Input 
+                    id="destino" 
+                    placeholder="Digite o endereço de destino" 
+                    value={destination}
+                    onChange={(e) => setDestination(e.target.value)}
+                  />
+                </div>
+                {distance > 0 && (
+                  <div className="text-sm text-muted-foreground">
+                    Distância estimada: {distance} km (R$ {(distance * pricePerKm).toFixed(2)})
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <CalendarIcon className="mr-2 h-5 w-5" />
+                Data e Hora
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date ? format(date, "PPP", { locale: ptBR }) : <span>Selecione uma data</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <div>
+                  <Label htmlFor="hora">Horário Preferencial</Label>
+                  <RadioGroup defaultValue="manha" className="flex space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="manha" id="manha" />
+                      <Label htmlFor="manha">Manhã</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="tarde" id="tarde" />
+                      <Label htmlFor="tarde">Tarde</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Package className="mr-2 h-5 w-5" />
+                Lista de Itens
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {items.map(item => (
+                  <div key={item.id} className={`flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 sm:space-x-2 border-b pb-2 mb-2 ${item.quantity === 0 ? 'opacity-50' : ''}`}>
+                    <span className="w-full sm:w-1/4">{item.name}</span>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleQuantityChange(item.id, -1)}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="w-8 text-center">{item.quantity}</span>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleQuantityChange(item.id, 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {item.canBeDisassembled && (
+                      <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+                        <Checkbox
+                          id={`disassembly-${item.id}`}
+                          checked={item.isDisassembly}
+                          onCheckedChange={() => handleDisassemblyChange(item.id)}
+                        />
+                        <Label htmlFor={`disassembly-${item.id}`}>
+                          <Tool className="h-4 w-4 inline mr-1" />
+                          Montar/Desmontar
+                        </Label>
+                      </div>
+                    )}
+                    <span className="w-full sm:w-1/4 text-right mt-2 sm:mt-0">
+                      R$ {((item.quantity * item.pricePerUnit) + (item.isDisassembly ? item.quantity * disassemblyPrice : 0)).toFixed(2)}
+                    </span>
+                    {!initialItems.some(initialItem => initialItem.id === item.id) && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => handleRemoveItem(item.id)}
+                      >
+                        <Trash className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button type="button" onClick={sortItemsByQuantity} className="mt-4">
+                  Ordenar por Quantidade
+                </Button>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                  <div className="w-full sm:w-auto">
+                    <Label htmlFor="custom-item-name" className="sr-only">Nome do item</Label>
+                    <Input
+                      id="custom-item-name"
+                      placeholder="Nome do item"
+                      value={customItem.name}
+                      onChange={(e) => setCustomItem({...customItem, name: e.target.value})}
+                    />
+                  </div>
+                  <div className="w-full sm:w-20">
+                    <Label htmlFor="custom-item-quantity" className="sr-only">Quantidade</Label>
+                    <Input
+                      id="custom-item-quantity"
+                      type="number"
+                      placeholder="Qtd"
+                      value={customItem.quantity || ''}
+                      onChange={(e) => setCustomItem({...customItem, quantity: parseInt(e.target.value) || 0})}
+                      min="0"
+                    />
+                  </div>
+                  <div className="w-full sm:w-24">
+                    <Label htmlFor="custom-item-price" className="sr-only">Preço</Label>
+                    <Input
+                      id="custom-item-price"
+                      type="number"
+                      placeholder="Preço"
+                      value={customItem.pricePerUnit || ''}
+                      onChange={(e) => setCustomItem({...customItem, pricePerUnit: parseFloat(e.target.value) || 0})}
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                  <Button type="button" onClick={handleAddCustomItem}>Adicionar</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <AlertCircle className="mr-2 h-5 w-5" />
+                Instruções Especiais e Seguro
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="instrucoes">Instruções Especiais</Label>
+                  <Textarea id="instrucoes" placeholder="Alguma instrução especial para a equipe de mudança?" />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="seguro-adicional"
+                    checked={isInsuranceAdded}
+                    onCheckedChange={setIsInsuranceAdded}
+                  />
+                  <Label htmlFor="seguro-adicional">Adicionar seguro extra (R$ {insurancePrice.toFixed(2)})</Label>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <AlertCircle className="mr-2 h-5 w-5" />
+                Parâmetros Adicionais
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="elevador"
+                    checked={hasElevator}
+                    onCheckedChange={setHasElevator}
+                  />
+                  <Label htmlFor="elevador">Mudança com elevador (+ R$ {elevatorFee.toFixed(2)})</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="fim-de-semana"
+                    checked={isWeekend}
+                    onCheckedChange={setIsWeekend}
+                  />
+                  <Label htmlFor="fim-de-semana">Mudança no fim de semana (+ R$ {weekendFee.toFixed(2)})</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="horario-pico"
+                    checked={isRushHour}
+                    onCheckedChange={setIsRushHour}
+                  />
+                  <Label htmlFor="horario-pico">Mudança em horário de pico (+ R$ {rushHourFee.toFixed(2)})</Label>
+                </div>
+                <div>
+                  <Label htmlFor="itens-frageis">Quantidade de itens frágeis (+ R$ {fragileItemsFee.toFixed(2)} por item)</Label>
+                  <Input
+                    id="itens-frageis"
+                    type="number"
+                    value={fragileItemsCount}
+                    onChange={(e) => setFragileItemsCount(parseInt(e.target.value) || 0)}
+                    min="0"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-        <div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">Progresso do Curso</h3>
-            <Progress value={progress} className="w-full" />
-            <p className="text-sm text-gray-600 mt-2">{completedLessons.length} de {totalLessons} aulas concluídas</p>
-          </div>
-          <Accordion type="single" collapsible className="w-full">
-            {courseModules.map((module) => (
-              <AccordionItem value={`module-${module.id}`} key={module.id}>
-                <AccordionTrigger>{module.title}</AccordionTrigger>
-                <AccordionContent>
-                  <ul className="space-y-2">
-                    {module.lessons.map((lesson) => (
-                      <li key={lesson.id} className="flex items-center justify-between">
-                        <Button
-                          variant="ghost"
-                          className="text-left flex items-center"
-                          onClick={() => setActiveVideo(lesson)}
-                        >
-                          {completedLessons.some(completed => completed.id === lesson.id) ? (
-                            <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                          ) : (
-                            <PlayCircle className="mr-2 h-4 w-4" />
-                          )}
-                          {lesson.title}
-                        </Button>
-                        <span className="text-sm text-gray-500">{lesson.duration}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <AlertCircle className="mr-2 h-5 w-5" />
+              Resumo do Pedido
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span>Preço Base do Serviço</span>
+                <span>R$ {basePrice.toFixed(2)}</span>
+              </div>
+              {items.filter(item =>   item.quantity > 0).map(item => (
+                <div key={item.id} className="flex justify-between text-sm">
+                  <span>
+                    {item.name} (x{item.quantity})
+                    {item.isDisassembly && " + Montagem/Desmontagem"}
+                  </span>
+                  <span>
+                    R$ {((item.quantity * item.pricePerUnit) + (item.isDisassembly ? item.quantity * disassemblyPrice : 0)).toFixed(2)}
+                  </span>
+                </div>
+              ))}
+              {distance > 0 && (
+                <div className="flex justify-between">
+                  <span>Distância ({distance} km)</span>
+                  <span>R$ {(distance * pricePerKm).toFixed(2)}</span>
+                </div>
+              )}
+              {isInsuranceAdded && (
+                <div className="flex justify-between">
+                  <span>Seguro Adicional</span>
+                  <span>R$ {insurancePrice.toFixed(2)}</span>
+                </div>
+              )}
+              {hasElevator && (
+                <div className="flex justify-between">
+                  <span>Taxa de Elevador</span>
+                  <span>R$ {elevatorFee.toFixed(2)}</span>
+                </div>
+              )}
+              {isWeekend && (
+                <div className="flex justify-between">
+                  <span>Taxa de Fim de Semana</span>
+                  <span>R$ {weekendFee.toFixed(2)}</span>
+                </div>
+              )}
+              {isRushHour && (
+                <div className="flex justify-between">
+                  <span>Taxa de Horário de Pico</span>
+                  <span>R$ {rushHourFee.toFixed(2)}</span>
+                </div>
+              )}
+              {fragileItemsCount > 0 && (
+                <div className="flex justify-between">
+                  <span>Taxa de Itens Frágeis ({fragileItemsCount} itens)</span>
+                  <span>R$ {(fragileItemsCount * fragileItemsFee).toFixed(2)}</span>
+                </div>
+              )}
+              <div className="flex justify-between font-bold pt-2 border-t">
+                <span>Total</span>
+                <span>R$ {calculateTotal().toFixed(2)}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-between items-center">
+          <Button type="button" variant="outline">Voltar</Button>
+          <Button type="submit">Confirmar e Pagar</Button>
         </div>
-      </div>
+      </form>
     </div>
   )
 }
