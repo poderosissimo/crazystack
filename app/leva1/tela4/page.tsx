@@ -1,203 +1,213 @@
-"use client";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  Share2,
-  MessageSquare,
-  ThumbsUp,
-  Bookmark,
-} from "lucide-react";
+"use client"
+import { useState, useEffect, useRef } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { User, Send, Settings, Search, HelpCircle, CreditCard, Package } from "lucide-react"
 
-export default function ArtigoPage() {
-  const [comentario, setComentario] = useState("");
+type Message = {
+  id: number
+  sender: "user" | "bot"
+  content: string
+  timestamp: Date
+}
+
+export default function Component() {
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 1, sender: "bot", content: "Welcome to our SaaS Marketplace support! How can I assist you today?", timestamp: new Date() },
+  ])
+  const [inputMessage, setInputMessage] = useState("")
+  const [isTyping, setIsTyping] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(scrollToBottom, [messages])
+
+  const handleSendMessage = () => {
+    if (inputMessage.trim() !== "") {
+      const newMessage: Message = { id: messages.length + 1, sender: "user", content: inputMessage, timestamp: new Date() }
+      setMessages([...messages, newMessage])
+      setInputMessage("")
+      setIsTyping(true)
+      
+      // Simulate bot response
+      setTimeout(() => {
+        const botResponse = generateBotResponse(inputMessage)
+        setMessages(prevMessages => [...prevMessages, { id: prevMessages.length + 1, sender: "bot", content: botResponse, timestamp: new Date() }])
+        setIsTyping(false)
+      }, 1500)
+    }
+  }
+
+  const generateBotResponse = (userMessage: string): string => {
+    const lowerCaseMessage = userMessage.toLowerCase()
+    if (lowerCaseMessage.includes("api") || lowerCaseMessage.includes("integration")) {
+      return "For API integration support, please check our documentation at docs.example.com or contact our developer support team at dev-support@example.com."
+    } else if (lowerCaseMessage.includes("billing") || lowerCaseMessage.includes("payment")) {
+      return "For billing inquiries, please visit our billing portal at billing.example.com or contact our finance team at finance@example.com."
+    } else if (lowerCaseMessage.includes("product") || lowerCaseMessage.includes("recommendation")) {
+      return "I'd be happy to help you find the right product! Can you tell me more about your specific needs or the problem you're trying to solve?"
+    } else {
+      return "Thank you for your message. Our support team will get back to you shortly with more information."
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
-          <a href="/" className="flex items-center space-x-2">
-            <ArrowLeft className="h-6 w-6" />
-            <span className="font-bold">Voltar para o Blog</span>
-          </a>
+    <div className="flex h-[600px] max-w-4xl mx-auto border rounded-lg overflow-hidden shadow-lg">
+      <div className="w-1/3 bg-muted p-4 border-r">
+        <div className="flex items-center space-x-4 mb-6">
+          <Avatar>
+            <AvatarImage src="/placeholder-avatar.jpg" alt="John Doe" />
+            <AvatarFallback><User /></AvatarFallback>
+          </Avatar>
+          <div>
+            <h2 className="text-lg font-semibold">John Doe</h2>
+            <p className="text-sm text-muted-foreground">Premium Plan</p>
+          </div>
         </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8">
-        <article className="prose dark:prose-invert lg:prose-xl mx-auto">
-          <h1 className="mb-4">
-            Dominando Generics em TypeScript: Um Guia Completo
-          </h1>
-
-          <div className="flex items-center space-x-4 mb-6">
-            <Avatar>
-              <AvatarImage src="/placeholder-user.jpg" alt="@johndoe" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-medium">John Doe</p>
-              <p className="text-sm text-muted-foreground">
-                12 de Outubro, 2023 • 15 min de leitura
-              </p>
+        <Separator className="my-4" />
+        <Tabs defaultValue="conversations">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="conversations">Conversations</TabsTrigger>
+            <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
+          </TabsList>
+          <TabsContent value="conversations" className="mt-4">
+            <div className="mb-4">
+              <Input placeholder="Search conversations..." />
             </div>
+            <ScrollArea className="h-[400px]">
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-sm flex justify-between items-center">
+                      API Integration Support
+                      <Badge variant="secondary">Open</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+                <Card>
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-sm flex justify-between items-center">
+                      Billing Inquiry
+                      <Badge variant="outline">Closed</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+                <Card>
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-sm flex justify-between items-center">
+                      Product Recommendation
+                      <Badge>New</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </div>
+            </ScrollArea>
+          </TabsContent>
+          <TabsContent value="marketplace" className="mt-4">
+            <ScrollArea className="h-[400px]">
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-sm">Featured Products</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="list-disc pl-4">
+                      <li>Analytics Dashboard Pro</li>
+                      <li>Customer Support Bot</li>
+                      <li>Secure Payment Gateway</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-sm">Your Subscriptions</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="list-disc pl-4">
+                      <li>CRM Enterprise (Active)</li>
+                      <li>Email Marketing Suite (Trial)</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </ScrollArea>
+          </TabsContent>
+        </Tabs>
+      </div>
+      <div className="flex-1 flex flex-col">
+        <div className="bg-muted p-4 flex justify-between items-center">
+          <h2 className="text-lg font-semibold">SaaS Marketplace Support</h2>
+          <div className="flex space-x-2">
+            <Button variant="ghost" size="icon" aria-label="Search">
+              <Search className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" aria-label="Help">
+              <HelpCircle className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" aria-label="Settings">
+              <Settings className="h-4 w-4" />
+            </Button>
           </div>
-
-          <img
-            src="/next.svg?height=400&width=800"
-            alt="TypeScript Generics"
-            className="w-full h-64 object-cover rounded-lg mb-6"
-          />
-
-          <div className="flex space-x-2 mb-6">
-            <Badge variant="secondary">TypeScript</Badge>
-            <Badge variant="secondary">Programação</Badge>
-            <Badge variant="secondary">Avançado</Badge>
-          </div>
-
-          <p>
-            Generics são uma das características mais poderosas do TypeScript,
-            permitindo que você escreva código flexível e reutilizável. Neste
-            artigo, vamos explorar em profundidade como usar generics
-            efetivamente em suas aplicações TypeScript.
-          </p>
-
-          <h2>O que são Generics?</h2>
-
-          <p>
-            Generics permitem que você crie componentes que podem trabalhar com
-            uma variedade de tipos, em vez de um único tipo. Isso adiciona um
-            nível extra de abstração e reutilização às suas estruturas de dados
-            e funções.
-          </p>
-
-          <p>
-            Neste exemplo, <code>T</code> é um tipo genérico que pode ser
-            substituído por qualquer tipo quando a função é chamada.
-          </p>
-
-          <h2>Usando Generics com Interfaces</h2>
-
-          <p>
-            Generics também podem ser usados com interfaces para criar
-            estruturas de dados flexíveis:
-          </p>
-
-          <p>
-            Este é apenas o começo do que você pode fazer com generics em
-            TypeScript. Continue lendo para aprender sobre restrições de tipo,
-            generics em classes, e muito mais!
-          </p>
-        </article>
-
-        <Separator className="my-8" />
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Comentários</h2>
-          <Card>
-            <CardHeader>
-              <CardTitle>Deixe seu comentário</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={(e) => e.preventDefault()}>
-                <Input
-                  placeholder="Escreva seu comentário aqui..."
-                  value={comentario}
-                  onChange={(e) => setComentario(e.target.value)}
-                  className="mb-4"
-                />
-                <Button type="submit">Enviar Comentário</Button>
-              </form>
-            </CardContent>
-          </Card>
-          <div className="mt-6 space-y-4">
-            {[1, 2].map((comment) => (
-              <Card key={comment}>
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <Avatar>
-                      <AvatarImage src="/placeholder-user.jpg" alt="@user" />
-                      <AvatarFallback>U</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <CardTitle>Usuário Exemplo</CardTitle>
-                      <CardDescription>Há 2 horas</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    Ótimo artigo! Aprendi muito sobre generics em TypeScript.
-                    Mal posso esperar para aplicar esse conhecimento em meus
-                    projetos.
+        </div>
+        <ScrollArea className="flex-1 p-4">
+          <div className="space-y-4">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[70%] rounded-lg p-3 ${
+                    message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                  }`}
+                >
+                  <p>{message.content}</p>
+                  <p className="text-xs mt-1 opacity-50">
+                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="ghost" size="sm">
-                    <ThumbsUp className="h-4 w-4 mr-2" />
-                    Curtir
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Responder
-                  </Button>
-                </CardFooter>
-              </Card>
+                </div>
+              </div>
             ))}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-muted rounded-lg p-3">
+                  <p className="text-sm">Support is typing...</p>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-bold mb-4">Artigos Relacionados</h2>
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((post) => (
-              <Card key={post} className="flex flex-col h-full">
-                <CardHeader>
-                  <img
-                    src="/next.svg?height=200&width=400"
-                    alt="Post thumbnail"
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
-                  <CardTitle className="mt-4 truncate">
-                    Explorando Tipos Avançados em TypeScript
-                  </CardTitle>
-                  <CardDescription className="truncate">
-                    15 de Outubro, 2023
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <p className="line-clamp-3">
-                    Descubra como utilizar tipos avançados em TypeScript para
-                    criar código mais robusto e seguro. Este artigo aborda
-                    conceitos como tipos condicionais, mapeados e utilitários.
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full">Ler Artigo</Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        </section>
-      </main>
-
-      <footer className="bg-background border-t mt-12 py-6 text-center">
-        <p className="text-sm text-muted-foreground">
-          &copy; 2023 Blog do DevDoido. Todos os direitos reservados.
-        </p>
-      </footer>
+        </ScrollArea>
+        <div className="p-4 border-t">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleSendMessage()
+            }}
+            className="flex space-x-2"
+          >
+            <Input
+              placeholder="Type your message..."
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              aria-label="Chat message"
+            />
+            <Button type="submit" aria-label="Send message">
+              <Send className="h-4 w-4 mr-2" />
+              Send
+            </Button>
+          </form>
+        </div>
+      </div>
     </div>
-  );
+  )
 }

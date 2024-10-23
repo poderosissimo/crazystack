@@ -1,202 +1,119 @@
-"use client";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowLeft, Check } from "lucide-react";
+"use client"
+import { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Zap, Search, Star, MapPin } from "lucide-react"
 
-interface ConfirmationScreenProps {
-  orderData: {
-    childName: string;
-    childAge: string;
-    eventDate: string;
-    eventTime: string;
-    eventLocation: string;
-    confirmationPhrase: string;
-    confirmationDate?: string;
-    confirmationPhone?: string;
-    removeCredits: boolean;
-    changeMusic: boolean;
-    urgencyFee: boolean;
-    requesterName: string;
-    requesterPhone: string;
-    requesterEmail: string;
-    photoFileName?: string;
-  };
-  onEdit: () => void;
-  onSubmit: () => void;
-}
-export default function Page() {
+const electricalServices = [
+  { name: "Instalação de Lâmpadas", description: "Instalação e substituição de lâmpadas e luminárias", price: "A partir de R$ 80" },
+  { name: "Instalação de Tomadas", description: "Instalação de novas tomadas ou reparo das existentes", price: "A partir de R$ 100" },
+  { name: "Instalação de Ventilador de Teto", description: "Montagem e instalação de ventiladores de teto", price: "A partir de R$ 150" },
+  { name: "Reparo de Curto-Circuito", description: "Diagnóstico e reparo de problemas elétricos", price: "A partir de R$ 120" },
+  { name: "Instalação de Disjuntores", description: "Instalação ou substituição de disjuntores no quadro elétrico", price: "A partir de R$ 90" },
+  { name: "Passagem de Fiação", description: "Instalação de nova fiação elétrica", price: "A partir de R$ 200" },
+]
+
+export default function ElectricalServicesPage() {
+  const [selectedCity, setSelectedCity] = useState("Porto Alegre")
+
   return (
-    <ConfirmationScreen
-      orderData={{
-        childName: "Maria",
-        childAge: "5 anos",
-        eventDate: "15/10/2021",
-        eventTime: "15h",
-        eventLocation: "Casa da Maria",
-        confirmationPhrase: "Maria, você é muito especial!",
-        confirmationDate: "10/10/2021",
-        confirmationPhone: "(11) 99999-9999",
-        removeCredits: true,
-        changeMusic: false,
-        urgencyFee: true,
-        requesterName: "João",
-        requesterPhone: "(11) 99999-9999",
-        requesterEmail: "ssddsd@sasa.com",
-        photoFileName: "foto-maria.jpg",
-      }}
-      onEdit={() => {}}
-      onSubmit={() => {}}
-    />
-  );
-}
-function ConfirmationScreen({
-  orderData,
-  onEdit,
-  onSubmit,
-}: ConfirmationScreenProps) {
-  return (
-    <div className="min-h-screen bg-pink-50 bg-opacity-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+CjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgZmlsbD0iI2ZmZjFmMiI+PC9yZWN0Pgo8Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZjMGNiIiBzdHJva2Utd2lkdGg9IjIiPjwvY2lyY2xlPgo8cGF0aCBkPSJNMzAgMTBjNS41IDAgMTAgNC41IDEwIDEwcy00LjUgMTAtMTAgMTAtMTAtNC41LTEwLTEwIDQuNS0xMCAxMC0xMHoiIGZpbGw9IiNmZmMwY2IiIG9wYWNpdHk9IjAuMyI+PC9wYXRoPgo8L3N2Zz4=')] p-4 flex items-center justify-center">
-      <Card className="w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-pink-400 to-pink-300 text-white">
-          <CardTitle className="text-2xl md:text-3xl font-bold">
-            Confirme seus dados
-          </CardTitle>
-          <CardDescription className="text-pink-100">
-            Por favor, verifique se todas as informações estão corretas antes de
-            enviar o pedido.
-          </CardDescription>
-        </CardHeader>
-        <ScrollArea className="h-[60vh]">
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ConfirmationSection title="Detalhes do Evento">
-                <ConfirmationItem
-                  label="Nome da Criança"
-                  value={orderData.childName}
-                />
-                <ConfirmationItem label="Idade" value={orderData.childAge} />
-                <ConfirmationItem
-                  label="Data do Evento"
-                  value={orderData.eventDate}
-                />
-                <ConfirmationItem label="Horário" value={orderData.eventTime} />
-                <ConfirmationItem
-                  label="Local"
-                  value={orderData.eventLocation}
-                />
-              </ConfirmationSection>
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          <div className="flex items-center">
+            <Zap className="h-8 w-8 text-primary mr-2" />
+            <span className="text-2xl font-bold text-primary">ServicePro</span>
+          </div>
+          <nav>
+            <Button variant="ghost">Como funciona</Button>
+            <Button variant="ghost">Para Profissionais</Button>
+            <Button>Entrar</Button>
+          </nav>
+        </div>
+      </header>
 
-              <ConfirmationSection title="Confirmação">
-                <ConfirmationItem
-                  label="Frase de Confirmação"
-                  value={orderData.confirmationPhrase}
-                />
-                {orderData.confirmationDate && (
-                  <ConfirmationItem
-                    label="Data de Confirmação"
-                    value={orderData.confirmationDate}
-                  />
-                )}
-                {orderData.confirmationPhone && (
-                  <ConfirmationItem
-                    label="Telefone de Confirmação"
-                    value={orderData.confirmationPhone}
-                  />
-                )}
-              </ConfirmationSection>
+      <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center mb-8">
+          <h1 className="text-3xl font-bold mr-4">Serviços Elétricos</h1>
+          <Select value={selectedCity} onValueChange={setSelectedCity}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Selecione a cidade" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Porto Alegre">Porto Alegre</SelectItem>
+              <SelectItem value="São Paulo">São Paulo</SelectItem>
+              <SelectItem value="Rio de Janeiro">Rio de Janeiro</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-              <ConfirmationSection title="Alterações Adicionais">
-                <ConfirmationItem
-                  label="Remover Créditos"
-                  value={orderData.removeCredits ? "Sim (+R$15)" : "Não"}
-                />
-                <ConfirmationItem
-                  label="Trocar Música"
-                  value={orderData.changeMusic ? "Sim (+R$10)" : "Não"}
-                />
-                <ConfirmationItem
-                  label="Taxa de Urgência"
-                  value={orderData.urgencyFee ? "Sim (+R$25)" : "Não"}
-                />
-              </ConfirmationSection>
+        <div className="mb-8">
+          <Input className="w-full max-w-md" placeholder="Pesquisar serviço elétrico..." />
+        </div>
 
-              <ConfirmationSection title="Dados do Solicitante">
-                <ConfirmationItem
-                  label="Nome"
-                  value={orderData.requesterName}
-                />
-                <ConfirmationItem
-                  label="Telefone"
-                  value={orderData.requesterPhone}
-                />
-                <ConfirmationItem
-                  label="E-mail"
-                  value={orderData.requesterEmail}
-                />
-              </ConfirmationSection>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {electricalServices.map((service, index) => (
+            <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow">
+              <CardHeader>
+                <CardTitle>{service.name}</CardTitle>
+                <CardDescription>{service.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="font-semibold text-lg">{service.price}</p>
+                <div className="flex items-center mt-2">
+                  <Star className="h-5 w-5 text-yellow-400 mr-1" />
+                  <span className="mr-2">4.8</span>
+                  <span className="text-gray-500">(120 avaliações)</span>
+                </div>
+                <Button className="w-full mt-4">Ver detalhes</Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </main>
 
-              {orderData.photoFileName && (
-                <ConfirmationSection title="Foto">
-                  <ConfirmationItem
-                    label="Arquivo"
-                    value={orderData.photoFileName}
-                  />
-                </ConfirmationSection>
-              )}
+      <footer className="bg-gray-800 text-white mt-12">
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">ServicePro</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:underline">Sobre nós</a></li>
+                <li><a href="#" className="hover:underline">Como funciona</a></li>
+                <li><a href="#" className="hover:underline">Carreiras</a></li>
+              </ul>
             </div>
-          </CardContent>
-        </ScrollArea>
-        <CardFooter className="flex justify-between p-6 bg-pink-50">
-          <Button
-            variant="outline"
-            onClick={onEdit}
-            className="flex items-center space-x-2 hover:bg-pink-100"
-          >
-            <ArrowLeft size={16} />
-            <span>Editar Informações</span>
-          </Button>
-          <Button
-            onClick={onSubmit}
-            className="bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white flex items-center space-x-2"
-          >
-            <span>Confirmar e Enviar</span>
-            <Check size={16} />
-          </Button>
-        </CardFooter>
-      </Card>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Para Você</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:underline">Catálogo de serviços</a></li>
+                <li><a href="#" className="hover:underline">Cidades atendidas</a></li>
+                <li><a href="#" className="hover:underline">Avaliações</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Para Profissionais</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:underline">Cadastre-se</a></li>
+                <li><a href="#" className="hover:underline">App do Profissional</a></li>
+                <li><a href="#" className="hover:underline">Central de Ajuda</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Siga-nos</h3>
+              <div className="flex space-x-4">
+                {/* Add social media icons here */}
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 pt-8 border-t border-gray-700 text-center">
+            <p>&copy; 2024 ServicePro - Todos os direitos reservados</p>
+          </div>
+        </div>
+      </footer>
     </div>
-  );
-}
-
-function ConfirmationSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="mb-6">
-      <h3 className="text-lg font-semibold text-pink-600 mb-2">{title}</h3>
-      <div className="space-y-2">{children}</div>
-    </div>
-  );
-}
-
-function ConfirmationItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col">
-      <span className="text-sm text-gray-500">{label}</span>
-      <span className="font-medium">{value}</span>
-    </div>
-  );
+  )
 }

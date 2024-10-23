@@ -1,92 +1,117 @@
-"use client";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle, BookOpen, Cpu, Sparkles } from "lucide-react";
-import Link from "next/link";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Hammer, CheckCircle, Calendar, ClipboardList } from "lucide-react"
 
-export default function ConfirmationOnboarding() {
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const steps = [
-    {
-      title: "Bem-vindo ao EbookGPT",
-      description:
-        "Sua assinatura foi confirmada com sucesso! Vamos começar a criar ebooks incríveis.",
-      icon: <CheckCircle className="h-12 w-12 text-green-500" />,
-    },
-    {
-      title: "Escolha seu primeiro tópico",
-      description:
-        "Pense em um assunto para o seu primeiro ebook. Pode ser qualquer coisa que você conheça bem ou queira explorar.",
-      icon: <BookOpen className="h-12 w-12 text-blue-500" />,
-    },
-    {
-      title: "Deixe a IA trabalhar",
-      description:
-        "Nossa IA alimentada por GPT-4 irá gerar o conteúdo base do seu ebook. Você poderá revisar e editar depois.",
-      icon: <Cpu className="h-12 w-12 text-purple-500" />,
-    },
-    {
-      title: "Personalize seu ebook",
-      description:
-        "Adicione seu toque pessoal, ajuste o estilo e formate seu ebook para que fique perfeito.",
-      icon: <Sparkles className="h-12 w-12 text-yellow-500" />,
-    },
-  ];
-
-  const handleNextStep = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
+export default function Component() {
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="px-6 py-8">
-            <h2 className="text-3xl font-bold text-center mb-6">
-              Bem-vindo ao EbookGPT
-            </h2>
-            <Progress
-              value={(currentStep / steps.length) * 100}
-              className="mb-8"
-            />
-            <div className="space-y-8">
-              {steps.map((step, index) => (
-                <div
-                  key={index}
-                  className={`transition-opacity duration-300 ${index + 1 === currentStep ? "opacity-100" : "opacity-0 hidden"}`}
-                >
-                  <div className="flex flex-col items-center text-center">
-                    {step.icon}
-                    <h3 className="mt-4 text-xl font-semibold">{step.title}</h3>
-                    <p className="mt-2 text-gray-600">{step.description}</p>
-                  </div>
+    <div className="flex flex-col min-h-screen bg-background">
+      <header className="px-4 lg:px-6 h-14 flex items-center">
+        <a className="flex items-center justify-center" href="#">
+          <Hammer className="h-6 w-6 text-primary" />
+          <span className="ml-2 text-2xl font-bold text-primary">PedreirosPro</span>
+        </a>
+        <nav className="ml-auto flex gap-4 sm:gap-6">
+          <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            Funcionalidades
+          </a>
+          <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            Preços
+          </a>
+          <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            Contato
+          </a>
+        </nav>
+      </header>
+      <main className="flex-1">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+              <div className="flex flex-col justify-center space-y-4">
+                <div className="space-y-2">
+                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                    Gerencie seus projetos de construção com facilidade
+                  </h1>
+                  <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+                    PedreirosPro é a ferramenta perfeita para pedreiros e construtores gerenciarem projetos, clientes e
+                    orçamentos em um só lugar.
+                  </p>
                 </div>
-              ))}
-            </div>
-            <div className="mt-8 flex justify-between items-center">
-              {currentStep < steps.length ? (
-                <Button onClick={handleNextStep} className="w-full">
-                  {currentStep === 1 ? "Começar" : "Próximo"}
-                </Button>
-              ) : (
-                <Link href="/dashboard" className="w-full">
-                  <Button className="w-full">Ir para o Dashboard</Button>
-                </Link>
-              )}
+                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                  <Button>Comece Gratuitamente</Button>
+                  <Button variant="outline">Agende uma Demo</Button>
+                </div>
+              </div>
+              <div className="flex flex-col justify-center space-y-4">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl">Cadastre-se agora</h2>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    Experimente o PedreirosPro gratuitamente por 14 dias. Sem compromisso.
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nome</Label>
+                    <Input id="name" placeholder="Seu nome completo" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" placeholder="Seu melhor email" required type="email" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Senha</Label>
+                    <Input id="password" required type="password" />
+                  </div>
+                  <Button className="w-full" type="submit">
+                    Criar Conta
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <p className="text-center text-sm text-gray-500 mt-4">
-          Precisa de ajuda?{" "}
-          <Link href="/support" className="text-blue-500 hover:underline">
-            Entre em contato com o suporte
-          </Link>
-        </p>
-      </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              Por que escolher o PedreirosPro?
+            </h2>
+            <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
+              <div className="flex flex-col items-center space-y-4">
+                <CheckCircle className="h-12 w-12 text-primary" />
+                <h3 className="text-xl font-bold">Gestão Simplificada</h3>
+                <p className="text-center text-gray-500 dark:text-gray-400">
+                  Gerencie todos os seus projetos, clientes e orçamentos em uma única plataforma intuitiva.
+                </p>
+              </div>
+              <div className="flex flex-col items-center space-y-4">
+                <Calendar className="h-12 w-12 text-primary" />
+                <h3 className="text-xl font-bold">Agendamento Fácil</h3>
+                <p className="text-center text-gray-500 dark:text-gray-400">
+                  Agende visitas e trabalhos com facilidade, evitando conflitos de horários.
+                </p>
+              </div>
+              <div className="flex flex-col items-center space-y-4">
+                <ClipboardList className="h-12 w-12 text-primary" />
+                <h3 className="text-xl font-bold">Orçamentos Profissionais</h3>
+                <p className="text-center text-gray-500 dark:text-gray-400">
+                  Crie orçamentos detalhados e profissionais em minutos, impressionando seus clientes.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+        <p className="text-xs text-gray-500 dark:text-gray-400">© 2024 PedreirosPro. Todos os direitos reservados.</p>
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+          <a className="text-xs hover:underline underline-offset-4" href="#">
+            Termos de Serviço
+          </a>
+          <a className="text-xs hover:underline underline-offset-4" href="#">
+            Privacidade
+          </a>
+        </nav>
+      </footer>
     </div>
-  );
+  )
 }
