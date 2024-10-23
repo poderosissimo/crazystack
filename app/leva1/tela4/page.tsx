@@ -1,194 +1,203 @@
 "use client";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Eye, EyeOff, Facebook, Github, Loader2, Twitter } from "lucide-react";
-import { motion } from "framer-motion";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowLeft,
+  Share2,
+  MessageSquare,
+  ThumbsUp,
+  Bookmark,
+} from "lucide-react";
 
-export default function AdvancedLoginSplitScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    // Simular uma chamada de API
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsLoading(false);
-    setError("Credenciais inválidas. Por favor, tente novamente.");
-  };
-
-  const passwordStrength = (password: string) => {
-    if (password.length > 10) return "Forte";
-    if (password.length > 6) return "Média";
-    return "Fraca";
-  };
+export default function ArtigoPage() {
+  const [comentario, setComentario] = useState("");
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Seção de login */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex-1 flex items-center justify-center p-4 lg:p-8"
-      >
-        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-          <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Senha</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="********"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-              {password && (
-                <p className="text-sm mt-1">
-                  Força da senha:{" "}
-                  <span className="font-medium">
-                    {passwordStrength(password)}
-                  </span>
-                </p>
-              )}
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(checked === true)}
-                />
-                <label htmlFor="remember" className="text-sm">
-                  Lembrar-me
-                </label>
-              </div>
-              <a href="#" className="text-sm text-blue-600 hover:underline">
-                Esqueceu a senha?
-              </a>
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                "Entrar"
-              )}
-            </Button>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-          </form>
-          <div className="mt-6">
-            <p className="text-center text-sm text-gray-600 mb-4">
-              Ou entre com
-            </p>
-            <div className="flex justify-center space-x-4">
-              <Button variant="outline" size="icon">
-                <Facebook size={20} />
-              </Button>
-              <Button variant="outline" size="icon">
-                <Twitter size={20} />
-              </Button>
-              <Button variant="outline" size="icon">
-                <Github size={20} />
-              </Button>
-            </div>
-          </div>
-          <div className="mt-6">
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selecione o idioma" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pt">Português</SelectItem>
-                <SelectItem value="en">English</SelectItem>
-                <SelectItem value="es">Español</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="mt-6 text-center text-sm text-gray-600">
-            <p>
-              Não tem uma conta?{" "}
-              <a href="#" className="text-blue-600 hover:underline">
-                Registre-se
-              </a>
-            </p>
-          </div>
-          <div className="mt-4 text-center text-xs text-gray-500">
-            <a href="#" className="hover:underline">
-              Termos e Condições
-            </a>
-            {" • "}
-            <a href="#" className="hover:underline">
-              Política de Privacidade
-            </a>
-          </div>
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center">
+          <a href="/" className="flex items-center space-x-2">
+            <ArrowLeft className="h-6 w-6" />
+            <span className="font-bold">Voltar para o Blog</span>
+          </a>
         </div>
-      </motion.div>
+      </header>
 
-      {/* Seção lateral com imagem e slogan */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        className="hidden lg:flex flex-1 relative overflow-hidden"
-      >
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/placeholder.svg?height=1080&width=1920')",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-500/50 to-purple-600/50" />
-        <div className="relative z-10 flex flex-col justify-center items-center text-white p-8">
-          <h1 className="text-4xl font-bold mb-4">
-            Bem-vindo à Nossa Plataforma
+      <main className="container mx-auto px-4 py-8">
+        <article className="prose dark:prose-invert lg:prose-xl mx-auto">
+          <h1 className="mb-4">
+            Dominando Generics em TypeScript: Um Guia Completo
           </h1>
-          <p className="text-xl mb-8 text-center">
-            Transforme suas ideias em realidade
+
+          <div className="flex items-center space-x-4 mb-6">
+            <Avatar>
+              <AvatarImage src="/placeholder-user.jpg" alt="@johndoe" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-sm font-medium">John Doe</p>
+              <p className="text-sm text-muted-foreground">
+                12 de Outubro, 2023 • 15 min de leitura
+              </p>
+            </div>
+          </div>
+
+          <img
+            src="/next.svg?height=400&width=800"
+            alt="TypeScript Generics"
+            className="w-full h-64 object-cover rounded-lg mb-6"
+          />
+
+          <div className="flex space-x-2 mb-6">
+            <Badge variant="secondary">TypeScript</Badge>
+            <Badge variant="secondary">Programação</Badge>
+            <Badge variant="secondary">Avançado</Badge>
+          </div>
+
+          <p>
+            Generics são uma das características mais poderosas do TypeScript,
+            permitindo que você escreva código flexível e reutilizável. Neste
+            artigo, vamos explorar em profundidade como usar generics
+            efetivamente em suas aplicações TypeScript.
           </p>
-          <blockquote className="text-2xl italic">
-            "A inovação distingue um líder de um seguidor."
-          </blockquote>
-          <p className="mt-2">- Steve Jobs</p>
-        </div>
-      </motion.div>
+
+          <h2>O que são Generics?</h2>
+
+          <p>
+            Generics permitem que você crie componentes que podem trabalhar com
+            uma variedade de tipos, em vez de um único tipo. Isso adiciona um
+            nível extra de abstração e reutilização às suas estruturas de dados
+            e funções.
+          </p>
+
+          <p>
+            Neste exemplo, <code>T</code> é um tipo genérico que pode ser
+            substituído por qualquer tipo quando a função é chamada.
+          </p>
+
+          <h2>Usando Generics com Interfaces</h2>
+
+          <p>
+            Generics também podem ser usados com interfaces para criar
+            estruturas de dados flexíveis:
+          </p>
+
+          <p>
+            Este é apenas o começo do que você pode fazer com generics em
+            TypeScript. Continue lendo para aprender sobre restrições de tipo,
+            generics em classes, e muito mais!
+          </p>
+        </article>
+
+        <Separator className="my-8" />
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Comentários</h2>
+          <Card>
+            <CardHeader>
+              <CardTitle>Deixe seu comentário</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={(e) => e.preventDefault()}>
+                <Input
+                  placeholder="Escreva seu comentário aqui..."
+                  value={comentario}
+                  onChange={(e) => setComentario(e.target.value)}
+                  className="mb-4"
+                />
+                <Button type="submit">Enviar Comentário</Button>
+              </form>
+            </CardContent>
+          </Card>
+          <div className="mt-6 space-y-4">
+            {[1, 2].map((comment) => (
+              <Card key={comment}>
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <Avatar>
+                      <AvatarImage src="/placeholder-user.jpg" alt="@user" />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle>Usuário Exemplo</CardTitle>
+                      <CardDescription>Há 2 horas</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    Ótimo artigo! Aprendi muito sobre generics em TypeScript.
+                    Mal posso esperar para aplicar esse conhecimento em meus
+                    projetos.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="ghost" size="sm">
+                    <ThumbsUp className="h-4 w-4 mr-2" />
+                    Curtir
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Responder
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-bold mb-4">Artigos Relacionados</h2>
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((post) => (
+              <Card key={post} className="flex flex-col h-full">
+                <CardHeader>
+                  <img
+                    src="/next.svg?height=200&width=400"
+                    alt="Post thumbnail"
+                    className="w-full h-48 object-cover rounded-t-lg"
+                  />
+                  <CardTitle className="mt-4 truncate">
+                    Explorando Tipos Avançados em TypeScript
+                  </CardTitle>
+                  <CardDescription className="truncate">
+                    15 de Outubro, 2023
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <p className="line-clamp-3">
+                    Descubra como utilizar tipos avançados em TypeScript para
+                    criar código mais robusto e seguro. Este artigo aborda
+                    conceitos como tipos condicionais, mapeados e utilitários.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full">Ler Artigo</Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-background border-t mt-12 py-6 text-center">
+        <p className="text-sm text-muted-foreground">
+          &copy; 2023 Blog do DevDoido. Todos os direitos reservados.
+        </p>
+      </footer>
     </div>
   );
 }
