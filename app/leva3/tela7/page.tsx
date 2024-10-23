@@ -1,202 +1,271 @@
-"use client";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowLeft, Check } from "lucide-react";
+import { useState, useEffect } from 'react'
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { ChevronLeft, Calendar, Clock, User, Tag, Edit, Save, Zap } from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
+import Head from "next/head"
+import { MDXRemote } from 'next-mdx-remote'
+import { serialize } from 'next-mdx-remote/serialize'
+import { useRouter } from 'next/router'
+import { Textarea } from "@/components/ui/textarea"
 
-interface ConfirmationScreenProps {
-  orderData: {
-    childName: string;
-    childAge: string;
-    eventDate: string;
-    eventTime: string;
-    eventLocation: string;
-    confirmationPhrase: string;
-    confirmationDate?: string;
-    confirmationPhone?: string;
-    removeCredits: boolean;
-    changeMusic: boolean;
-    urgencyFee: boolean;
-    requesterName: string;
-    requesterPhone: string;
-    requesterEmail: string;
-    photoFileName?: string;
+// Simulated database fetch function
+const fetchArticle = async (slug) => {
+  // In a real application, this would be an API call to your database
+  const articles = {
+    'construindo-apis-restful-com-nodejs-e-express': {
+      title: "Construindo APIs RESTful com Node.js e Express",
+      content: `
+# Construindo APIs RESTful com Node.js e Express
+
+Node.js e Express formam uma combinação poderosa para criar APIs RESTful robustas e escaláveis. Neste artigo, vamos explorar como configurar um projeto básico e implementar endpoints RESTful.
+
+## Configuração Inicial
+
+Primeiro, certifique-se de ter o Node.js instalado. Em seguida, crie um novo diretório para o projeto e inicialize-o:
+
+\`\`\`bash
+mkdir api-rest-nodejs
+cd api-rest-nodejs
+npm init -y
+npm install express
+\`\`\`
+
+## Criando o Servidor
+
+Crie um arquivo \`server.js\` e adicione o seguinte código:
+
+\`\`\`javascript
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Bem-vindo à nossa API!' });
+});
+
+app.listen(port, () => {
+  console.log(\`Servidor rodando em http://localhost:\${port}\`);
+});
+\`\`\`
+
+## Implementando Endpoints CRUD
+
+Vamos criar endpoints para um recurso "usuário":
+
+\`\`\`javascript
+let users = [
+  { id: 1, name: 'João' },
+  { id: 2, name: 'Maria' }
+];
+
+// Listar todos os usuários
+app.get('/users', (req, res) => {
+  res.json(users);
+});
+
+// Obter um usuário específico
+app.get('/users/:id', (req, res) => {
+  const user = users.find(u => u.id === parseInt(req.params.id));
+  if (!user) return res.status(404).json({ message: 'Usuário não encontrado' });
+  res.json(user);
+});
+
+// Criar um novo usuário
+app.post('/users', (req, res) => {
+  const newUser = {
+    id: users.length + 1,
+    name: req.body.name
   };
-  onEdit: () => void;
-  onSubmit: () => void;
+  users.push(newUser);
+  res.status(201).json(newUser);
+});
+
+// Atualizar um usuário
+app.put('/users/:id', (req, res) => {
+  const user = users.find(u => u.id === parseInt(req.params.id));
+  if (!user) return res.status(404).json({ message: 'Usuário não encontrado' });
+  user.name = req.body.name;
+  res.json(user);
+});
+
+// Deletar um usuário
+app.delete('/users/:id', (req, res) => {
+  const index = users.findIndex(u => u.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ message: 'Usuário não encontrado' });
+  users.splice(index, 1);
+  res.status(204).send();
+});
+\`\`\`
+
+## Conclusão
+
+Este é apenas o começo! A partir daqui, você pode adicionar validação de dados, autenticação, conexão com banco de dados e muito mais. Lembre-se de sempre seguir as melhores práticas de segurança ao desenvolver suas APIs.
+
+Feliz codificação!
+      `,
+      author: "Gustavo Miranda",
+      date: "2024-03-15",
+      readTime: "10 min",
+      image: "/placeholder.svg?height=400&width=800",
+      tags: ["Node.js", "Express", "API"],
+    }
+  }
+  return articles[slug]
 }
-export default function Page() {
-  return (
-    <ConfirmationScreen
-      orderData={{
-        childName: "Maria",
-        childAge: "5 anos",
-        eventDate: "15/10/2021",
-        eventTime: "15h",
-        eventLocation: "Casa da Maria",
-        confirmationPhrase: "Maria, você é muito especial!",
-        confirmationDate: "10/10/2021",
-        confirmationPhone: "(11) 99999-9999",
-        removeCredits: true,
-        changeMusic: false,
-        urgencyFee: true,
-        requesterName: "João",
-        requesterPhone: "(11) 99999-9999",
-        requesterEmail: "ssddsd@sasa.com",
-        photoFileName: "foto-maria.jpg",
-      }}
-      onEdit={() => {}}
-      onSubmit={() => {}}
-    />
-  );
+
+const components = {
+  h1: (props) => <h1 className="text-3xl font-bold my-4 text-lime-400" {...props} />,
+  h2: (props) => <h2 className="text-2xl font-semibold my-3 text-lime-300" {...props} />,
+  p: (props) => <p className="my-2 text-gray-300" {...props} />,
+  ul: (props) => <ul className="list-disc list-inside my-2 text-gray-300" {...props} />,
+  ol: (props) => <ol className="list-decimal list-inside my-2 text-gray-300" {...props} />,
+  li: (props) => <li className="my-1" {...props} />,
+  a: (props) => <a className="text-lime-400 hover:underline" {...props} />,
+  code: (props) => <code className="bg-gray-800 rounded px-1 py-0.5 text-sm" {...props} />,
+  pre: (props) => <pre className="bg-gray-800 rounded p-4 my-4 overflow-x-auto" {...props} />,
 }
-function ConfirmationScreen({
-  orderData,
-  onEdit,
-  onSubmit,
-}: ConfirmationScreenProps) {
+
+export default function ArticlePage() {
+  const router = useRouter()
+  const { slug } = router.query
+
+  const [article, setArticle] = useState(null)
+  const [mdxSource, setMdxSource] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editableContent, setEditableContent] = useState('')
+
+  useEffect(() => {
+    if (slug) {
+      fetchArticle(slug).then(async (fetchedArticle) => {
+        setArticle(fetchedArticle)
+        const mdxSource = await serialize(fetchedArticle.content)
+        setMdxSource(mdxSource)
+        setEditableContent(fetchedArticle.content)
+      })
+    }
+  }, [slug])
+
+  const handleEdit = () => {
+    setIsEditing(true)
+  }
+
+  const handleSave = async () => {
+    // Here you would typically send the updated content to your backend
+    console.log("Saving updated content:", editableContent)
+    const newMdxSource = await serialize(editableContent)
+    setMdxSource(newMdxSource)
+    setIsEditing(false)
+  }
+
+  if (!article) return <div>Loading...</div>
+
   return (
-    <div className="min-h-screen bg-pink-50 bg-opacity-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+CjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgZmlsbD0iI2ZmZjFmMiI+PC9yZWN0Pgo8Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZjMGNiIiBzdHJva2Utd2lkdGg9IjIiPjwvY2lyY2xlPgo8cGF0aCBkPSJNMzAgMTBjNS41IDAgMTAgNC41IDEwIDEwcy00LjUgMTAtMTAgMTAtMTAtNC41LTEwLTEwIDQuNS0xMCAxMC0xMHoiIGZpbGw9IiNmZmMwY2IiIG9wYWNpdHk9IjAuMyI+PC9wYXRoPgo8L3N2Zz4=')] p-4 flex items-center justify-center">
-      <Card className="w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-pink-400 to-pink-300 text-white">
-          <CardTitle className="text-2xl md:text-3xl font-bold">
-            Confirme seus dados
-          </CardTitle>
-          <CardDescription className="text-pink-100">
-            Por favor, verifique se todas as informações estão corretas antes de
-            enviar o pedido.
-          </CardDescription>
-        </CardHeader>
-        <ScrollArea className="h-[60vh]">
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ConfirmationSection title="Detalhes do Evento">
-                <ConfirmationItem
-                  label="Nome da Criança"
-                  value={orderData.childName}
+    <>
+      <Head>
+        <title>{article.title} | Blog Técnico CrazyStack</title>
+        <meta name="description" content={`${article.title} - Aprenda sobre ${article.tags.join(', ')} no blog do CrazyStack.`} />
+        <meta name="keywords" content={article.tags.join(', ')} />
+      </Head>
+      <div className="flex flex-col min-h-screen bg-black text-gray-100">
+        <header className="px-4 lg:px-6 h-14 flex items-center bg-gray-900">
+          <Link className="flex items-center justify-center" href="/">
+            <Zap className="h-6 w-6 text-lime-400" />
+            <span className="ml-2 text-2xl font-bold text-lime-400">CrazyStack</span>
+          </Link>
+          <nav className="ml-auto flex gap-4 sm:gap-6">
+            <Link className="text-sm font-medium hover:underline underline-offset-4 text-lime-300" href="/">
+              Home
+            </Link>
+            <Link className="text-sm font-medium hover:underline underline-offset-4 text-lime-300" href="/curso">
+              Curso
+            </Link>
+            <Link className="text-sm font-medium hover:underline underline-offset-4 text-lime-300" href="/blog">
+              Blog
+            </Link>
+          </nav>
+        </header>
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <Button asChild className="mb-6">
+            <Link href="/blog" className="inline-flex items-center">
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Voltar para o Blog
+            </Link>
+          </Button>
+          <article className="max-w-3xl mx-auto">
+            <Image
+              src={article.image}
+              alt={article.title}
+              width={800}
+              height={400}
+              className="w-full h-64 object-cover rounded-lg mb-6"
+            />
+            <h1 className="text-4xl font-bold mb-4 text-lime-400">{article.title}</h1>
+            <div className="flex flex-wrap gap-4 mb-6 text-sm text-gray-400">
+              <span className="flex items-center">
+                <User className="mr-2 h-4 w-4" />
+                {article.author}
+              </span>
+              <span className="flex items-center">
+                <Calendar className="mr-2 h-4 w-4" />
+                {article.date}
+              </span>
+              <span className="flex items-center">
+                <Clock className="mr-2 h-4 w-4" />
+                {article.readTime}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {article.tags.map((tag) => (
+                <span key={tag} className="bg-gray-800 text-lime-400 px-2 py-1 rounded-full text-xs flex items-center">
+                  <Tag className="mr-1 h-3 w-3" />
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <Card className="bg-gray-900 border-lime-500 p-6 mb-6">
+              {isEditing ? (
+                <Textarea
+                  value={editableContent}
+                  onChange={(e) => setEditableContent(e.target.value)}
+                  className="w-full h-96 mb-4 bg-black text-gray-100 border-lime-500"
                 />
-                <ConfirmationItem label="Idade" value={orderData.childAge} />
-                <ConfirmationItem
-                  label="Data do Evento"
-                  value={orderData.eventDate}
-                />
-                <ConfirmationItem label="Horário" value={orderData.eventTime} />
-                <ConfirmationItem
-                  label="Local"
-                  value={orderData.eventLocation}
-                />
-              </ConfirmationSection>
-
-              <ConfirmationSection title="Confirmação">
-                <ConfirmationItem
-                  label="Frase de Confirmação"
-                  value={orderData.confirmationPhrase}
-                />
-                {orderData.confirmationDate && (
-                  <ConfirmationItem
-                    label="Data de Confirmação"
-                    value={orderData.confirmationDate}
-                  />
-                )}
-                {orderData.confirmationPhone && (
-                  <ConfirmationItem
-                    label="Telefone de Confirmação"
-                    value={orderData.confirmationPhone}
-                  />
-                )}
-              </ConfirmationSection>
-
-              <ConfirmationSection title="Alterações Adicionais">
-                <ConfirmationItem
-                  label="Remover Créditos"
-                  value={orderData.removeCredits ? "Sim (+R$15)" : "Não"}
-                />
-                <ConfirmationItem
-                  label="Trocar Música"
-                  value={orderData.changeMusic ? "Sim (+R$10)" : "Não"}
-                />
-                <ConfirmationItem
-                  label="Taxa de Urgência"
-                  value={orderData.urgencyFee ? "Sim (+R$25)" : "Não"}
-                />
-              </ConfirmationSection>
-
-              <ConfirmationSection title="Dados do Solicitante">
-                <ConfirmationItem
-                  label="Nome"
-                  value={orderData.requesterName}
-                />
-                <ConfirmationItem
-                  label="Telefone"
-                  value={orderData.requesterPhone}
-                />
-                <ConfirmationItem
-                  label="E-mail"
-                  value={orderData.requesterEmail}
-                />
-              </ConfirmationSection>
-
-              {orderData.photoFileName && (
-                <ConfirmationSection title="Foto">
-                  <ConfirmationItem
-                    label="Arquivo"
-                    value={orderData.photoFileName}
-                  />
-                </ConfirmationSection>
+              ) : (
+                mdxSource && <MDXRemote {...mdxSource} components={components} />
+              )}
+            </Card>
+            <div className="flex justify-end">
+              {isEditing ? (
+                <Button onClick={handleSave} className="bg-lime-500 text-black hover:bg-lime-400">
+                  <Save className="mr-2 h-4 w-4" />
+                  Salvar Alterações
+                </Button>
+              ) : (
+                <Button onClick={handleEdit} className="bg-lime-500 text-black hover:bg-lime-400">
+                  <Edit className="mr-2 h-4 w-4" />
+                  Editar Artigo
+                </Button>
               )}
             </div>
-          </CardContent>
-        </ScrollArea>
-        <CardFooter className="flex justify-between p-6 bg-pink-50">
-          <Button
-            variant="outline"
-            onClick={onEdit}
-            className="flex items-center space-x-2 hover:bg-pink-100"
-          >
-            <ArrowLeft size={16} />
-            <span>Editar Informações</span>
-          </Button>
-          <Button
-            onClick={onSubmit}
-            className="bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white flex items-center space-x-2"
-          >
-            <span>Confirmar e Enviar</span>
-            <Check size={16} />
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
-  );
-}
-
-function ConfirmationSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="mb-6">
-      <h3 className="text-lg font-semibold text-pink-600 mb-2">{title}</h3>
-      <div className="space-y-2">{children}</div>
-    </div>
-  );
-}
-
-function ConfirmationItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col">
-      <span className="text-sm text-gray-500">{label}</span>
-      <span className="font-medium">{value}</span>
-    </div>
-  );
+          </article>
+        </main>
+        <footer className="py-6 w-full shrink-0 px-4 md:px-6 border-t border-gray-800 bg-gray-900">
+          <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <p className="text-xs text-gray-400">© 2024 CrazyStack. Todos os direitos reservados.</p>
+            <nav className="flex gap-4 mt-4 md:mt-0">
+              <Link className="text-xs hover:underline underline-offset-4 text-gray-400" href="/privacy-policy">
+                Política de Privacidade
+              </Link>
+              <Link className="text-xs hover:underline underline-offset-4 text-gray-400" href="/terms">
+                Termos de Uso
+              </Link>
+            </nav>
+          </div>
+        </footer>
+      </div>
+    </>
+  )
 }

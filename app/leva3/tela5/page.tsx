@@ -1,437 +1,432 @@
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { ChevronRight, Code, FileCode, Globe, Rocket, Zap, Lock, Star, PlayCircle, CreditCard, LayoutDashboard, Github } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
+"use client";
 
-export default function Component() {
+import { useState, useEffect, useCallback } from 'react'
+import { Search, Home, Bell, Mail, User, Hash, Scissors, Sparkles, Camera, Calendar, Star, ChevronDown, ChevronUp, MessageCircle, Share2, Filter, Plus, X } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { Badge } from "@/components/ui/badge"
+import { Toast } from "@/components/ui/toast"
+import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
+
+export default function BeautyTweetEnhanced() {
+  const [posts, setPosts] = useState([
+    { id: 1, salon: "Salão Beleza Total", username: "@belezatotal", content: "Novo corte em tendência: o 'bob' moderno está fazendo sucesso! 💇‍♀️✨ #TendênciasCabelo #SalãoDeBeleza", likes: 103, reposts: 18, comments: [] },
+    { id: 2, salon: "Estilo Chique", username: "@estilochique", content: "Promoção de inverno! 20% de desconto em todos os tratamentos capilares. Agende já! ❄️💆‍♀️ #PromoçãoDeInverno #CuidadosComOCabelo", likes: 87, reposts: 25, comments: [] },
+  ])
+  const [appointments, setAppointments] = useState([
+    { id: 1, salon: "Beleza Total", service: "Corte de Cabelo", date: "2023-06-15", time: "14:00", price: "R$ 50,00", duration: "45 min", status: "scheduled" },
+    { id: 2, salon: "Estilo Chique", service: "Manicure", date: "2023-06-16", time: "10:30", price: "R$ 35,00", duration: "60 min", status: "completed" },
+    { id: 3, salon: "Glamour Total", service: "Maquiagem", date: "2023-06-17", time: "16:00", price: "R$ 80,00", duration: "90 min", status: "scheduled" },
+  ])
+  const [postFilter, setPostFilter] = useState("recent")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [showNotification, setShowNotification] = useState(false)
+  const [recommendedServices, setRecommendedServices] = useState([
+    { id: 1, service: "Hidratação Capilar", salon: "Beleza Total", price: "R$ 70,00" },
+    { id: 2, service: "Pedicure", salon: "Estilo Chique", price: "R$ 40,00" },
+  ])
+  const [newPost, setNewPost] = useState("")
+  const [isPostingDialogOpen, setIsPostingDialogOpen] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
+  const [selectedAppointment, setSelectedAppointment] = useState<number | null>(null)
+  const [isReschedulingDialogOpen, setIsReschedulingDialogOpen] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowNotification(true)
+    }, 5000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    document.body.classList.toggle('dark', darkMode)
+  }, [darkMode])
+
+  const handlePostSubmit = useCallback((e: React.FormEvent) => {
+    e.preventDefault()
+    if (newPost.trim()) {
+      const newPostObj = {
+        id: posts.length + 1,
+        salon: "Seu Salão",
+        username: "@seusalao",
+        content: newPost,
+        likes: 0,
+        reposts: 0,
+        comments: [],
+      }
+      setPosts(prevPosts => [newPostObj, ...prevPosts])
+      setNewPost("")
+      setIsPostingDialogOpen(false)
+    }
+  }, [newPost, posts])
+
+  const handleShare = useCallback((postId: number) => {
+    console.log(`Compartilhando post ${postId}`)
+    // Implementação do compartilhamento
+  }, [])
+
+  const handleHashtagClick = useCallback((hashtag: string) => {
+    console.log(`Buscando posts com a hashtag ${hashtag}`)
+    setSearchTerm(hashtag)
+  }, [])
+
+  const handleLike = useCallback((postId: number) => {
+    setPosts(prevPosts => 
+      prevPosts.map(post => 
+        post.id === postId ? { ...post, likes: post.likes + 1 } : post
+      )
+    )
+  }, [])
+
+  const handleRepost = useCallback((postId: number) => {
+    setPosts(prevPosts => 
+      prevPosts.map(post => 
+        post.id === postId ? { ...post, reposts: post.reposts + 1 } : post
+      )
+    )
+  }, [])
+
+  const handleAppointmentCancel = useCallback((appointmentId: number) => {
+    setAppointments(prevAppointments => 
+      prevAppointments.map(appointment => 
+        appointment.id === appointmentId ? { ...appointment, status: "cancelled" } : appointment
+      )
+    )
+  }, [])
+
+  const handleAppointmentReschedule = useCallback((appointmentId: number) => {
+    setSelectedAppointment(appointmentId)
+    setIsReschedulingDialogOpen(true)
+  }, [])
+
+  const handleRescheduleConfirm = useCallback((newDate: Date, newTime: string) => {
+    setAppointments(prevAppointments => 
+      prevAppointments.map(appointment => 
+        appointment.id === selectedAppointment 
+          ? { ...appointment, date: newDate.toISOString().split('T')[0], time: newTime } 
+          : appointment
+      )
+    )
+    setIsReschedulingDialogOpen(false)
+    setSelectedAppointment(null)
+  }, [selectedAppointment])
+
+  const filteredPosts = posts.filter(post => 
+    post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.salon.toLowerCase().includes(searchTerm.toLowerCase())
+  ).sort((a, b) => {
+    if (postFilter === "recent") {
+      return b.id - a.id
+    } else if (postFilter === "popular") {
+      return (b.likes + b.reposts) - (a.likes + a.reposts)
+    }
+    return 0
+  })
+
+  const filteredAppointments = appointments.filter(appointment => 
+    appointment.service.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    appointment.salon.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
   return (
-    <div className="flex flex-col min-h-screen bg-black text-gray-100">
-      <header className="px-4 lg:px-6 h-14 flex items-center bg-gray-900">
-        <Link className="flex items-center justify-center" href="#">
-          <Zap className="h-6 w-6 text-lime-400" />
-          <span className="ml-2 text-2xl font-bold text-lime-400">CrazyStack</span>
-        </Link>
-      </header>
-      <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-black">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-green-500">
-                  CrazyStack
-                  <br />
-                  O Bootcamp do Dev Doido
-                </h1>
-                <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl">
-                  Domine React & Node.js: Aprenda React consumindo uma API FULMINANTE feita com Node.js, MongoDB e Fastify.
-                </p>
-              </div>
-              <div className="space-x-4">
-                <Link
-                  className="inline-flex h-9 items-center justify-center rounded-md bg-lime-500 px-4 py-2 text-sm font-medium text-black shadow transition-colors hover:bg-lime-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime-400 disabled:pointer-events-none disabled:opacity-50"
-                  href="#pre-registration"
-                >
-                  Comece Agora
-                </Link>
-                <Link
-                  className="inline-flex h-9 items-center justify-center rounded-md border border-lime-500 px-4 py-2 text-sm font-medium text-lime-400 shadow transition-colors hover:bg-lime-500 hover:text-black focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime-400 disabled:pointer-events-none disabled:opacity-50"
-                  href="#"
-                >
-                  Saiba Mais
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900" id="promotional-price">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-lime-400">
-                Preço Promocional
-              </h2>
-              <div className="space-y-2">
-                <p className="text-4xl font-bold text-lime-300">R$ 99,00</p>
-                <p className="text-xl text-gray-400 line-through">R$ 600,00</p>
-              </div>
-              <p className="max-w-[600px] text-gray-400">
-                Aproveite esta oferta por tempo limitado e comece sua jornada para se tornar um desenvolvedor full-stack!
-              </p>
-              <Button className="bg-lime-500 text-black hover:bg-lime-400">
-                Garanta Sua Vaga
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100'}`}>
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Barra lateral esquerda */}
+          <div className="hidden md:block">
+            <nav className="space-y-4">
+              <Button variant="ghost" className="w-full justify-start">
+                <Home className="mr-2 h-4 w-4" />
+                Início
               </Button>
+              <Button variant="ghost" className="w-full justify-start">
+                <Hash className="mr-2 h-4 w-4" />
+                Explorar
+              </Button>
+              <Button variant="ghost" className="w-full justify-start">
+                <Bell className="mr-2 h-4 w-4" />
+                Notificações
+              </Button>
+              <Button variant="ghost" className="w-full justify-start">
+                <Mail className="mr-2 h-4 w-4" />
+                Mensagens
+              </Button>
+              <Button variant="ghost" className="w-full justify-start">
+                <Calendar className="mr-2 h-4 w-4" />
+                Agendamentos
+              </Button>
+              <Button variant="ghost" className="w-full justify-start">
+                <User className="mr-2 h-4 w-4" />
+                Perfil
+              </Button>
+            </nav>
+            <div className="mt-4 flex items-center">
+              <Label htmlFor="dark-mode" className="mr-2">Modo Escuro</Label>
+              <Switch id="dark-mode" checked={darkMode} onCheckedChange={setDarkMode} />
             </div>
           </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-black" id="github-projects">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-lime-400 mb-8 text-center">
-              Projetos no GitHub
-            </h2>
-            <div className="grid gap-8 md:grid-cols-2">
-              <Card className="bg-gray-900 border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <Github className="h-12 w-12 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">API FULMINANTE</h3>
-                  <p className="text-gray-400">
-                    Explore o código-fonte da nossa API robusta construída com Node.js, Fastify e MongoDB.
-                  </p>
-                  <Link
-                    href="https://github.com/example/api-fulminante"
-                    className="text-lime-400 hover:underline flex items-center"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Ver no GitHub
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </Link>
-                </div>
-              </Card>
-              <Card className="bg-gray-900 border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <Github className="h-12 w-12 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">Frontend React</h3>
-                  <p className="text-gray-400">
-                    Veja o código do nosso frontend React, incluindo componentes reutilizáveis e integração com a API.
-                  </p>
-                  <Link
-                    href="https://github.com/example/frontend-react"
-                    className="text-lime-400 hover:underline flex items-center"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Ver no GitHub
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </Link>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900" id="features">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-lime-400 mb-8">
-              Porque o CrazyStack é importante
-            </h2>
-            <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
-              <Card className="bg-black border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <Code className="h-10 w-10 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">Conceitos avançados</h3>
-                  <p className="text-gray-400">
-                    Veja Design Patterns, TDD e Clean Architecture durante todo curso.
-                  </p>
-                </div>
-              </Card>
-              <Card className="bg-black border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <FileCode className="h-10 w-10 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">Geração dinâmica de arquivos</h3>
-                  <p className="text-gray-400">
-                    Com o Plop você gera arquivos dinamicamente com base em templates.
-                  </p>
-                </div>
-              </Card>
-              <Card className="bg-black border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <Globe className="h-10 w-10 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">Imitações aleatórias</h3>
-                  <p className="text-gray-400">
-                    É o curso inteiro de imitações do Faustão, Silvio Santos, e muito MAIS!
-                  </p>
-                </div>
-              </Card>
-              <Card className="bg-black border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <Rocket className="h-10 w-10 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">Testes unitários e de integração</h3>
-                  <p className="text-gray-400">São mais de 2 mil testes cobrindo 90% do código.</p>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-black" id="free-lessons">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-lime-400 mb-8">
-              Aulas Gratuitas no YouTube
-            </h2>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="bg-gray-900 border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <PlayCircle className="h-12 w-12 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">Introdução ao React</h3>
-                  <p className="text-gray-400">Aprenda os conceitos básicos do React em 30 minutos.</p>
-                  <Link
-                    href="https://www.youtube.com/watch?v=example1"
-                    className="text-lime-400 hover:underline"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Assistir agora
-                  </Link>
-                </div>
-              </Card>
-              <Card className="bg-gray-900 border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <PlayCircle className="h-12 w-12 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">Node.js para Iniciantes</h3>
-                  <p className="text-gray-400">Descubra o poder do Node.js nesta aula introdutória.</p>
-                  <Link
-                    href="https://www.youtube.com/watch?v=example2"
-                    className="text-lime-400 hover:underline"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Assistir agora
-                  </Link>
-                </div>
-              </Card>
-              <Card className="bg-gray-900 border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <PlayCircle className="h-12 w-12 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">MongoDB em 20 Minutos</h3>
-                  <p className="text-gray-400">Uma rápida introdução ao MongoDB e suas funcionalidades.</p>
-                  <Link
-                    href="https://www.youtube.com/watch?v=example3"
-                    className="text-lime-400 hover:underline"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Assistir agora
-                  </Link>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900" id="highlighted-lessons">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-lime-400 mb-8">
-              Aulas em Destaque
-            </h2>
-            <div className="grid gap-8 md:grid-cols-2">
-              <Card className="bg-black border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <CreditCard className="h-12 w-12 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">Assinatura PIX Mensal</h3>
-                  <p className="text-gray-400">
-                    Aprenda a implementar um sistema de assinatura mensal usando PIX como método de pagamento.
-                  </p>
-                  <Button className="bg-lime-500 text-black hover:bg-lime-400">
-                    Saiba mais
-                  </Button>
-                </div>
-              </Card>
-              <Card className="bg-black border-lime-500">
-                <div className="p-6 flex flex-col items-center text-center space-y-4">
-                  <LayoutDashboard className="h-12 w-12 text-lime-400" />
-                  <h3 className="text-xl font-bold text-lime-300">Landing Page SaaS</h3>
-                  <p className="text-gray-400">
-                    Crie uma landing page profissional para seu SaaS usando Next.js e técnicas avançadas de design.
-                  </p>
-                  <Button className="bg-lime-500 text-black hover:bg-lime-400">
-                    Saiba mais
-                  </Button>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-        <section  className="w-full py-12 md:py-24 lg:py-32 bg-black" id="content">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-lime-400 mb-8">
-              Conteúdo do Curso
-            </h2>
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="text-lime-300 hover:text-lime-400">Módulo 1: Fundamentos do React</AccordionTrigger>
-                <AccordionContent className="text-gray-400">
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>Introdução ao React e JSX</li>
-                    <li>Componentes e Props</li>
-                    <li>Estado e Ciclo de Vida</li>
-                    <li>Manipulação de Eventos</li>
-                    <li>Renderização Condicional e Listas</li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger className="text-lime-300 hover:text-lime-400">Módulo 2: Node.js e Express</AccordionTrigger>
-                <AccordionContent className="text-gray-400">
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>Introdução ao Node.js</li>
-                    <li>Criando um servidor com Express</li>
-                    <li>Roteamento e Middleware</li>
-                    <li>Integração com Banco de Dados (MongoDB)</li>
-                    <li>Autenticação e Autorização</li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger className="text-lime-300 hover:text-lime-400">Módulo 3: API Avançada com Fastify</AccordionTrigger>
-                <AccordionContent className="text-gray-400">
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>Introdução ao Fastify</li>
-                    <li>Plugins e Hooks</li>
-                    <li>Validação de Esquemas</li>
-                    <li>Testes de Integração</li>
-                    <li>Otimização de Performance</li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-4">
-                <AccordionTrigger className="text-lime-300 hover:text-lime-400">Módulo 4: Projeto Final</AccordionTrigger>
-                <AccordionContent className="text-gray-400">
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>Planejamento e Arquitetura</li>
-                    <li>Implementação do Frontend em React</li>
-                    <li>Desenvolvimento da API com Fastify</li>
-                    <li>Integração Frontend-Backend</li>
-                    <li>Deployment e CI/CD</li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900" id="creator">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-lime-400 mb-8">
-              Conheça o Criador do Curso
-            </h2>
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="w-full md:w-1/3">
-                <Image
-                  src="/placeholder.svg?height=300&width=300"
-                  alt="Gustavo Miranda"
-                  width={300}
-                  height={300}
-                  className="rounded-full border-4 border-lime-500"
+
+          {/* Feed principal */}
+          <div className="md:col-span-2">
+            <header className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-bold">BeautyTweet</h1>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Input
+                  type="search"
+                  placeholder="Buscar no BeautyTweet"
+                  className="pl-10 pr-4 py-2 rounded-full"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <div className="w-full md:w-2/3 space-y-4">
-                <h3 className="text-2xl font-bold text-lime-300">Gustavo Miranda</h3>
-                <div className="flex items-center space-x-2">
-                  <Star className="w-5 h-5 text-yellow-400" />
-                  <span className="text-gray-400">4 Anos Hotmarter</span>
-                </div>
-                <p className="text-gray-400">
-                  Com mais de 6 anos de experiência na área de TI, Gustavo é um desenvolvedor apaixonado por criar e compartilhar conteúdo. Especializado em Javascript, React, React Native e NodeJs, ele traz sua experiência prática para o CrazyStack.
-                </p>
-                <p className="text-gray-400">
-                  Criador do aplicativo de agendamentos Belezix, Gustavo compartilha todas as lições aprendidas durante o desenvolvimento deste projeto real no curso CrazyStack.
-                </p>
-                <p className="text-gray-400">
-                  Atualmente, Gustavo trabalha com React.js e React Native, além de ser o mantenedor do canal DevDoido no Youtube, onde continua a compartilhar seu conhecimento com a comunidade de desenvolvedores.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-black" id="faq">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-lime-400 mb-8">
-              Perguntas Frequentes
-            </h2>
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="text-lime-300 hover:text-lime-400">Onde está a ementa do curso?</AccordionTrigger>
-                <AccordionContent className="text-gray-400">
-                  No botão do fim da página você pode ver a ementa completa do curso direto na página da HOTMART.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger className="text-lime-300 hover:text-lime-400">Qual é a duração do curso?</AccordionTrigger>
-                <AccordionContent className="text-gray-400">
-                  O curso tem 31 horas de vídeo gravado e editado.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger className="text-lime-300 hover:text-lime-400">O curso é vitalício?</AccordionTrigger>
-                <AccordionContent className="text-gray-400">
-                  Sim, o acesso é vitalício e sem pegadinhas!
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-4">
-                <AccordionTrigger className="text-lime-300 hover:text-lime-400">Qual é o nível de habilidade requerido para o curso?</AccordionTrigger>
-                <AccordionContent className="text-gray-400">
-                  O curso é projetado para aqueles com noções básicas de JavaScript, React e Node.js.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-5">
-                <AccordionTrigger className="text-lime-300 hover:text-lime-400">Há alguma certificação disponível ao final do curso?</AccordionTrigger>
-                <AccordionContent className="text-gray-400">
-                  Sim, oferecemos uma certificação ao final do curso para aqueles que completarem todos os exercícios e desafios.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900" id="pre-registration">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-green-500">
-                  Sua carreira está prestes a ir para o próximo nível
-                </h2>
-                <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl">
-                  Preencha o formulário para continuar
-                </p>
-              </div>
-              <Card className="w-full max-w-md bg-black border-lime-500">
-                <form className="p-6 space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="text-lime-300">Seu nome completo</Label>
-                    <Input id="name" placeholder="Digite seu nome completo" className="bg-gray-900 text-gray-100 border-lime-500" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="whatsapp" className="text-lime-300">Seu número de WhatsApp</Label>
-                    <Input id="whatsapp" placeholder="Digite seu número de WhatsApp" className="bg-gray-900 text-gray-100 border-lime-500" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-lime-300">Digite seu e-mail</Label>
-                    <Input id="email" type="email" placeholder="Digite seu e-mail" className="bg-gray-900 text-gray-100 border-lime-500" />
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="terms" className="border-lime-500 text-lime-500" />
-                    <Label htmlFor="terms" className="text-sm text-gray-400">
-                      Autorizo o envio de comunicações por e-mail ou qualquer outro meio e concordo com os Termos e Políticas de privacidade.
-                    </Label>
-                  </div>
-                  <Button className="w-full bg-gradient-to-r from-lime-500 to-green-600 text-black hover:from-lime-400 hover:to-green-500">
-                    Continuar
+            </header>
+
+            <Tabs defaultValue="posts" className="mb-6">
+              <TabsList>
+                <TabsTrigger value="posts">Posts</TabsTrigger>
+                <TabsTrigger value="appointments">Agendamentos</TabsTrigger>
+              </TabsList>
+              <TabsContent value="posts">
+                <div className="mb-4 flex justify-between items-center">
+                  <Select value={postFilter} onValueChange={setPostFilter}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Filtrar posts" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="recent">Mais recentes</SelectItem>
+                      <SelectItem value="popular">Mais populares</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button onClick={() => setIsPostingDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Novo Post
                   </Button>
-                  <div className="flex items-center justify-center space-x-2 text-sm text-gray-400">
-                    <Lock className="w-4 h-4" />
-                    <span>Suas informações estão seguras</span>
-                  </div>
-                </form>
-              </Card>
+                </div>
+                {/* Feed de BeautyPosts */}
+                <div className="space-y-6">
+                  {filteredPosts.map((post) => (
+                    <Card key={post.id} className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow`}>
+                      <CardHeader>
+                        <div className="flex items-center">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={`/placeholder.svg?height=40&width=40`} alt="Avatar" />
+                            <AvatarFallback>{post.salon[0]}</AvatarFallback>
+                          </Avatar>
+                          <div className="ml-2">
+                            <CardTitle>{post.salon}</CardTitle>
+                            <CardDescription>{post.username}</CardDescription>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="mb-2">
+                          {post.content.split(' ').map((word, index) => 
+                            word.startsWith('#') ? (
+                              <span 
+                                key={index} 
+                                className="text-blue-500 cursor-pointer" 
+                                onClick={() => handleHashtagClick(word)}
+                              >
+                                {word}{' '}
+                              </span>
+                            ) : (
+                              word + ' '
+                            )
+                          )}
+                        </p>
+                        <div className="rounded-lg overflow-hidden mb-2">
+                          <img src="/placeholder.svg?height=200&width=400" alt="Post image" className="w-full h-48 object-cover" />
+                        </div>
+                        <div className="flex justify-between text-gray-500">
+                          <Button variant="ghost" size="sm" onClick={() => handleLike(post.id)}>
+                            ❤️ {post.likes}
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleRepost(post.id)}>
+                            🔁 {post.reposts}
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            💬 {post.comments.length}
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleShare(post.id)}>
+                            <Share2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="appointments">
+                <div className="mb-4 flex justify-between items-center">
+                  <Input
+                    type="search"
+                    placeholder="Buscar agendamentos"
+                    className="max-w-sm"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <Card className={darkMode ? 'bg-gray-800' : 'bg-white'}>
+                    <CardHeader>
+                      <CardTitle>Calendário de Agendamentos</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CalendarComponent
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        className={`rounded-md border ${darkMode ? 'bg-gray-700' : 'bg-white'}`}
+                      />
+                    </CardContent>
+                  </Card>
+                  <Card className={darkMode ?    'bg-gray-800' : 'bg-white'}>
+                    <CardHeader>
+                      <CardTitle>Serviços Recomendados</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {recommendedServices.map((service) => (
+                          <li key={service.id} className="flex justify-between items-center">
+                            <span>{service.service} - {service.salon}</span>
+                            <Badge>{service.price}</Badge>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="space-y-4">
+                  {filteredAppointments.map((appointment) => (
+                    <Card key={appointment.id} className={darkMode ? 'bg-gray-800' : 'bg-white'}>
+                      <CardHeader>
+                        <CardTitle>{appointment.service}</CardTitle>
+                        <CardDescription>{appointment.salon}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p>Data: {appointment.date}</p>
+                        <p>Horário: {appointment.time}</p>
+                        <p>Duração: {appointment.duration}</p>
+                        <p>Preço: {appointment.price}</p>
+                        <p>Status: {appointment.status}</p>
+                      </CardContent>
+                      <CardFooter className="flex justify-between">
+                        {appointment.status === 'scheduled' && (
+                          <>
+                            <Button variant="destructive" onClick={() => handleAppointmentCancel(appointment.id)}>Cancelar</Button>
+                            <Button variant="outline" onClick={() => handleAppointmentReschedule(appointment.id)}>Reagendar</Button>
+                          </>
+                        )}
+                        {appointment.status === 'completed' && (
+                          <Button variant="outline">Avaliar</Button>
+                        )}
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          {/* Barra lateral direita */}
+          <div className="hidden md:block">
+            <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow p-4 mb-6`}>
+              <h2 className="font-bold mb-4">Tendências para você</h2>
+              <ul className="space-y-2">
+                <li>#CabelosSaudáveis</li>
+                <li>#UnhasDaTemporada</li>
+                <li>#MaquiagemNatural</li>
+                <li>#CuidadosComAPele</li>
+              </ul>
+            </div>
+            <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow p-4`}>
+              <h2 className="font-bold mb-4">Quem seguir</h2>
+              <ul className="space-y-4">
+                {['Estilo Chique', 'Beleza Express', 'Glamour Total'].map((salon) => (
+                  <li key={salon} className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={`/placeholder.svg?height=40&width=40`} alt="Avatar" />
+                        <AvatarFallback>{salon[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="ml-2">
+                        <p className="font-semibold">{salon}</p>
+                        <p className="text-sm text-gray-500">@{salon.toLowerCase().replace(' ', '')}</p>
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm">Seguir</Button>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-        </section>
-      </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-gray-800 bg-gray-900">
-        <p className="text-xs text-gray-400">© 2024 CrazyStack. Todos os direitos reservados.</p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-xs hover:underline underline-offset-4 text-gray-400" href="#">
-            Termos de Serviço
-          </Link>
-          <Link className="text-xs hover:underline underline-offset-4 text-gray-400" href="#">
-            Privacidade
-          </Link>
-        </nav>
-      </footer>
+        </div>
+      </div>
+      {showNotification && (
+        <Toast>
+          <div className="flex items-center">
+            <Bell className="h-4 w-4 mr-2" />
+            <span>Você tem um agendamento amanhã às 14:00!</span>
+          </div>
+        </Toast>
+      )}
+      <Dialog open={isPostingDialogOpen} onOpenChange={setIsPostingDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Criar novo post</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handlePostSubmit}>
+            <Textarea
+              value={newPost}
+              onChange={(e) => setNewPost(e.target.value)}
+              placeholder="O que está acontecendo no mundo da beleza?"
+              className="mb-4"
+            />
+            <DialogFooter>
+              <Button type="submit">Postar</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isReschedulingDialogOpen} onOpenChange={setIsReschedulingDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reagendar Agendamento</DialogTitle>
+          </DialogHeader>
+          <CalendarComponent
+            mode="single"
+            selected={selectedDate}
+            onSelect={setSelectedDate}
+            className="rounded-md border"
+          />
+          <Select onValueChange={(value) => handleRescheduleConfirm(selectedDate!, value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione um horário" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="09:00">09:00</SelectItem>
+              <SelectItem value="10:00">10:00</SelectItem>
+              <SelectItem value="11:00">11:00</SelectItem>
+              <SelectItem value="14:00">14:00</SelectItem>
+              <SelectItem value="15:00">15:00</SelectItem>
+              <SelectItem value="16:00">16:00</SelectItem>
+            </SelectContent>
+          </Select>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
