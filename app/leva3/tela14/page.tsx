@@ -1,436 +1,300 @@
-"use client";
 
-import { useState, useEffect, useRef } from "react";
-import Plyr from "plyr";
-import "plyr/dist/plyr.css";
+"use client"
+import React, { useState } from 'react'
+import { Bell, Calendar, Clock, AlertTriangle, CheckCircle, User, Briefcase, Trash2, X, Star, Filter, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  CheckCircle,
-  PlayCircle,
-  Award,
-  Star,
-  Link as LinkIcon,
-} from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 
-const courseModules = [
-  {
-    id: 1,
-    title: "Introdução ao Curso",
-    lessons: [
-      {
-        id: 1,
-        title: "Boas-vindas",
-        videoUrl:
-          "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
-        duration: "5:20",
-        xp: 10,
-        description:
-          "Nesta aula, daremos as boas-vindas e apresentaremos uma visão geral do curso.",
-        relatedLinks: [
-          {
-            title: "Guia do Estudante",
-            url: "https://exemplo.com/guia-do-estudante",
-          },
-          { title: "Fórum de Discussão", url: "https://exemplo.com/forum" },
-        ],
-      },
-      {
-        id: 2,
-        title: "Visão Geral do Curso",
-        videoUrl:
-          "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
-        duration: "10:15",
-        xp: 20,
-        description:
-          "Apresentaremos os objetivos do curso e o que você aprenderá em cada módulo.",
-        relatedLinks: [
-          {
-            title: "Estrutura do Curso",
-            url: "https://exemplo.com/estrutura-do-curso",
-          },
-          {
-            title: "Calendário de Aulas",
-            url: "https://exemplo.com/calendario",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Fundamentos",
-    lessons: [
-      {
-        id: 3,
-        title: "Conceitos Básicos",
-        videoUrl:
-          "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
-        duration: "15:30",
-        xp: 30,
-        description:
-          "Aprenda os conceitos fundamentais que serão a base para todo o curso.",
-        relatedLinks: [
-          {
-            title: "Glossário de Termos",
-            url: "https://exemplo.com/glossario",
-          },
-          {
-            title: "Leitura Complementar",
-            url: "https://exemplo.com/leitura-complementar",
-          },
-        ],
-      },
-      {
-        id: 4,
-        title: "Primeiros Passos",
-        videoUrl:
-          "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
-        duration: "12:45",
-        xp: 25,
-        description:
-          "Comece a praticar com exercícios simples para fixar os conceitos aprendidos.",
-        relatedLinks: [
-          {
-            title: "Exercícios Práticos",
-            url: "https://exemplo.com/exercicios",
-          },
-          { title: "Recursos Adicionais", url: "https://exemplo.com/recursos" },
-        ],
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "Técnicas Avançadas",
-    lessons: [
-      {
-        id: 5,
-        title: "Estratégias Avançadas",
-        videoUrl:
-          "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
-        duration: "20:00",
-        xp: 40,
-        description:
-          "Explore técnicas avançadas para levar suas habilidades ao próximo nível.",
-        relatedLinks: [
-          {
-            title: "Estudo de Caso",
-            url: "https://exemplo.com/estudo-de-caso",
-          },
-          { title: "Artigo Científico", url: "https://exemplo.com/artigo" },
-        ],
-      },
-      {
-        id: 6,
-        title: "Estudo de Caso",
-        videoUrl:
-          "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
-        duration: "18:30",
-        xp: 35,
-        description:
-          "Analise um caso real e aplique os conhecimentos adquiridos no curso.",
-        relatedLinks: [
-          { title: "Dados do Estudo", url: "https://exemplo.com/dados" },
-          {
-            title: "Discussão no Fórum",
-            url: "https://exemplo.com/forum-discussao",
-          },
-        ],
-      },
-    ],
-  },
-];
+type NotificationType = 'reminder' | 'change' | 'cancellation' | 'confirmation' | 'review'
+type UserType = 'client' | 'provider'
 
-const achievements = [
-  {
-    id: 1,
-    title: "Iniciante",
-    description: "Complete sua primeira aula",
-    icon: "🌟",
-  },
-  { id: 2, title: "Dedicado", description: "Assista 5 aulas", icon: "🏆" },
-  {
-    id: 3,
-    title: "Mestre",
-    description: "Complete todos os módulos",
-    icon: "🎓",
-  },
-];
+interface Notification {
+  id: number
+  type: NotificationType
+  userType: UserType
+  message: string
+  time: string
+  read: boolean
+  appointmentId: number
+  actionLabel?: string
+  actionUrl?: string
+}
 
-const levels = [
-  { name: "Novato", minXP: 0, icon: "🌱" },
-  { name: "Aprendiz", minXP: 50, icon: "🌿" },
-  { name: "Estudante", minXP: 100, icon: "🌳" },
-  { name: "Especialista", minXP: 200, icon: "🌴" },
-  { name: "Mestre", minXP: 300, icon: "🌺" },
-];
+const getNotificationIcon = (type: NotificationType) => {
+  switch (type) {
+    case 'reminder': return <Clock className="h-5 w-5 text-blue-500" />
+    case 'change': return <Calendar className="h-5 w-5 text-yellow-500" />
+    case 'cancellation': return <X className="h-5 w-5 text-red-500" />
+    case 'confirmation': return <CheckCircle className="h-5 w-5 text-green-500" />
+    case 'review': return <Star className="h-5 w-5 text-purple-500" />
+  }
+}
 
-export default function CourseModules() {
-  const [activeVideo, setActiveVideo] = useState(null);
-  const [completedLessons, setCompletedLessons] = useState([]);
-  const [unlockedAchievements, setUnlockedAchievements] = useState([]);
-  const [watchedPercentage, setWatchedPercentage] = useState(0);
-  const [xp, setXP] = useState(0);
-  const [level, setLevel] = useState(levels[0]);
-  const videoRef = useRef(null);
-  const playerRef = useRef(null);
+const getNotificationColor = (type: NotificationType, read: boolean) => {
+  if (read) return 'bg-secondary'
+  switch (type) {
+    case 'reminder': return 'bg-blue-100'
+    case 'change': return 'bg-yellow-100'
+    case 'cancellation': return 'bg-red-100'
+    case 'confirmation': return 'bg-green-100'
+    case 'review': return 'bg-purple-100'
+  }
+}
 
-  useEffect(() => {
-    if (videoRef.current && !playerRef.current) {
-      playerRef.current = new Plyr(videoRef.current, {
-        controls: [
-          "play-large",
-          "play",
-          "progress",
-          "current-time",
-          "mute",
-          "volume",
-          "captions",
-          "settings",
-          "pip",
-          "airplay",
-          "fullscreen",
-        ],
-      });
+export default function NotificationsList() {
+  const [notifications, setNotifications] = useState<Notification[]>([
+    { id: 1, type: 'reminder', userType: 'client', message: 'Lembrete: Consulta com Dr. Silva amanhã às 14h', time: '1 hora atrás', read: false, appointmentId: 101, actionLabel: 'Ver detalhes', actionUrl: '/appointment/101' },
+    { id: 2, type: 'change', userType: 'provider', message: 'O paciente João solicitou mudança de horário', time: '2 horas atrás', read: false, appointmentId: 102, actionLabel: 'Responder', actionUrl: '/reschedule/102' },
+    { id: 3, type: 'cancellation', userType: 'provider', message: 'A consulta das 16h foi cancelada pelo paciente', time: '3 horas atrás', read: false, appointmentId: 103 },
+    { id: 4, type: 'confirmation', userType: 'client', message: 'Sua consulta foi confirmada para 18/05 às 10h', time: '1 dia atrás', read: true, appointmentId: 104, actionLabel: 'Adicionar ao calendário', actionUrl: '/calendar/add/104' },
+    { id: 5, type: 'review', userType: 'provider', message: 'Novo feedback recebido do paciente Maria', time: '2 dias atrás', read: true, appointmentId: 105, actionLabel: 'Ver avaliação', actionUrl: '/review/105' },
+    // Adicione mais notificações aqui para demonstrar a paginação
+  ])
 
-      playerRef.current.on("timeupdate", () => {
-        const progress =
-          (playerRef.current.currentTime / playerRef.current.duration) * 100;
-        setWatchedPercentage(progress);
-      });
-    }
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(5)
+  const [filter, setFilter] = useState<{ type: NotificationType | 'all', userType: UserType | 'all', read: 'all' | 'read' | 'unread' }>({
+    type: 'all',
+    userType: 'all',
+    read: 'all'
+  })
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.destroy();
-      }
-    };
-  }, [activeVideo]);
+  const markAsRead = (id: number) => {
+    setNotifications(notifications.map(notif =>
+      notif.id === id ? { ...notif, read: true } : notif
+    ))
+  }
 
-  useEffect(() => {
-    const newLevel = levels.reduce(
-      (acc, lvl) => (xp >= lvl.minXP ? lvl : acc),
-      levels[0],
-    );
-    if (newLevel.name !== level.name) {
-      setLevel(newLevel);
-      toast({
-        title: "Novo Nível Alcançado!",
-        description: `${newLevel.icon} Parabéns! Você atingiu o nível ${newLevel.name}!`,
-      });
-    }
-  }, [xp, level.name]);
+  const removeNotification = (id: number) => {
+    setNotifications(notifications.filter(notif => notif.id !== id))
+  }
 
-  const handleVideoEnd = () => {
-    if (activeVideo && watchedPercentage >= 90) {
-      const newCompletedLessons = [...completedLessons, activeVideo];
-      setCompletedLessons(newCompletedLessons);
-      const newXP = xp + activeVideo.xp;
-      setXP(newXP);
-      toast({
-        title: "Aula Concluída!",
-        description: `Você ganhou ${activeVideo.xp} XP! Total: ${newXP} XP`,
-      });
-      checkAchievements(newCompletedLessons);
-    }
-  };
+  const filteredNotifications = notifications.filter(notif =>
+    (filter.type === 'all' || notif.type === filter.type) &&
+    (filter.userType === 'all' || notif.userType === filter.userType) &&
+    (filter.read === 'all' || (filter.read === 'read' ? notif.read : !notif.read))
+  )
 
-  const checkAchievements = (completedLessons) => {
-    const newAchievements = [];
+  const pageCount = Math.ceil(filteredNotifications.length / itemsPerPage)
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentItems = filteredNotifications.slice(indexOfFirstItem, indexOfLastItem)
 
-    if (completedLessons.length === 1 && !unlockedAchievements.includes(1)) {
-      newAchievements.push(1);
-    }
-
-    if (completedLessons.length === 5 && !unlockedAchievements.includes(2)) {
-      newAchievements.push(2);
-    }
-
-    const allLessons = courseModules.flatMap((module) => module.lessons);
-    if (
-      completedLessons.length === allLessons.length &&
-      !unlockedAchievements.includes(3)
-    ) {
-      newAchievements.push(3);
-    }
-
-    if (newAchievements.length > 0) {
-      setUnlockedAchievements([...unlockedAchievements, ...newAchievements]);
-      newAchievements.forEach((achievementId) => {
-        const achievement = achievements.find((a) => a.id === achievementId);
-        toast({
-          title: "Conquista Desbloqueada!",
-          description: `${achievement.icon} ${achievement.title}: ${achievement.description}`,
-        });
-      });
-    }
-  };
-
-  const totalLessons = courseModules.reduce(
-    (total, module) => total + module.lessons.length,
-    0,
-  );
-  const progress = (completedLessons.length / totalLessons) * 100;
+  const changePage = (newPage: number) => {
+    setIsLoading(true)
+    setCurrentPage(newPage)
+    setTimeout(() => setIsLoading(false), 500) // Simula um carregamento de 500ms
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Módulos do Curso</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2">
-          {activeVideo ? (
-            <div className="aspect-w-16 aspect-h-9 mb-4">
-              <video ref={videoRef} onEnded={handleVideoEnd}>
-                <source src={activeVideo.videoUrl} type="video/mp4" />
-              </video>
-            </div>
-          ) : (
-            <div className="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center mb-4">
-              <p className="text-gray-500">Selecione uma aula para começar</p>
-            </div>
-          )}
-          {activeVideo && (
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>{activeVideo.title}</CardTitle>
-                <CardDescription>
-                  Duração: {activeVideo.duration}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Progress value={watchedPercentage} className="w-full mb-2" />
-                <p className="text-sm text-gray-600 mb-4">
-                  {watchedPercentage < 90
-                    ? `Assista pelo menos 90% da aula para marcá-la como concluída (${Math.round(watchedPercentage)}% assistido)`
-                    : "Você pode marcar esta aula como concluída"}
-                </p>
-                <p className="mb-4">{activeVideo.description}</p>
-                <h4 className="font-semibold mb-2">Links Relacionados:</h4>
-                <ul className="list-disc list-inside">
-                  {activeVideo.relatedLinks.map((link, index) => (
-                    <li key={index} className="mb-1">
-                      <a
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline flex items-center"
-                      >
-                        <LinkIcon className="w-4 h-4 mr-1" />
-                        {link.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          )}
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar for desktop / Drawer for mobile */}
+      <div className="hidden md:block w-64 bg-white p-6 shadow-md">
+        <h2 className="text-xl font-semibold mb-4">Filtros</h2>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="type-filter">Tipo de Notificação</Label>
+            <Select onValueChange={(value) => setFilter({ ...filter, type: value as NotificationType | 'all' })}>
+              <SelectTrigger id="type-filter">
+                <SelectValue placeholder="Todos os tipos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os tipos</SelectItem>
+                <SelectItem value="reminder">Lembrete</SelectItem>
+                <SelectItem value="change">Mudança</SelectItem>
+                <SelectItem value="cancellation">Cancelamento</SelectItem>
+                <SelectItem value="confirmation">Confirmação</SelectItem>
+                <SelectItem value="review">Avaliação</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="user-type-filter">Tipo de Usuário</Label>
+            <Select onValueChange={(value) => setFilter({ ...filter, userType: value as UserType | 'all' })}>
+              <SelectTrigger id="user-type-filter">
+                <SelectValue placeholder="Todos os usuários" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os usuários</SelectItem>
+                <SelectItem value="client">Cliente</SelectItem>
+                <SelectItem value="provider">Prestador</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="read-filter">Status de Leitura</Label>
+            <Select onValueChange={(value) => setFilter({ ...filter, read: value as 'all' | 'read' | 'unread' })}>
+              <SelectTrigger id="read-filter">
+                <SelectValue placeholder="Todas as notificações" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as notificações</SelectItem>
+                <SelectItem value="read">Lidas</SelectItem>
+                <SelectItem value="unread">Não lidas</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">Seu Progresso</h3>
-            <div className="flex items-center space-x-2 mb-2">
-              <Star className="text-yellow-400" />
-              <span className="font-medium">{xp} XP</span>
+      </div>
+      <div className="md:hidden">
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+          <DrawerTrigger asChild>
+            <Button variant="outline" size="icon" className="fixed top-4 left-4">
+              <Filter className="h-4 w-4" />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Filtros</DrawerTitle>
+            </DrawerHeader>
+            <div className="p-4">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="type-filter">Tipo de Notificação</Label>
+                  <Select onValueChange={(value) => setFilter({ ...filter, type: value as NotificationType | 'all' })}>
+                    <SelectTrigger id="type-filter">
+                      <SelectValue placeholder="Todos os tipos" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os tipos</SelectItem>
+                      <SelectItem value="reminder">Lembrete</SelectItem>
+                      <SelectItem value="change">Mudança</SelectItem>
+                      <SelectItem value="cancellation">Cancelamento</SelectItem>
+                      <SelectItem value="confirmation">Confirmação</SelectItem>
+                      <SelectItem value="review">Avaliação</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="user-type-filter">Tipo de Usuário</Label>
+                  <Select onValueChange={(value) => setFilter({ ...filter, userType: value as UserType | 'all' })}>
+                    <SelectTrigger id="user-type-filter">
+                      <SelectValue placeholder="Todos os usuários" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os usuários</SelectItem>
+                      <SelectItem value="client">Cliente</SelectItem>
+                      <SelectItem value="provider">Prestador</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="read-filter">Status de Leitura</Label>
+                  <Select onValueChange={(value) => setFilter({ ...filter, read: value as 'all' | 'read' | 'unread' })}>
+                    <SelectTrigger id="read-filter">
+                      <SelectValue placeholder="Todas as notificações" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas as notificações</SelectItem>
+                      <SelectItem value="read">Lidas</SelectItem>
+                      <SelectItem value="unread">Não lidas</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center space-x-2 mb-2">
-              <Badge variant="secondary">
-                {level.icon} {level.name}
-              </Badge>
-            </div>
-            <Progress value={progress} className="w-full" />
-            <p className="text-sm text-gray-600 mt-2">
-              {completedLessons.length} de {totalLessons} aulas concluídas
-            </p>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button variant="outline">Fechar</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 p-4 md:p-10">
+        <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Notificações</h1>
+        {isLoading && (
+          <div className="flex justify-center items-center h-20">
+            <Loader2 className="h-6 w-6 animate-spin" />
           </div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">Conquistas</h3>
-            <div className="flex flex-wrap gap-2">
-              {achievements.map((achievement) => (
-                <TooltipProvider key={achievement.id}>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Badge
-                        variant={
-                          unlockedAchievements.includes(achievement.id)
-                            ? "default"
-                            : "outline"
-                        }
-                      >
-                        {achievement.icon}
-                      </Badge>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{achievement.title}</p>
-                      <p className="text-xs text-gray-500">
-                        {achievement.description}
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
-            </div>
-          </div>
-          <Accordion type="single" collapsible className="w-full">
-            {courseModules.map((module) => (
-              <AccordionItem value={`module-${module.id}`} key={module.id}>
-                <AccordionTrigger>{module.title}</AccordionTrigger>
-                <AccordionContent>
-                  <ul className="space-y-2">
-                    {module.lessons.map((lesson) => (
-                      <li
-                        key={lesson.id}
-                        className="flex items-center justify-between"
-                      >
-                        <Button
-                          variant="ghost"
-                          className="text-left flex items-center"
-                          onClick={() => setActiveVideo(lesson)}
-                        >
-                          {completedLessons.some(
-                            (completed) => completed.id === lesson.id,
-                          ) ? (
-                            <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                          ) : (
-                            <PlayCircle className="mr-2 h-4 w-4" />
-                          )}
-                          {lesson.title}
+        )}
+        <div className="bg-white rounded-lg shadow-md">
+          <ScrollArea className="h-[calc(100vh-200px)]">
+            {currentItems.map((notification) => (
+              <div
+                key={notification.id}
+                className={`p-3 md:p-4 border-b last:border-b-0 ${getNotificationColor(notification.type, notification.read)}`}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex items-start space-x-3">
+                    {getNotificationIcon(notification.type)}
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <p className="text-xs md:text-sm font-medium">{notification.message}</p>
+                        <Badge variant="outline" className="text-xs">
+                          {notification.userType === 'client' ? <User className="h-3 w-3" /> : <Briefcase className="h-3 w-3" />}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
+                      {notification.actionLabel && (
+                        <Button variant="link" size="sm" className="p-0 h-auto" asChild>
+                          <a href={notification.actionUrl}>{notification.actionLabel}</a>
                         </Button>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-500">
-                            {lesson.duration}
-                          </span>
-                          <Badge variant="outline">{lesson.xp} XP</Badge>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex space-x-1 mt-2 md:mt-0">
+                    {!notification.read && (
+                      <Button variant="ghost" size="sm" onClick={() => markAsRead(notification.id)} className="h-8 w-8 md:h-8 md:w-8">
+                        <CheckCircle className="h-4 w-4" />
+                        <span className="sr-only">Marcar como lida</span>
+                      </Button>
+                    )}
+                    <Button variant="ghost" size="sm" onClick={() => removeNotification(notification.id)} className="h-8 w-8 md:h-8 md:w-8">
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Remover notificação</span>
+                    </Button>
+                  </div>
+                </div>
+              </div>
             ))}
-          </Accordion>
+          </ScrollArea>
+        </div>
+        {/* Pagination */}
+        <div className="flex flex-col md:flex-row justify-between items-center mt-4 space-y-2 md:space-y-0">
+          <p className="text-xs md:text-sm text-muted-foreground order-2 md:order-1">
+            Mostrando {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredNotifications.length)} de {filteredNotifications.length}
+          </p>
+          <div className="flex space-x-2 order-1 md:order-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => changePage(Math.max(currentPage - 1, 1))}
+              disabled={currentPage === 1 || isLoading}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => changePage(Math.min(currentPage + 1, pageCount))}
+              disabled={currentPage === pageCount || isLoading}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

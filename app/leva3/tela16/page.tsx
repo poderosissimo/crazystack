@@ -1,220 +1,164 @@
 "use client"
 
-import { useState } from 'react'
-import { ChevronDown, ChevronUp, CreditCard, Truck, DollarSign, Package, RefreshCcw, ShieldCheck, HelpCircle } from 'lucide-react'
+import React, { useState } from 'react'
+import { Bell, Calendar, Clock, AlertTriangle, CheckCircle, User, Briefcase, Trash2, X,Star } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Tooltip } from "@/components/ui/tooltip"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
-export default function PoliticaPagamentoEnvio() {
-  const [expanded, setExpanded] = useState({
-    pagamento: false,
-    envio: false,
-    producao: false,
-    troca: false,
-    garantia: false
-  })
+type NotificationType = 'reminder' | 'change' | 'cancellation' | 'confirmation' | 'review'
+type UserType = 'client' | 'provider'
 
-  const [cep, setCep] = useState('')
+interface Notification {
+  id: number
+  type: NotificationType
+  userType: UserType
+  message: string
+  time: string
+  read: boolean
+  appointmentId: number
+  actionLabel?: string
+  actionUrl?: string
+}
 
-  const toggleExpand = (section) => {
-    setExpanded(prev => ({ ...prev, [section]: !prev[section] }))
+const getNotificationIcon = (type: NotificationType) => {
+  switch (type) {
+    case 'reminder': return <Clock className="h-5 w-5 text-blue-500" />
+    case 'change': return <Calendar className="h-5 w-5 text-yellow-500" />
+    case 'cancellation': return <X className="h-5 w-5 text-red-500" />
+    case 'confirmation': return <CheckCircle className="h-5 w-5 text-green-500" />
+    case 'review': return <Star className="h-5 w-5 text-purple-500" />
+  }
+}
+
+const getNotificationColor = (type: NotificationType, read: boolean) => {
+  if (read) return 'bg-secondary'
+  switch (type) {
+    case 'reminder': return 'bg-blue-100'
+    case 'change': return 'bg-yellow-100'
+    case 'cancellation': return 'bg-red-100'
+    case 'confirmation': return 'bg-green-100'
+    case 'review': return 'bg-purple-100'
+  }
+}
+
+export default function NotificationsPopover() {
+  const [notifications, setNotifications] = useState<Notification[]>([
+    { id: 1, type: 'reminder', userType: 'client', message: 'Lembrete: Consulta com Dr. Silva amanhã às 14h', time: '1 hora atrás', read: false, appointmentId: 101, actionLabel: 'Ver detalhes', actionUrl: '/appointment/101' },
+    { id: 2, type: 'change', userType: 'provider', message: 'O paciente João solicitou mudança de horário', time: '2 horas atrás', read: false, appointmentId: 102, actionLabel: 'Responder', actionUrl: '/reschedule/102' },
+    { id: 3, type: 'cancellation', userType: 'provider', message: 'A consulta das 16h foi cancelada pelo paciente', time: '3 horas atrás', read: false, appointmentId: 103 },
+    { id: 4, type: 'confirmation', userType: 'client', message: 'Sua consulta foi confirmada para 18/05 às 10h', time: '1 dia atrás', read: true, appointmentId: 104, actionLabel: 'Adicionar ao calendário', actionUrl: '/calendar/add/104' },
+    { id: 5, type: 'review', userType: 'provider', message: 'Novo feedback recebido do paciente Maria', time: '2 dias atrás', read: true, appointmentId: 105, actionLabel: 'Ver avaliação', actionUrl: '/review/105' },
+  ])
+
+  const markAsRead = (id: number) => {
+    setNotifications(notifications.map(notif => 
+      notif.id === id ? { ...notif, read: true } : notif
+    ))
   }
 
+  const removeNotification = (id: number) => {
+    setNotifications(notifications.filter(notif => notif.id !== id))
+  }
+
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(notif => ({ ...notif, read: true })))
+  }
+
+  const unreadCount = notifications.filter(n => !n.read).length
+
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Política de Pagamento e Envio</h1>
-
-      {/* Seção de Formas de Pagamento */}
-      <section className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold flex items-center"><CreditCard className="mr-2" /> Formas de Pagamento</h2>
-          <Button variant="ghost" onClick={() => toggleExpand('pagamento')}>
-            {expanded.pagamento ? <ChevronUp /> : <ChevronDown />}
+    <TooltipProvider>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="icon" className="relative">
+            <Bell className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <Badge variant="destructive" className="absolute -top-2 -right-2 px-2 py-1">
+                {unreadCount}
+              </Badge>
+            )}
           </Button>
-        </div>
-        <div className="flex space-x-4 mb-4">
-          <img src="/placeholder.svg?height=30&width=50" alt="Visa" className="h-8" />
-          <img src="/placeholder.svg?height=30&width=50" alt="Mastercard" className="h-8" />
-          <img src="/placeholder.svg?height=30&width=50" alt="Pix" className="h-8" />
-          <img src="/placeholder.svg?height=30&width=50" alt="Boleto" className="h-8" />
-        </div>
-        {expanded.pagamento && (
-          <Accordion type="single" collapsible>
-            <AccordionItem value="cartao">
-              <AccordionTrigger>Cartão de Crédito</AccordionTrigger>
-              <AccordionContent>
-                Aceitamos Visa, Mastercard, American Express. Parcelamento em até 12x sem juros.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="pix">
-              <AccordionTrigger>Pix</AccordionTrigger>
-              <AccordionContent>
-                Pagamento instantâneo com desconto de 5%.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="boleto">
-              <AccordionTrigger>Boleto</AccordionTrigger>
-              <AccordionContent>
-                Vencimento em 3 dias úteis. Pedido processado após confirmação do pagamento.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        )}
-      </section>
-
-      {/* Tabela de Prazos de Envio */}
-      <section className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold flex items-center"><Truck className="mr-2" /> Prazos de Envio</h2>
-          <Button variant="ghost" onClick={() => toggleExpand('envio')}>
-            {expanded.envio ? <ChevronUp /> : <ChevronDown />}
-          </Button>
-        </div>
-        {expanded.envio && (
-          <div>
-            <Select>
-              <option value="">Selecione o estado</option>
-              <option value="SP">São Paulo</option>
-              <option value="RJ">Rio de Janeiro</option>
-              <option value="MG">Minas Gerais</option>
-            </Select>
-            <table className="w-full mt-4">
-              <thead>
-                <tr>
-                  <th>Método</th>
-                  <th>Prazo</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Sedex</td>
-                  <td>2-3 dias úteis</td>
-                </tr>
-                <tr>
-                  <td>PAC</td>
-                  <td>5-8 dias úteis</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      {/* Seção de Opções de Frete */}
-      <section className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4 flex items-center"><Package className="mr-2" /> Opções de Frete</h2>
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <Checkbox id="sedex" />
-            <Label htmlFor="sedex">Sedex</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox id="pac" />
-            <Label htmlFor="pac">PAC</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox id="local" />
-            <Label htmlFor="local">Entrega Local</Label>
-          </div>
-        </div>
-        <div className="mt-4">
-          <Label htmlFor="cep">Calcular Frete:</Label>
-          <div className="flex mt-1">
-            <Input
-              type="text"
-              id="cep"
-              placeholder="Digite seu CEP"
-              value={cep}
-              onChange={(e) => setCep(e.target.value)}
-              className="mr-2"
-            />
-            <Button>Calcular</Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Informações de Custos Adicionais */}
-      <section className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4 flex items-center">
-          <DollarSign className="mr-2" /> Custos Adicionais
-          <Tooltip content="Podem incluir taxas de importação ou custos extras de transporte.">
-            <HelpCircle className="ml-2 h-5 w-5 text-gray-400" />
-          </Tooltip>
-        </h2>
-        <p>As taxas adicionais variam de acordo com o destino e o valor da compra. Consulte mais detalhes na finalização do pedido.</p>
-      </section>
-
-      {/* Seção de Prazos de Produção */}
-      <section className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold flex items-center"><RefreshCcw className="mr-2" /> Prazos de Produção (Sob Encomenda)</h2>
-          <Button variant="ghost" onClick={() => toggleExpand('producao')}>
-            {expanded.producao ? <ChevronUp /> : <ChevronDown />}
-          </Button>
-        </div>
-        {expanded.producao && (
-          <div>
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-              <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '45%' }}></div>
+        </PopoverTrigger>
+        <PopoverContent className="w-96" align="end" side="bottom">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-semibold">Notificações</h3>
+            <div className="flex space-x-2">
+              <Button variant="outline" size="sm" onClick={markAllAsRead}>
+                Marcar todas como lidas
+              </Button>
+              <Badge variant="secondary">{notifications.length} total</Badge>
             </div>
-            <p>Tempo estimado de produção: 5-7 dias úteis para itens personalizados.</p>
           </div>
-        )}
-      </section>
-
-      {/* Política de Troca/Devolução */}
-      <section className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold flex items-center"><RefreshCcw className="mr-2" /> Política de Troca/Devolução</h2>
-          <Button variant="ghost" onClick={() => toggleExpand('troca')}>
-            {expanded.troca ? <ChevronUp /> : <ChevronDown />}
-          </Button>
-        </div>
-        {expanded.troca && (
-          <div>
-            <ul className="list-disc pl-5 mb-4">
-              <li>7 dias para devolução após o recebimento</li>
-              <li>30 dias para troca em caso de defeito</li>
-              <li>Produto deve estar em perfeitas condições</li>
-            </ul>
-            <Button>Iniciar Processo de Troca/Devolução</Button>
+          <Separator className="my-2" />
+          <ScrollArea className="h-[400px] overflow-y-auto">
+            {notifications.map((notification) => (
+              <div 
+                key={notification.id} 
+                className={`mb-4 p-3 rounded-md ${getNotificationColor(notification.type, notification.read)}`}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex items-start space-x-2">
+                    {getNotificationIcon(notification.type)}
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <p className="text-sm font-medium">{notification.message}</p>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge variant="outline" className="text-xs">
+                              {notification.userType === 'client' ? <User className="h-3 w-3" /> : <Briefcase className="h-3 w-3" />}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {notification.userType === 'client' ? 'Notificação para cliente' : 'Notificação para prestador'}
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{notification.time}</p>
+                      {notification.actionLabel && (
+                        <Button variant="link" size="sm" className="p-0 h-auto" asChild>
+                          <a href={notification.actionUrl}>{notification.actionLabel}</a>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex space-x-1">
+                    {!notification.read && (
+                      <Button variant="ghost" size="icon" onClick={() => markAsRead(notification.id)} className="h-6 w-6">
+                        <CheckCircle className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <Button variant="ghost" size="icon" onClick={() => removeNotification(notification.id)} className="h-6 w-6">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </ScrollArea>
+          {notifications.length === 0 && (
+            <p className="text-center text-muted-foreground py-4">Nenhuma notificação</p>
+          )}
+          <Separator className="my-2" />
+          <div className="flex justify-end">
+            <Button variant="outline" size="sm" onClick={() => setNotifications([])}>
+              Limpar todas
+            </Button>
           </div>
-        )}
-      </section>
-
-      {/* Garantia dos Produtos */}
-      <section className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold flex items-center"><ShieldCheck className="mr-2" /> Garantia dos Produtos</h2>
-          <Button variant="ghost" onClick={() => toggleExpand('garantia')}>
-            {expanded.garantia ? <ChevronUp /> : <ChevronDown />}
-          </Button>
-        </div>
-        {expanded.garantia && (
-          <div>
-            <Accordion type="single" collapsible>
-              <AccordionItem value="garantia-padrao">
-                <AccordionTrigger>Qual é a garantia padrão?</AccordionTrigger>
-                <AccordionContent>
-                  Todos os produtos têm garantia de 90 dias conforme o Código de Defesa do Consumidor.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="garantia-estendida">
-                <AccordionTrigger>Como funciona a garantia estendida?</AccordionTrigger>
-                <AccordionContent>
-                  A garantia estendida pode ser adquirida separadamente e prolonga a proteção por até 2 anos adicionais.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-            <Button className="mt-4">Solicitar Garantia</Button>
-          </div>
-        )}
-      </section>
-    </div>
+        </PopoverContent>
+      </Popover>
+    </TooltipProvider>
   )
 }
