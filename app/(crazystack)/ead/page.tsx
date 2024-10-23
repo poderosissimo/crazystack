@@ -25,13 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  CheckCircle,
-  PlayCircle,
-  Award,
-  Star,
-  Link as LinkIcon,
-} from "lucide-react";
+import { CheckCircle, PlayCircle, Star, Link as LinkIcon } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const courseModules = [
@@ -186,18 +180,16 @@ const levels = [
   { name: "Especialista", minXP: 200, icon: "🌴" },
   { name: "Mestre", minXP: 300, icon: "🌺" },
 ];
-
-export default function CourseModules() {
-  interface Lesson {
-    id: number;
-    title: string;
-    videoUrl: string;
-    duration: string;
-    xp: number;
-    description: string;
-    relatedLinks: { title: string; url: string }[];
-  }
-
+interface Lesson {
+  id: number;
+  title: string;
+  videoUrl: string;
+  duration: string;
+  xp: number;
+  description: string;
+  relatedLinks: { title: string; url: string }[];
+}
+export default function Page() {
   const [activeVideo, setActiveVideo] = useState<Lesson | null>(null);
   const [completedLessons, setCompletedLessons] = useState<Lesson[]>([]);
   const [unlockedAchievements, setUnlockedAchievements] = useState<number[]>(
