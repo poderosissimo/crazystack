@@ -48,7 +48,7 @@ const openingHours = [
 
 export default function Component() {
   return (
-    <div className="min-h-screen bg-background text-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-background text-foreground p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
@@ -68,25 +68,26 @@ export default function Component() {
                 <span>Avenida São Sebastião, 357, São Paulo</span>
               </div>
               <div className="flex items-center">
-                <Star className="text-yellow-400 mr-1 h-5 w-5" />
+                <Star className="mr-1 h-5 w-5" />
                 <span className="font-bold mr-2">5.0</span>
-                <span className="text-gray-400">(889 avaliações)</span>
+                <span className="opacity-70">(889 avaliações)</span>
               </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-4 mb-8">
               {services.map((service) => (
-                <Card key={service.name} className="bg-gray-800">
+                <Card
+                  key={service.name}
+                  className="bg-background border border-foreground/20"
+                >
                   <CardHeader>
                     <CardTitle>{service.name}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-400 mb-4">
+                    <p className="text-sm opacity-70 mb-4">
                       {service.description}
                     </p>
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-purple-400">
-                        {service.price}
-                      </span>
+                      <span className="text-lg font-bold">{service.price}</span>
                       <Button variant="outline">Reservar</Button>
                     </div>
                   </CardContent>
@@ -95,15 +96,15 @@ export default function Component() {
             </div>
           </div>
           <div>
-            <Card className="bg-gray-800 mb-8">
+            <Card className="bg-background border border-foreground/20 mb-8">
               <CardHeader>
                 <CardTitle>Mapa</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="aspect-square bg-gray-700 rounded-lg"></div>
+                <div className="aspect-square bg-foreground/10 rounded-lg"></div>
               </CardContent>
             </Card>
-            <Card className="bg-gray-800 mb-8">
+            <Card className="bg-background border border-foreground/20 mb-8">
               <CardHeader>
                 <CardTitle>Contato</CardTitle>
               </CardHeader>
@@ -128,7 +129,7 @@ export default function Component() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-gray-800">
+            <Card className="bg-background border border-foreground/20">
               <CardHeader>
                 <CardTitle>Horário de Funcionamento</CardTitle>
               </CardHeader>
@@ -145,7 +146,7 @@ export default function Component() {
         </div>
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4">Sobre Nós</h2>
-          <p className="text-gray-400">
+          <p className="opacity-70">
             Bem-vindo à Vintage Barber, onde tradição encontra estilo. Nossa
             equipe de mestres barbeiros transforma cortes de cabelo e barbas em
             obras de arte. Em um ambiente acolhedor, promovemos confiança,
