@@ -1,158 +1,128 @@
-import Image from "next/image";
-import { MapPin, Star, Phone, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowUpIcon, ArrowDownIcon, MessageSquareIcon, ClockIcon, PlusCircleIcon, SearchIcon } from 'lucide-react'
+import Link from 'next/link'
 
-const services = [
-  {
-    name: "Corte de Cabelo",
-    description: "Estilo personalizado com as últimas tendências.",
-    price: "R$ 50,00",
-  },
-  {
-    name: "Sobrancelha",
-    description: "Expressão acentuada com modelagem precisa.",
-    price: "R$ 25,00",
-  },
-  {
-    name: "Barba",
-    description: "Modelagem completa para destacar sua masculinidade.",
-    price: "R$ 45,00",
-  },
-  {
-    name: "Massagem",
-    description: "Relaxe e renove com nossos tratamentos revitalizantes.",
-    price: "R$ 35,00",
-  },
-  {
-    name: "Pézinho",
-    description: "Acabamento perfeito para um visual renovado.",
-    price: "R$ 20,00",
-  },
-  {
-    name: "Hidratação",
-    description: "Fios hidratados, macios e brilhantes.",
-    price: "R$ 30,00",
-  },
-];
+export default function HomePage() {
+  const [featuredQuestions] = useState([
+    { id: 1, title: "What's the best way to learn React?", votes: 42, answers: 7, timestamp: "2h ago", tags: ["react", "javascript"] },
+    { id: 2, title: "How do I create a responsive layout?", votes: 38, answers: 5, timestamp: "4h ago", tags: ["css", "html"] },
+    { id: 3, title: "What are the benefits of TypeScript?", votes: 31, answers: 6, timestamp: "6h ago", tags: ["typescript", "javascript"] },
+  ])
 
-const openingHours = [
-  { day: "Segunda", hours: "Fechado" },
-  { day: "Terça-Feira", hours: "09:00 - 21:00" },
-  { day: "Quarta-Feira", hours: "09:00 - 21:00" },
-  { day: "Quinta-Feira", hours: "09:00 - 21:00" },
-  { day: "Sexta-Feira", hours: "09:00 - 21:00" },
-  { day: "Sábado", hours: "08:00 - 17:00" },
-  { day: "Domingo", hours: "Fechado" },
-];
+  const [trendingTopics] = useState([
+    { id: 1, name: "Technology", icon: "💻" },
+    { id: 2, name: "Science", icon: "🔬" },
+    { id: 3, name: "Health", icon: "🏥" },
+    { id: 4, name: "Entertainment", icon: "🎭" },
+  ])
 
-export default function Component() {
+  const [categories] = useState([
+    { id: 1, name: "Programming", icon: "👨‍💻" },
+    { id: 2, name: "Design", icon: "🎨" },
+    { id: 3, name: "Business", icon: "💼" },
+    { id: 4, name: "Lifestyle", icon: "🌿" },
+    { id: 5, name: "Education", icon: "📚" },
+    { id: 6, name: "Sports", icon: "⚽" },
+  ])
+
   return (
-    <div className="min-h-screen bg-background text-gray-100 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
-            <div className="relative aspect-video mb-8">
-              <Image
-                src="/placeholder.svg"
-                alt="Vintage Barber Interior"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg"
-              />
-            </div>
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold mb-2">Vintage Barber</h1>
-              <div className="flex items-center text-sm mb-4">
-                <MapPin className="mr-2 h-4 w-4" />
-                <span>Avenida São Sebastião, 357, São Paulo</span>
-              </div>
-              <div className="flex items-center">
-                <Star className="text-yellow-400 mr-1 h-5 w-5" />
-                <span className="font-bold mr-2">5.0</span>
-                <span className="text-gray-400">(889 avaliações)</span>
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-4 mb-8">
-              {services.map((service) => (
-                <Card key={service.name} className="bg-gray-800">
-                  <CardHeader>
-                    <CardTitle>{service.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-400 mb-4">
-                      {service.description}
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-purple-400">
-                        {service.price}
-                      </span>
-                      <Button variant="outline">Reservar</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-          <div>
-            <Card className="bg-gray-800 mb-8">
-              <CardHeader>
-                <CardTitle>Mapa</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="aspect-square bg-gray-700 rounded-lg"></div>
-              </CardContent>
-            </Card>
-            <Card className="bg-gray-800 mb-8">
-              <CardHeader>
-                <CardTitle>Contato</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <Phone className="mr-2 h-4 w-4" />
-                    <span>(11) 98204-5108</span>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Phone className="mr-2 h-4 w-4" />
-                    <span>(11) 99503-2351</span>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-gray-800">
-              <CardHeader>
-                <CardTitle>Horário de Funcionamento</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {openingHours.map((day) => (
-                  <div key={day.day} className="flex justify-between mb-2">
-                    <span>{day.day}</span>
-                    <span>{day.hours}</span>
-                  </div>
+    <div className="container mx-auto px-4 py-8">
+      <header className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Q&A Platform</h1>
+        <div className="flex items-center space-x-4">
+          <Button variant="outline">
+            <SearchIcon className="w-4 h-4 mr-2" />
+            Search
+          </Button>
+          <Button>
+            <PlusCircleIcon className="w-4 h-4 mr-2" />
+            Ask a Question
+          </Button>
+        </div>
+      </header>
+
+      <main className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <section className="md:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Featured Questions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-4">
+                {featuredQuestions.map((question) => (
+                  <li key={question.id} className="border-b pb-4 last:border-b-0">
+                    <Link href={`/question/${question.id}`} className="block hover:bg-muted p-2 rounded-md transition-colors">
+                      <h3 className="text-lg font-semibold mb-2">{question.title}</h3>
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <span className="flex items-center mr-4">
+                          <ArrowUpIcon className="w-4 h-4 mr-1" />
+                          <ArrowDownIcon className="w-4 h-4 mr-1" />
+                          {question.votes}
+                        </span>
+                        <span className="flex items-center mr-4">
+                          <MessageSquareIcon className="w-4 h-4 mr-1" />
+                          {question.answers}
+                        </span>
+                        <span className="flex items-center">
+                          <ClockIcon className="w-4 h-4 mr-1" />
+                          {question.timestamp}
+                        </span>
+                      </div>
+                      <div className="mt-2">
+                        {question.tags.map((tag) => (
+                          <span key={tag} className="inline-block bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-xs mr-2">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </Link>
+                  </li>
                 ))}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Sobre Nós</h2>
-          <p className="text-gray-400">
-            Bem-vindo à Vintage Barber, onde tradição encontra estilo. Nossa
-            equipe de mestres barbeiros transforma cortes de cabelo e barbas em
-            obras de arte. Em um ambiente acolhedor, promovemos confiança,
-            estilo e uma comunidade unida.
-          </p>
-        </div>
-      </div>
+              </ul>
+            </CardContent>
+          </Card>
+        </section>
+
+        <aside>
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Trending Topics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="grid grid-cols-2 gap-4">
+                {trendingTopics.map((topic) => (
+                  <li key={topic.id}>
+                    <Link href={`/topic/${topic.id}`} className="flex items-center p-2 bg-muted hover:bg-muted/80 rounded-md transition-colors">
+                      <span className="text-2xl mr-2">{topic.icon}</span>
+                      <span className="text-sm font-medium">{topic.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Categories</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="grid grid-cols-2 gap-4">
+                {categories.map((category) => (
+                  <li key={category.id}>
+                    <Link href={`/category/${category.id}`} className="flex items-center p-2 bg-muted hover:bg-muted/80 rounded-md transition-colors">
+                      <span className="text-2xl mr-2">{category.icon}</span>
+                      <span className="text-sm font-medium">{category.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </aside>
+      </main>
     </div>
-  );
+  )
 }

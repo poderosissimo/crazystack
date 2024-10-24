@@ -1,266 +1,111 @@
-"use client";
+import { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Textarea } from "@/components/ui/textarea"
+import { Separator } from "@/components/ui/separator"
+import { ArrowBigUp, ArrowBigDown, Share2, Bookmark, MessageSquare, Flag } from 'lucide-react'
 
-import { useState } from "react";
-import { Check, Download, Eye, ArrowLeft, RefreshCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import Link from "next/link";
-import QRCode from "qrcode.react";
+export default function QuestionDetailsPage() {
+  const [isFollowing, setIsFollowing] = useState(false)
+  const [questionVotes, setQuestionVotes] = useState(0)
+  const [answerVotes, setAnswerVotes] = useState([5, 2, 0])
 
-// Tipos
-type Ingresso = {
-  id: string;
-  eventoNome: string;
-  sessao: string;
-  tipo: string;
-  quantidade: number;
-  preco: number;
-};
+  const handleQuestionVote = (value: number) => {
+    setQuestionVotes(prev => prev + value)
+  }
 
-// Dados mockados do pedido
-const pedido = {
-  numeroPedido: "123456",
-  data: new Date().toLocaleDateString("pt-BR"),
-  ingressos: [
-    {
-      id: "1",
-      eventoNome: "Show do Metallica",
-      sessao: "15/10/2023 20:00",
-      tipo: "Inteira",
-      quantidade: 2,
-      preco: 100,
-    },
-    {
-      id: "2",
-      eventoNome: "Show do Metallica",
-      sessao: "15/10/2023 20:00",
-      tipo: "Meia",
-      quantidade: 1,
-      preco: 50,
-    },
-    {
-      id: "3",
-      eventoNome: "Festival de Jazz",
-      sessao: "20/11/2023 19:00",
-      tipo: "VIP",
-      quantidade: 2,
-      preco: 200,
-    },
-  ] as Ingresso[],
-};
+  const handleAnswerVote = (index: number, value: number) => {
+    setAnswerVotes(prev => prev.map((votes, i) => i === index ? votes + value : votes))
+  }
 
-export default function TelaConfirmacao() {
-  const [downloadStatus, setDownloadStatus] = useState<Record<string, boolean>>(
-    {},
-  );
-  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
-  const [isRefundRequested, setIsRefundRequested] = useState<
-    Record<string, boolean>
-  >({});
-  const [isTransferEnabled, setIsTransferEnabled] = useState<
-    Record<string, boolean>
-  >({});
-
-  const handleDownload = (ingressoId: string) => {
-    // Simula o download do ingresso
-    setTimeout(() => {
-      setDownloadStatus((prev) => ({ ...prev, [ingressoId]: true }));
-      // Aqui você implementaria a lógica real de download, por exemplo:
-      // window.open(`/api/tickets/download/${ingressoId}`, '_blank')
-    }, 1500);
-  };
-
-  const handleRefundRequest = (ingressoId: string) => {
-    setIsRefundRequested((prev) => ({ ...prev, [ingressoId]: true }));
-    // Aqui você implementaria a lógica real de solicitação de estorno
-    alert("Solicitação de estorno enviada. Nossa equipe entrará em contato.");
-  };
-
-  const handleTransferToggle = (ingressoId: string) => {
-    setIsTransferEnabled((prev) => ({
-      ...prev,
-      [ingressoId]: !prev[ingressoId],
-    }));
-  };
-
-  const totalValor = pedido.ingressos.reduce(
-    (total, ingresso) => total + ingresso.quantidade * ingresso.preco,
-    0,
-  );
+  const handleFollow = () => {
+    setIsFollowing(prev => !prev)
+  }
 
   return (
-    <div className="container mx-auto p-4">
-      <Card className="w-full max-w-3xl mx-auto">
-        <CardHeader>
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-4">
-            <Check className="h-6 w-6 text-green-600" />
+    <div className="max-w-4xl mx-auto p-6">
+      <main>
+        <h1 className="text-3xl font-bold mb-4">How do I create a React component?</h1>
+        
+        <div className="flex items-center mb-4">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src="/placeholder.svg?height=40&width=40" alt="@johndoe" />
+            <AvatarFallback>JD</AvatarFallback>
+          </Avatar>
+          <div className="ml-3">
+            <p className="font-semibold">John Doe</p>
+            <p className="text-sm text-muted-foreground">Reputation: 1234</p>
           </div>
-          <CardTitle className="text-2xl text-center">
-            Compra Confirmada!
-          </CardTitle>
-          <CardDescription className="text-center">
-            Obrigado por sua compra. Seu pedido foi processado com sucesso.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <p className="font-semibold">
-                Número do Pedido: {pedido.numeroPedido}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Data da Compra: {pedido.data}
-              </p>
-            </div>
-            <Separator />
-            <div>
-              <h3 className="font-semibold mb-2">Detalhes do Pedido</h3>
-              {pedido.ingressos.map((ingresso) => (
-                <Card key={ingresso.id} className="mb-4">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-semibold">{ingresso.eventoNome}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {ingresso.sessao}
-                        </p>
-                      </div>
-                      <p className="font-semibold">
-                        R$ {(ingresso.preco * ingresso.quantidade).toFixed(2)}
-                      </p>
-                    </div>
-                    <p className="text-sm">
-                      {ingresso.tipo} - Quantidade: {ingresso.quantidade}
-                    </p>
-                    <div className="mt-4 flex space-x-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex items-center"
-                            onClick={() => setSelectedTicketId(ingresso.id)}
-                          >
-                            <Eye className="mr-2 h-4 w-4" />
-                            Ver Ingresso
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                          <DialogHeader>
-                            <DialogTitle>Detalhes do Ingresso</DialogTitle>
-                            <DialogDescription>
-                              Informações e QR Code do seu ingresso
-                            </DialogDescription>
-                          </DialogHeader>
-                          {selectedTicketId && (
-                            <div className="grid gap-4 py-4">
-                              <div className="flex justify-center">
-                                <QRCode
-                                  value={`ticket-${selectedTicketId}`}
-                                  size={200}
-                                />
-                              </div>
-                              <div>
-                                <Label className="font-bold">Evento</Label>
-                                <p>{ingresso.eventoNome}</p>
-                              </div>
-                              <div>
-                                <Label className="font-bold">Sessão</Label>
-                                <p>{ingresso.sessao}</p>
-                              </div>
-                              <div>
-                                <Label className="font-bold">Tipo</Label>
-                                <p>{ingresso.tipo}</p>
-                              </div>
-                              <div>
-                                <Label className="font-bold">Quantidade</Label>
-                                <p>{ingresso.quantidade}</p>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <Switch
-                                  id={`ticket-transfer-${ingresso.id}`}
-                                  checked={
-                                    isTransferEnabled[ingresso.id] || false
-                                  }
-                                  onCheckedChange={() =>
-                                    handleTransferToggle(ingresso.id)
-                                  }
-                                />
-                                <Label
-                                  htmlFor={`ticket-transfer-${ingresso.id}`}
-                                >
-                                  Permitir transferência
-                                </Label>
-                              </div>
-                              <Button
-                                variant="destructive"
-                                onClick={() => handleRefundRequest(ingresso.id)}
-                                disabled={isRefundRequested[ingresso.id]}
-                              >
-                                {isRefundRequested[ingresso.id]
-                                  ? "Estorno Solicitado"
-                                  : "Solicitar Estorno"}
-                              </Button>
-                            </div>
-                          )}
-                        </DialogContent>
-                      </Dialog>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center"
-                        onClick={() => handleDownload(ingresso.id)}
-                        disabled={downloadStatus[ingresso.id]}
-                      >
-                        {downloadStatus[ingresso.id] ? (
-                          <RefreshCcw className="mr-2 h-4 w-4" />
-                        ) : (
-                          <Download className="mr-2 h-4 w-4" />
-                        )}
-                        {downloadStatus[ingresso.id]
-                          ? "Baixar Novamente"
-                          : "Baixar"}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <Separator />
-            <div className="flex justify-between items-center font-semibold">
-              <span>Total</span>
-              <span>R$ {totalValor.toFixed(2)}</span>
-            </div>
+          <p className="ml-auto text-sm text-muted-foreground">Asked 2 hours ago</p>
+        </div>
+
+        <p className="mb-4">
+          I'm new to React and I'm trying to understand how to create a basic component. Can someone explain the process step by step?
+        </p>
+
+        <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center">
+            <Button variant="ghost" size="sm" onClick={() => handleQuestionVote(1)}><ArrowBigUp className="h-6 w-6" /></Button>
+            <span className="mx-2">{questionVotes}</span>
+            <Button variant="ghost" size="sm" onClick={() => handleQuestionVote(-1)}><ArrowBigDown className="h-6 w-6" /></Button>
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Link href="/eventos" passHref>
-            <Button variant="outline" className="flex items-center">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar para Eventos
-            </Button>
-          </Link>
-          <Button>Minha Conta</Button>
-        </CardFooter>
-      </Card>
+          <Button variant={isFollowing ? "secondary" : "outline"} onClick={handleFollow}>
+            {isFollowing ? "Following" : "Follow"}
+          </Button>
+          <Button variant="outline" size="icon">
+            <Share2 className="h-4 w-4" />
+            <span className="sr-only">Share</span>
+          </Button>
+          <Button variant="outline" size="icon">
+            <Bookmark className="h-4 w-4" />
+            <span className="sr-only">Bookmark</span>
+          </Button>
+          <Button variant="ghost" size="sm">
+            <Flag className="h-4 w-4 mr-2" />
+            Report
+          </Button>
+        </div>
+
+        <Separator className="my-6" />
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Answers</h2>
+
+          {answerVotes.map((votes, index) => (
+            <div key={index} className={`mb-6 p-4 rounded-lg ${index === 0 ? 'bg-green-50 border border-green-200' : 'bg-gray-50'}`}>
+              {index === 0 && <div className="text-green-600 font-semibold mb-2">Best Answer</div>}
+              <div className="flex items-start mb-2">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={`/placeholder.svg?height=32&width=32&text=${index + 1}`} alt={`@user${index + 1}`} />
+                  <AvatarFallback>U{index + 1}</AvatarFallback>
+                </Avatar>
+                <div className="ml-3">
+                  <p className="font-semibold">User {index + 1}</p>
+                  <p className="text-sm text-muted-foreground">Answered 1 hour ago</p>
+                </div>
+              </div>
+              <p className="mb-4">This is an example answer to the question. It provides a brief explanation and some code snippets if necessary.</p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center">
+                  <Button variant="ghost" size="sm" onClick={() => handleAnswerVote(index, 1)}><ArrowBigUp className="h-6 w-6" /></Button>
+                  <span className="mx-2">{votes}</span>
+                  <Button variant="ghost" size="sm" onClick={() => handleAnswerVote(index, -1)}><ArrowBigDown className="h-6 w-6" /></Button>
+                </div>
+                <Button variant="ghost" size="sm">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Reply
+                </Button>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-bold mb-4">Your Answer</h2>
+          <Textarea placeholder="Type your answer here..." className="min-h-[150px] mb-4" />
+          <Button>Submit Answer</Button>
+        </section>
+      </main>
     </div>
-  );
+  )
 }
