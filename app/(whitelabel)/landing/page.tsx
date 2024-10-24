@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +10,7 @@ import {
   Smartphone,
   Users,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function LandingPage() {
   return (

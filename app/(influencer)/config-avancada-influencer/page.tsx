@@ -4,23 +4,14 @@ import { useState } from "react";
 import {
   User,
   Camera,
-  MapPin,
-  Clock,
   DollarSign,
   Bell,
   Shield,
   Save,
   Briefcase,
-  Clipboard,
   Star,
   Settings,
   FileText,
-  Instagram,
-  Youtube,
-  Twitter,
-  Facebook,
-  TikTok,
-  Twitch,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -269,7 +260,7 @@ export default function ConfiguracaoAvancadaInfluencer() {
             <Label>Redes Sociais</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center space-x-2">
-                <Instagram className="h-5 w-5 text-pink-600" />
+                <User className="h-5 w-5 text-pink-600" />
                 <Input
                   placeholder="Instagram"
                   value={config.redesSociais.instagram}
@@ -283,7 +274,7 @@ export default function ConfiguracaoAvancadaInfluencer() {
                 />
               </div>
               <div className="flex items-center space-x-2">
-                <Youtube className="h-5 w-5 text-red-600" />
+                <User className="h-5 w-5 text-red-600" />
                 <Input
                   placeholder="YouTube"
                   value={config.redesSociais.youtube}
@@ -297,7 +288,7 @@ export default function ConfiguracaoAvancadaInfluencer() {
                 />
               </div>
               <div className="flex items-center space-x-2">
-                <TikTok className="h-5 w-5 text-black" />
+                <User className="h-5 w-5 text-black" />
                 <Input
                   placeholder="TikTok"
                   value={config.redesSociais.tiktok}
@@ -307,7 +298,7 @@ export default function ConfiguracaoAvancadaInfluencer() {
                 />
               </div>
               <div className="flex items-center space-x-2">
-                <Twitter className="h-5 w-5 text-blue-400" />
+                <User className="h-5 w-5 text-blue-400" />
                 <Input
                   placeholder="Twitter"
                   value={config.redesSociais.twitter}
@@ -321,7 +312,7 @@ export default function ConfiguracaoAvancadaInfluencer() {
                 />
               </div>
               <div className="flex items-center space-x-2">
-                <Facebook className="h-5 w-5 text-blue-600" />
+                <User className="h-5 w-5 text-blue-600" />
                 <Input
                   placeholder="Facebook"
                   value={config.redesSociais.facebook}
@@ -335,7 +326,7 @@ export default function ConfiguracaoAvancadaInfluencer() {
                 />
               </div>
               <div className="flex items-center space-x-2">
-                <Twitch className="h-5 w-5 text-purple-600" />
+                <User className="h-5 w-5 text-purple-600" />
                 <Input
                   placeholder="Twitch"
                   value={config.redesSociais.twitch}

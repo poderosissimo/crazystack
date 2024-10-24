@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   User,
   Building,
@@ -21,37 +21,118 @@ import {
   BarChart,
   HelpCircle,
   Mail,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Slider } from "@/components/ui/slider"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+
+type LimitesPlanos = {
+  basico: {
+    usuarios: number;
+    armazenamento: number;
+    chamadosAPI: number;
+  };
+  pro: {
+    usuarios: number;
+    armazenamento: number;
+    chamadosAPI: number;
+  };
+  enterprise: {
+    usuarios: string;
+    armazenamento: number;
+    chamadosAPI: number;
+  };
+};
+
+type Config = {
+  nomeEmpresa: string;
+  email: string;
+  telefone: string;
+  site: string;
+  descricao: string;
+  dataFundacao: string;
+  tamanhoEmpresa: string;
+  setorAtuacao: string;
+  nomeProduto: string;
+  versaoAtual: string;
+  tiposSolucao: string[];
+  recursosDisponiveis: string[];
+  limitesPlanos: LimitesPlanos;
+  integracoesTerceiros: string[];
+  permitirPersonalizacaoLogo: boolean;
+  permitirPersonalizacaoCores: boolean;
+  permitirPersonalizacaoDominio: boolean;
+  permitirPersonalizacaoEmails: boolean;
+  modeloPreco: string;
+  moeda: string;
+  precosPadrao: {
+    basico: number;
+    pro: number;
+    enterprise: number;
+  };
+  frequenciaCobranca: string[];
+  metodoPagamentoPadrao: string;
+  ofereceTesteGratis: boolean;
+  duracaoTesteGratis: number;
+  canalSuporte: string[];
+  horasSuporteBasico: string;
+  horasSuportePro: string;
+  horasSuporteEnterprise: string;
+  tempoRespostaSLA: {
+    basico: number;
+    pro: number;
+    enterprise: number;
+  };
+  ofereceSuportePersonalizado: boolean;
+  certificacoesSeg: string[];
+  autenticacaoDoisFatores: boolean;
+  criptografiaEmRepouso: boolean;
+  criptografiaEmTransito: boolean;
+  politicaRetencaoDados: number;
+  frequenciaAtualizacoes: string;
+  janelaManutencao: string;
+  versaoMinima: string;
+  politicaDeprecacao: number;
+  metricas: string[];
+  dashboardPersonalizavel: boolean;
+  exportacaoRelatorios: string[];
+  ofereceTreinamentoInicial: boolean;
+  materiaisTreinamento: string[];
+  tempoMedioImplementacao: number;
+  termoServicoURL: string;
+  politicaPrivacidadeURL: string;
+  contratoSLAURL: string;
+  notificacoesEmail: boolean;
+  notificacoesSMS: boolean;
+  notificacoesPlataforma: boolean;
+  tiposNotificacao: string[];
+  idiomasPlatforma: string[];
+  temaEscuro: boolean;
+  fusoHorarioPadrao: string;
+};
 
 export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
-  const [config, setConfig] = useState({
+  const [config, setConfig] = useState<Config>({
     // Informações da Empresa
     nomeEmpresa: "TechSolutions Inc.",
     email: "contato@techsolutions.com",
     telefone: "(11) 98765-4321",
     site: "https://www.techsolutions.com",
-    descricao: "Fornecedor líder de soluções SaaS white-label para empresas de todos os tamanhos.",
+    descricao:
+      "Fornecedor líder de soluções SaaS white-label para empresas de todos os tamanhos.",
     dataFundacao: "2010-01-01",
     tamanhoEmpresa: "50-100",
     setorAtuacao: "tecnologia",
@@ -60,7 +141,12 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
     nomeProduto: "TechSaaS",
     versaoAtual: "2.5.0",
     tiposSolucao: ["crm", "erp", "ecommerce"],
-    recursosDisponiveis: ["gestaoClientes", "faturamento", "relatorios", "integracao"],
+    recursosDisponiveis: [
+      "gestaoClientes",
+      "faturamento",
+      "relatorios",
+      "integracao",
+    ],
     limitesPlanos: {
       basico: {
         usuarios: 10,
@@ -90,9 +176,9 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
     modeloPreco: "assinatura",
     moeda: "BRL",
     precosPadrao: {
-      basico: 99.90,
-      pro: 299.90,
-      enterprise: 999.90,
+      basico: 99.9,
+      pro: 299.9,
+      enterprise: 999.9,
     },
     frequenciaCobranca: ["mensal", "anual"],
     metodoPagamentoPadrao: "cartao",
@@ -143,17 +229,22 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
     notificacoesEmail: true,
     notificacoesSMS: false,
     notificacoesPlataforma: true,
-    tiposNotificacao: ["atualizacoes", "manutencao", "seguranca", "faturamento"],
+    tiposNotificacao: [
+      "atualizacoes",
+      "manutencao",
+      "seguranca",
+      "faturamento",
+    ],
 
     // Preferências de Plataforma
     idiomasPlatforma: ["portugues", "ingles", "espanhol"],
     temaEscuro: false,
     fusoHorarioPadrao: "America/Sao_Paulo",
-  })
+  });
 
   const handleChange = (field: string, value: any) => {
-    setConfig((prev) => ({ ...prev, [field]: value }))
-  }
+    setConfig((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleNestedChange = (parent: string, field: string, value: any) => {
     setConfig((prev: any) => ({
@@ -162,13 +253,13 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
         ...prev[parent],
         [field]: value,
       },
-    }))
-  }
+    }));
+  };
 
   const handleSave = () => {
-    console.log("Configurações salvas:", config)
+    console.log("Configurações salvas:", config);
     // Aqui você implementaria a lógica para salvar as configurações no backend
-  }
+  };
 
   return (
     <div className="container mx-auto p-4 space-y-6 bg-background min-h-screen">
@@ -188,7 +279,12 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
               <AvatarImage src="/placeholder.svg" alt={config.nomeEmpresa} />
-              <AvatarFallback>{config.nomeEmpresa.split(" ").map((n) => n[0]).join("")}</AvatarFallback>
+              <AvatarFallback>
+                {config.nomeEmpresa
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </AvatarFallback>
             </Avatar>
             <Button variant="outline">Alterar Logo</Button>
           </div>
@@ -299,39 +395,59 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
           <div className="space-y-2">
             <Label>Tipos de Solução</Label>
             <div className="flex flex-wrap gap-2">
-              {["crm", "erp", "ecommerce", "helpdesk", "marketing"].map((tipo) => (
-                <div key={tipo} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`tipo-${tipo}`}
-                    checked={config.tiposSolucao.includes(tipo)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        handleChange("tiposSolucao", [...config.tiposSolucao, tipo])
-                      } else {
-                        handleChange("tiposSolucao", config.tiposSolucao.filter((t) => t !== tipo))
-                      }
-                    }}
-                  />
-                  <Label htmlFor={`tipo-${tipo}`}>
-                    {tipo.toUpperCase()}
-                  </Label>
-                </div>
-              ))}
+              {["crm", "erp", "ecommerce", "helpdesk", "marketing"].map(
+                (tipo) => (
+                  <div key={tipo} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`tipo-${tipo}`}
+                      checked={config.tiposSolucao.includes(tipo)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          handleChange("tiposSolucao", [
+                            ...config.tiposSolucao,
+                            tipo,
+                          ]);
+                        } else {
+                          handleChange(
+                            "tiposSolucao",
+                            config.tiposSolucao.filter((t) => t !== tipo),
+                          );
+                        }
+                      }}
+                    />
+                    <Label htmlFor={`tipo-${tipo}`}>{tipo.toUpperCase()}</Label>
+                  </div>
+                ),
+              )}
             </div>
           </div>
           <div className="space-y-2">
             <Label>Recursos Disponíveis</Label>
             <div className="flex flex-wrap gap-2">
-              {["gestaoClientes", "faturamento", "relatorios", "integracao", "automacao"].map((recurso) => (
+              {[
+                "gestaoClientes",
+                "faturamento",
+                "relatorios",
+                "integracao",
+                "automacao",
+              ].map((recurso) => (
                 <div key={recurso} className="flex items-center space-x-2">
                   <Checkbox
                     id={`recurso-${recurso}`}
                     checked={config.recursosDisponiveis.includes(recurso)}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        handleChange("recursosDisponiveis", [...config.recursosDisponiveis, recurso])
+                        handleChange("recursosDisponiveis", [
+                          ...config.recursosDisponiveis,
+                          recurso,
+                        ]);
                       } else {
-                        handleChange("recursosDisponiveis", config.recursosDisponiveis.filter((r) => r !== recurso))
+                        handleChange(
+                          "recursosDisponiveis",
+                          config.recursosDisponiveis.filter(
+                            (r) => r !== recurso,
+                          ),
+                        );
                       }
                     }}
                   />
@@ -346,18 +462,26 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Label>Limites dos Planos</Label>
             {Object.entries(config.limitesPlanos).map(([plano, limites]) => (
               <div key={plano} className="space-y-2">
-                <h3 className="font-semibold">{plano.charAt(0).toUpperCase() + plano.slice(1)}</h3>
+                <h3 className="font-semibold">
+                  {plano.charAt(0).toUpperCase() + plano.slice(1)}
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {Object.entries(limites).map(([limite, valor]) => (
-                    <div key={limite}   className="space-y-1">
-                      <Label htmlFor={`${plano}-${limite}`}>{limite.charAt(0).toUpperCase() + limite.slice(1)}</Label>
+                    <div key={limite} className="space-y-1">
+                      <Label htmlFor={`${plano}-${limite}`}>
+                        {limite.charAt(0).toUpperCase() + limite.slice(1)}
+                      </Label>
                       <Input
                         id={`${plano}-${limite}`}
                         value={valor}
-                        onChange={(e) => handleNestedChange("limitesPlanos", plano, {
-                          ...config.limitesPlanos[plano],
-                          [limite]: e.target.value
-                        })}
+                        onChange={(e) =>
+                          handleNestedChange("limitesPlanos", plano, {
+                            ...config.limitesPlanos[
+                              plano as keyof LimitesPlanos
+                            ],
+                            [limite]: e.target.value,
+                          })
+                        }
                       />
                     </div>
                   ))}
@@ -368,24 +492,34 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
           <div className="space-y-2">
             <Label>Integrações com Terceiros</Label>
             <div className="flex flex-wrap gap-2">
-              {["zapier", "slack", "google", "salesforce", "hubspot"].map((integracao) => (
-                <div key={integracao} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`integracao-${integracao}`}
-                    checked={config.integracoesTerceiros.includes(integracao)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        handleChange("integracoesTerceiros", [...config.integracoesTerceiros, integracao])
-                      } else {
-                        handleChange("integracoesTerceiros", config.integracoesTerceiros.filter((i) => i !== integracao))
-                      }
-                    }}
-                  />
-                  <Label htmlFor={`integracao-${integracao}`}>
-                    {integracao.charAt(0).toUpperCase() + integracao.slice(1)}
-                  </Label>
-                </div>
-              ))}
+              {["zapier", "slack", "google", "salesforce", "hubspot"].map(
+                (integracao) => (
+                  <div key={integracao} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`integracao-${integracao}`}
+                      checked={config.integracoesTerceiros.includes(integracao)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          handleChange("integracoesTerceiros", [
+                            ...config.integracoesTerceiros,
+                            integracao,
+                          ]);
+                        } else {
+                          handleChange(
+                            "integracoesTerceiros",
+                            config.integracoesTerceiros.filter(
+                              (i) => i !== integracao,
+                            ),
+                          );
+                        }
+                      }}
+                    />
+                    <Label htmlFor={`integracao-${integracao}`}>
+                      {integracao.charAt(0).toUpperCase() + integracao.slice(1)}
+                    </Label>
+                  </div>
+                ),
+              )}
             </div>
           </div>
         </CardContent>
@@ -404,33 +538,49 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Switch
               id="permitirPersonalizacaoLogo"
               checked={config.permitirPersonalizacaoLogo}
-              onCheckedChange={(checked) => handleChange("permitirPersonalizacaoLogo", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("permitirPersonalizacaoLogo", checked)
+              }
             />
-            <Label htmlFor="permitirPersonalizacaoLogo">Permitir Personalização de Logo</Label>
+            <Label htmlFor="permitirPersonalizacaoLogo">
+              Permitir Personalização de Logo
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <Switch
               id="permitirPersonalizacaoCores"
               checked={config.permitirPersonalizacaoCores}
-              onCheckedChange={(checked) => handleChange("permitirPersonalizacaoCores", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("permitirPersonalizacaoCores", checked)
+              }
             />
-            <Label htmlFor="permitirPersonalizacaoCores">Permitir Personalização de Cores</Label>
+            <Label htmlFor="permitirPersonalizacaoCores">
+              Permitir Personalização de Cores
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <Switch
               id="permitirPersonalizacaoDominio"
               checked={config.permitirPersonalizacaoDominio}
-              onCheckedChange={(checked) => handleChange("permitirPersonalizacaoDominio", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("permitirPersonalizacaoDominio", checked)
+              }
             />
-            <Label htmlFor="permitirPersonalizacaoDominio">Permitir Personalização de Domínio</Label>
+            <Label htmlFor="permitirPersonalizacaoDominio">
+              Permitir Personalização de Domínio
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <Switch
               id="permitirPersonalizacaoEmails"
               checked={config.permitirPersonalizacaoEmails}
-              onCheckedChange={(checked) => handleChange("permitirPersonalizacaoEmails", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("permitirPersonalizacaoEmails", checked)
+              }
             />
-            <Label htmlFor="permitirPersonalizacaoEmails">Permitir Personalização de E-mails</Label>
+            <Label htmlFor="permitirPersonalizacaoEmails">
+              Permitir Personalização de E-mails
+            </Label>
           </div>
         </CardContent>
       </Card>
@@ -480,12 +630,20 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Label>Preços Padrão</Label>
             {Object.entries(config.precosPadrao).map(([plano, preco]) => (
               <div key={plano} className="flex items-center space-x-2">
-                <Label htmlFor={`preco-${plano}`}>{plano.charAt(0).toUpperCase() + plano.slice(1)}</Label>
+                <Label htmlFor={`preco-${plano}`}>
+                  {plano.charAt(0).toUpperCase() + plano.slice(1)}
+                </Label>
                 <Input
                   id={`preco-${plano}`}
                   type="number"
                   value={preco}
-                  onChange={(e) => handleNestedChange("precosPadrao", plano, Number(e.target.value))}
+                  onChange={(e) =>
+                    handleNestedChange(
+                      "precosPadrao",
+                      plano,
+                      Number(e.target.value),
+                    )
+                  }
                 />
               </div>
             ))}
@@ -500,9 +658,15 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
                     checked={config.frequenciaCobranca.includes(freq)}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        handleChange("frequenciaCobranca", [...config.frequenciaCobranca, freq])
+                        handleChange("frequenciaCobranca", [
+                          ...config.frequenciaCobranca,
+                          freq,
+                        ]);
                       } else {
-                        handleChange("frequenciaCobranca", config.frequenciaCobranca.filter((f) => f !== freq))
+                        handleChange(
+                          "frequenciaCobranca",
+                          config.frequenciaCobranca.filter((f) => f !== freq),
+                        );
                       }
                     }}
                   />
@@ -514,10 +678,14 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="metodoPagamentoPadrao">Método de Pagamento Padrão</Label>
+            <Label htmlFor="metodoPagamentoPadrao">
+              Método de Pagamento Padrão
+            </Label>
             <Select
               value={config.metodoPagamentoPadrao}
-              onValueChange={(value) => handleChange("metodoPagamentoPadrao", value)}
+              onValueChange={(value) =>
+                handleChange("metodoPagamentoPadrao", value)
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione o método de pagamento padrão" />
@@ -533,18 +701,24 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Switch
               id="ofereceTesteGratis"
               checked={config.ofereceTesteGratis}
-              onCheckedChange={(checked) => handleChange("ofereceTesteGratis", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("ofereceTesteGratis", checked)
+              }
             />
             <Label htmlFor="ofereceTesteGratis">Oferece Teste Grátis</Label>
           </div>
           {config.ofereceTesteGratis && (
             <div className="space-y-2">
-              <Label htmlFor="duracaoTesteGratis">Duração do Teste Grátis (dias)</Label>
+              <Label htmlFor="duracaoTesteGratis">
+                Duração do Teste Grátis (dias)
+              </Label>
               <Input
                 id="duracaoTesteGratis"
                 type="number"
                 value={config.duracaoTesteGratis}
-                onChange={(e) => handleChange("duracaoTesteGratis", Number(e.target.value))}
+                onChange={(e) =>
+                  handleChange("duracaoTesteGratis", Number(e.target.value))
+                }
               />
             </div>
           )}
@@ -570,9 +744,15 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
                     checked={config.canalSuporte.includes(canal)}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        handleChange("canalSuporte", [...config.canalSuporte, canal])
+                        handleChange("canalSuporte", [
+                          ...config.canalSuporte,
+                          canal,
+                        ]);
                       } else {
-                        handleChange("canalSuporte", config.canalSuporte.filter((c) => c !== canal))
+                        handleChange(
+                          "canalSuporte",
+                          config.canalSuporte.filter((c) => c !== canal),
+                        );
                       }
                     }}
                   />
@@ -584,15 +764,21 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="horasSuporteBasico">Horas de Suporte - Plano Básico</Label>
+            <Label htmlFor="horasSuporteBasico">
+              Horas de Suporte - Plano Básico
+            </Label>
             <Input
               id="horasSuporteBasico"
               value={config.horasSuporteBasico}
-              onChange={(e) => handleChange("horasSuporteBasico", e.target.value)}
+              onChange={(e) =>
+                handleChange("horasSuporteBasico", e.target.value)
+              }
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="horasSuportePro">Horas de Suporte - Plano Pro</Label>
+            <Label htmlFor="horasSuportePro">
+              Horas de Suporte - Plano Pro
+            </Label>
             <Input
               id="horasSuportePro"
               value={config.horasSuportePro}
@@ -600,23 +786,35 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="horasSuporteEnterprise">Horas de Suporte - Plano Enterprise</Label>
+            <Label htmlFor="horasSuporteEnterprise">
+              Horas de Suporte - Plano Enterprise
+            </Label>
             <Input
               id="horasSuporteEnterprise"
               value={config.horasSuporteEnterprise}
-              onChange={(e) => handleChange("horasSuporteEnterprise", e.target.value)}
+              onChange={(e) =>
+                handleChange("horasSuporteEnterprise", e.target.value)
+              }
             />
           </div>
           <div className="space-y-2">
             <Label>Tempo de Resposta SLA (horas)</Label>
             {Object.entries(config.tempoRespostaSLA).map(([plano, tempo]) => (
               <div key={plano} className="flex items-center space-x-2">
-                <Label htmlFor={`sla-${plano}`}>{plano.charAt(0).toUpperCase() + plano.slice(1)}</Label>
+                <Label htmlFor={`sla-${plano}`}>
+                  {plano.charAt(0).toUpperCase() + plano.slice(1)}
+                </Label>
                 <Input
                   id={`sla-${plano}`}
                   type="number"
                   value={tempo}
-                  onChange={(e) => handleNestedChange("tempoRespostaSLA", plano, Number(e.target.value))}
+                  onChange={(e) =>
+                    handleNestedChange(
+                      "tempoRespostaSLA",
+                      plano,
+                      Number(e.target.value),
+                    )
+                  }
                 />
               </div>
             ))}
@@ -625,9 +823,13 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Switch
               id="ofereceSuportePersonalizado"
               checked={config.ofereceSuportePersonalizado}
-              onCheckedChange={(checked) => handleChange("ofereceSuportePersonalizado", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("ofereceSuportePersonalizado", checked)
+              }
             />
-            <Label htmlFor="ofereceSuportePersonalizado">Oferece Suporte Personalizado</Label>
+            <Label htmlFor="ofereceSuportePersonalizado">
+              Oferece Suporte Personalizado
+            </Label>
           </div>
         </CardContent>
       </Card>
@@ -651,15 +853,19 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
                     checked={config.certificacoesSeg.includes(cert)}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        handleChange("certificacoesSeg", [...config.certificacoesSeg, cert])
+                        handleChange("certificacoesSeg", [
+                          ...config.certificacoesSeg,
+                          cert,
+                        ]);
                       } else {
-                        handleChange("certificacoesSeg", config.certificacoesSeg.filter((c) => c !== cert))
+                        handleChange(
+                          "certificacoesSeg",
+                          config.certificacoesSeg.filter((c) => c !== cert),
+                        );
                       }
                     }}
                   />
-                  <Label htmlFor={`cert-${cert}`}>
-                    {cert.toUpperCase()}
-                  </Label>
+                  <Label htmlFor={`cert-${cert}`}>{cert.toUpperCase()}</Label>
                 </div>
               ))}
             </div>
@@ -668,33 +874,49 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Switch
               id="autenticacaoDoisFatores"
               checked={config.autenticacaoDoisFatores}
-              onCheckedChange={(checked) => handleChange("autenticacaoDoisFatores", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("autenticacaoDoisFatores", checked)
+              }
             />
-            <Label htmlFor="autenticacaoDoisFatores">Autenticação de Dois Fatores</Label>
+            <Label htmlFor="autenticacaoDoisFatores">
+              Autenticação de Dois Fatores
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <Switch
               id="criptografiaEmRepouso"
               checked={config.criptografiaEmRepouso}
-              onCheckedChange={(checked) => handleChange("criptografiaEmRepouso", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("criptografiaEmRepouso", checked)
+              }
             />
-            <Label htmlFor="criptografiaEmRepouso">Criptografia em Repouso</Label>
+            <Label htmlFor="criptografiaEmRepouso">
+              Criptografia em Repouso
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <Switch
               id="criptografiaEmTransito"
-              checked={config.c riptografiaEmTransito}
-              onCheckedChange={(checked) => handleChange("criptografiaEmTransito", checked)}
+              checked={config.criptografiaEmTransito}
+              onCheckedChange={(checked) =>
+                handleChange("criptografiaEmTransito", checked)
+              }
             />
-            <Label htmlFor="criptografiaEmTransito">Criptografia em Trânsito</Label>
+            <Label htmlFor="criptografiaEmTransito">
+              Criptografia em Trânsito
+            </Label>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="politicaRetencaoDados">Política de Retenção de Dados (dias)</Label>
+            <Label htmlFor="politicaRetencaoDados">
+              Política de Retenção de Dados (dias)
+            </Label>
             <Input
               id="politicaRetencaoDados"
               type="number"
               value={config.politicaRetencaoDados}
-              onChange={(e) => handleChange("politicaRetencaoDados", Number(e.target.value))}
+              onChange={(e) =>
+                handleChange("politicaRetencaoDados", Number(e.target.value))
+              }
             />
           </div>
         </CardContent>
@@ -710,10 +932,14 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
         </CardHeader>
         <CardContent className="pt-6 space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="frequenciaAtualizacoes">Frequência de Atualizações</Label>
+            <Label htmlFor="frequenciaAtualizacoes">
+              Frequência de Atualizações
+            </Label>
             <Select
               value={config.frequenciaAtualizacoes}
-              onValueChange={(value) => handleChange("frequenciaAtualizacoes", value)}
+              onValueChange={(value) =>
+                handleChange("frequenciaAtualizacoes", value)
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione a frequência de atualizações" />
@@ -743,12 +969,16 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="politicaDeprecacao">Política de Depreciação (dias)</Label>
+            <Label htmlFor="politicaDeprecacao">
+              Política de Depreciação (dias)
+            </Label>
             <Input
               id="politicaDeprecacao"
               type="number"
               value={config.politicaDeprecacao}
-              onChange={(e) => handleChange("politicaDeprecacao", Number(e.target.value))}
+              onChange={(e) =>
+                handleChange("politicaDeprecacao", Number(e.target.value))
+              }
             />
           </div>
         </CardContent>
@@ -773,9 +1003,12 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
                     checked={config.metricas.includes(metrica)}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        handleChange("metricas", [...config.metricas, metrica])
+                        handleChange("metricas", [...config.metricas, metrica]);
                       } else {
-                        handleChange("metricas", config.metricas.filter((m) => m !== metrica))
+                        handleChange(
+                          "metricas",
+                          config.metricas.filter((m) => m !== metrica),
+                        );
                       }
                     }}
                   />
@@ -790,9 +1023,13 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Switch
               id="dashboardPersonalizavel"
               checked={config.dashboardPersonalizavel}
-              onCheckedChange={(checked) => handleChange("dashboardPersonalizavel", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("dashboardPersonalizavel", checked)
+              }
             />
-            <Label htmlFor="dashboardPersonalizavel">Dashboard Personalizável</Label>
+            <Label htmlFor="dashboardPersonalizavel">
+              Dashboard Personalizável
+            </Label>
           </div>
           <div className="space-y-2">
             <Label>Exportação de Relatórios</Label>
@@ -804,9 +1041,17 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
                     checked={config.exportacaoRelatorios.includes(formato)}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        handleChange("exportacaoRelatorios", [...config.exportacaoRelatorios, formato])
+                        handleChange("exportacaoRelatorios", [
+                          ...config.exportacaoRelatorios,
+                          formato,
+                        ]);
                       } else {
-                        handleChange("exportacaoRelatorios", config.exportacaoRelatorios.filter((f) => f !== formato))
+                        handleChange(
+                          "exportacaoRelatorios",
+                          config.exportacaoRelatorios.filter(
+                            (f) => f !== formato,
+                          ),
+                        );
                       }
                     }}
                   />
@@ -833,40 +1078,58 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Switch
               id="ofereceTreinamentoInicial"
               checked={config.ofereceTreinamentoInicial}
-              onCheckedChange={(checked) => handleChange("ofereceTreinamentoInicial", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("ofereceTreinamentoInicial", checked)
+              }
             />
-            <Label htmlFor="ofereceTreinamentoInicial">Oferece Treinamento Inicial</Label>
+            <Label htmlFor="ofereceTreinamentoInicial">
+              Oferece Treinamento Inicial
+            </Label>
           </div>
           <div className="space-y-2">
             <Label>Materiais de Treinamento</Label>
             <div className="flex flex-wrap gap-2">
-              {["videos", "documentacao", "webinars", "tutoriais", "faq"].map((material) => (
-                <div key={material} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`material-${material}`}
-                    checked={config.materiaisTreinamento.includes(material)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        handleChange("materiaisTreinamento", [...config.materiaisTreinamento, material])
-                      } else {
-                        handleChange("materiaisTreinamento", config.materiaisTreinamento.filter((m) => m !== material))
-                      }
-                    }}
-                  />
-                  <Label htmlFor={`material-${material}`}>
-                    {material.charAt(0).toUpperCase() + material.slice(1)}
-                  </Label>
-                </div>
-              ))}
+              {["videos", "documentacao", "webinars", "tutoriais", "faq"].map(
+                (material) => (
+                  <div key={material} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`material-${material}`}
+                      checked={config.materiaisTreinamento.includes(material)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          handleChange("materiaisTreinamento", [
+                            ...config.materiaisTreinamento,
+                            material,
+                          ]);
+                        } else {
+                          handleChange(
+                            "materiaisTreinamento",
+                            config.materiaisTreinamento.filter(
+                              (m) => m !== material,
+                            ),
+                          );
+                        }
+                      }}
+                    />
+                    <Label htmlFor={`material-${material}`}>
+                      {material.charAt(0).toUpperCase() + material.slice(1)}
+                    </Label>
+                  </div>
+                ),
+              )}
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="tempoMedioImplementacao">Tempo Médio de Implementação (dias)</Label>
+            <Label htmlFor="tempoMedioImplementacao">
+              Tempo Médio de Implementação (dias)
+            </Label>
             <Input
               id="tempoMedioImplementacao"
               type="number"
               value={config.tempoMedioImplementacao}
-              onChange={(e) => handleChange("tempoMedioImplementacao", Number(e.target.value))}
+              onChange={(e) =>
+                handleChange("tempoMedioImplementacao", Number(e.target.value))
+              }
             />
           </div>
         </CardContent>
@@ -890,11 +1153,15 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="politicaPrivacidadeURL">URL da Política de Privacidade</Label>
+            <Label htmlFor="politicaPrivacidadeURL">
+              URL da Política de Privacidade
+            </Label>
             <Input
               id="politicaPrivacidadeURL"
               value={config.politicaPrivacidadeURL}
-              onChange={(e) => handleChange("politicaPrivacidadeURL", e.target.value)}
+              onChange={(e) =>
+                handleChange("politicaPrivacidadeURL", e.target.value)
+              }
             />
           </div>
           <div className="space-y-2">
@@ -921,7 +1188,9 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Switch
               id="notificacoesEmail"
               checked={config.notificacoesEmail}
-              onCheckedChange={(checked) => handleChange("notificacoesEmail", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("notificacoesEmail", checked)
+              }
             />
             <Label htmlFor="notificacoesEmail">Notificações por E-mail</Label>
           </div>
@@ -929,7 +1198,9 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Switch
               id="notificacoesSMS"
               checked={config.notificacoesSMS}
-              onCheckedChange={(checked) => handleChange("notificacoesSMS", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("notificacoesSMS", checked)
+              }
             />
             <Label htmlFor="notificacoesSMS">Notificações por SMS</Label>
           </div>
@@ -937,23 +1208,39 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Switch
               id="notificacoesPlataforma"
               checked={config.notificacoesPlataforma}
-              onCheckedChange={(checked) => handleChange("notificacoesPlataforma", checked)}
+              onCheckedChange={(checked) =>
+                handleChange("notificacoesPlataforma", checked)
+              }
             />
-            <Label htmlFor="notificacoesPlataforma">Notificações na Plataforma</Label>
+            <Label htmlFor="notificacoesPlataforma">
+              Notificações na Plataforma
+            </Label>
           </div>
           <div className="space-y-2">
             <Label>Tipos de Notificação</Label>
             <div className="flex flex-wrap gap-2">
-              {["atualizacoes", "manutencao", "seguranca", "faturamento", "suporte"].map((tipo) => (
+              {[
+                "atualizacoes",
+                "manutencao",
+                "seguranca",
+                "faturamento",
+                "suporte",
+              ].map((tipo) => (
                 <div key={tipo} className="flex items-center space-x-2">
                   <Checkbox
                     id={`notificacao-${tipo}`}
                     checked={config.tiposNotificacao.includes(tipo)}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        handleChange("tiposNotificacao", [...config.tiposNotificacao, tipo])
+                        handleChange("tiposNotificacao", [
+                          ...config.tiposNotificacao,
+                          tipo,
+                        ]);
                       } else {
-                        handleChange("tiposNotificacao", config.tiposNotificacao.filter((t) => t !== tipo))
+                        handleChange(
+                          "tiposNotificacao",
+                          config.tiposNotificacao.filter((t) => t !== tipo),
+                        );
                       }
                     }}
                   />
@@ -979,24 +1266,32 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
           <div className="space-y-2">
             <Label>Idiomas da Plataforma</Label>
             <div className="flex flex-wrap gap-2">
-              {["portugues", "ingles", "espanhol", "frances", "alemao"].map((idioma) => (
-                <div key={idioma} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`idioma-${idioma}`}
-                    checked={config.idiomasPlatforma.includes(idioma)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        handleChange("idiomasPlatforma", [...config.idiomasPlatforma, idioma])
-                      } else {
-                        handleChange("idiomasPlatforma", config.idiomasPlatforma.filter((i) => i !== idioma))
-                      }
-                    }}
-                  />
-                  <Label htmlFor={`idioma-${idioma}`}>
-                    {idioma.charAt(0).toUpperCase() + idioma.slice(1)}
-                  </Label>
-                </div>
-              ))}
+              {["portugues", "ingles", "espanhol", "frances", "alemao"].map(
+                (idioma) => (
+                  <div key={idioma} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`idioma-${idioma}`}
+                      checked={config.idiomasPlatforma.includes(idioma)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          handleChange("idiomasPlatforma", [
+                            ...config.idiomasPlatforma,
+                            idioma,
+                          ]);
+                        } else {
+                          handleChange(
+                            "idiomasPlatforma",
+                            config.idiomasPlatforma.filter((i) => i !== idioma),
+                          );
+                        }
+                      }}
+                    />
+                    <Label htmlFor={`idioma-${idioma}`}>
+                      {idioma.charAt(0).toUpperCase() + idioma.slice(1)}
+                    </Label>
+                  </div>
+                ),
+              )}
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -1011,14 +1306,20 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
             <Label htmlFor="fusoHorarioPadrao">Fuso Horário Padrão</Label>
             <Select
               value={config.fusoHorarioPadrao}
-              onValueChange={(value) => handleChange("fusoHorarioPadrao", value)}
+              onValueChange={(value) =>
+                handleChange("fusoHorarioPadrao", value)
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione o fuso horário padrão" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="America/Sao_Paulo">América/São Paulo</SelectItem>
-                <SelectItem value="America/New_York">América/Nova York</SelectItem>
+                <SelectItem value="America/Sao_Paulo">
+                  América/São Paulo
+                </SelectItem>
+                <SelectItem value="America/New_York">
+                  América/Nova York
+                </SelectItem>
                 <SelectItem value="Europe/London">Europa/Londres</SelectItem>
                 <SelectItem value="Asia/Tokyo">Ásia/Tóquio</SelectItem>
               </SelectContent>
@@ -1034,5 +1335,5 @@ export default function ConfiguracaoAvancadaSaaSWhiteLabel() {
         </Button>
       </div>
     </div>
-  )
+  );
 }
