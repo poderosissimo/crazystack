@@ -1,221 +1,269 @@
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ChevronLeft, ChevronRight, Search, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CheckCircle,
+  ChevronRight,
+  MapPin,
+  Smartphone,
+  Users,
+} from "lucide-react";
 
-export default function HomePage() {
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Menu Superior com Barra de Pesquisa */}
-      <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex items-center justify-between h-16">
-          <nav className="flex items-center space-x-4 lg:space-x-6">
-            <Link
-              href="/"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Home
-            </Link>
-            <Link
-              href="/catalogo"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              Catálogo
-            </Link>
-            <Link
-              href="/contato"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              Contato
-            </Link>
-          </nav>
-          <div className="flex items-center space-x-4">
-            <form className="flex items-center">
-              <Input
-                type="search"
-                placeholder="Buscar produtos..."
-                className="w-[150px] sm:w-[200px] lg:w-[300px]"
-              />
-              <Button type="submit" size="icon" variant="ghost">
-                <Search className="h-4 w-4" />
-                <span className="sr-only">Buscar</span>
-              </Button>
-            </form>
-          </div>
-        </div>
+    <div className="flex flex-col min-h-screen">
+      <header className="px-4 lg:px-6 h-14 flex items-center">
+        <Link className="flex items-center justify-center" href="#">
+          <MapPin className="h-6 w-6" />
+          <span className="sr-only">MobiSaaS</span>
+        </Link>
+        <nav className="ml-auto flex gap-4 sm:gap-6">
+          <Link
+            className="text-sm font-medium hover:underline underline-offset-4"
+            href="#features"
+          >
+            Recursos
+          </Link>
+          <Link
+            className="text-sm font-medium hover:underline underline-offset-4"
+            href="#how-it-works"
+          >
+            Como Funciona
+          </Link>
+          <Link
+            className="text-sm font-medium hover:underline underline-offset-4"
+            href="#pricing"
+          >
+            Preços
+          </Link>
+          <Link
+            className="text-sm font-medium hover:underline underline-offset-4"
+            href="#contact"
+          >
+            Contato
+          </Link>
+        </nav>
       </header>
-
-      <main className="container mx-auto px-4 py-8">
-        {/* Banner Carrossel */}
-        <div className="relative overflow-hidden rounded-lg mb-8">
-          <div className="flex transition-transform duration-500 ease-in-out transform translate-x-0">
-            <div className="w-full flex-shrink-0 relative">
-              <Image
-                src="/placeholder.svg"
-                alt="Promoção"
-                width={800}
-                height={400}
-                className="w-full object-cover"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Button
-                  size="lg"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  Compre Agora
-                </Button>
+      <main className="flex-1">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                  Seu Próprio Serviço de Mobilidade Urbana
+                </h1>
+                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+                  Transforme sua ideia em realidade com nossa solução SaaS white
+                  label. Lance seu próprio serviço de transporte sob demanda em
+                  questão de dias.
+                </p>
+              </div>
+              <div className="space-x-4">
+                <Button>Comece Agora</Button>
+                <Button variant="outline">Saiba Mais</Button>
               </div>
             </div>
           </div>
-          <Button
-            size="icon"
-            variant="outline"
-            className="absolute left-2 top-1/2 -translate-y-1/2"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            size="icon"
-            variant="outline"
-            className="absolute right-2 top-1/2 -translate-y-1/2"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Grade de Novidades */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-4">Novidades</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((item) => (
-              <Card key={item}>
-                <CardContent className="p-4">
-                  <Image
-                    src="/placeholder.svg"
-                    alt={`Produto ${item}`}
-                    width={200}
-                    height={200}
-                    className="w-full object-cover mb-2 rounded"
-                  />
-                  <h3 className="font-semibold">Produto {item}</h3>
-                  <p className="text-sm text-muted-foreground">R$ 99,99</p>
-                  <Button variant="outline" size="sm" className="mt-2 w-full">
-                    Ver Detalhes
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
         </section>
-
-        {/* Cards de Produtos em Promoção */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-4">Promoções</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((item) => (
-              <Card key={item}>
-                <CardContent className="p-4 relative">
-                  <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-                    -20%
-                  </div>
-                  <Image
-                    src="/placeholder.svg?height=200&width=200"
-                    alt={`Promoção ${item}`}
-                    width={200}
-                    height={200}
-                    className="w-full object-cover mb-2 rounded"
-                  />
-                  <h3 className="font-semibold">Produto em Promoção {item}</h3>
-                  <p className="text-sm text-muted-foreground line-through">
-                    R$ 129,99
-                  </p>
-                  <p className="text-sm font-bold text-red-500">R$ 103,99</p>
-                  <Button variant="outline" size="sm" className="mt-2 w-full">
-                    Encomendar
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Depoimentos em Slider */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-4">
-            O que nossos clientes dizem
-          </h2>
-          <div className="flex flex-nowrap overflow-x-auto space-x-4 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-            {[1, 2, 3].map((item) => (
-              <Card key={item} className="flex-shrink-0 w-[280px] sm:w-[320px]">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <Image
-                      src="/placeholder.svg"
-                      alt={`Cliente ${item}`}
-                      width={50}
-                      height={50}
-                      className="rounded-full mr-4"
-                    />
-                    <div>
-                      <p className="font-semibold">Cliente {item}</p>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className="h-4 w-4 fill-yellow-400 text-yellow-400"
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    "Adorei as bijuterias! Qualidade excelente e atendimento
-                    impecável."
+        <section
+          id="features"
+          className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800"
+        >
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              Recursos Principais
+            </h2>
+            <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
+              <Card>
+                <CardHeader>
+                  <Smartphone className="w-8 h-8 mb-2" />
+                  <CardTitle>Aplicativo Personalizado</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    Aplicativos móveis personalizados para iOS e Android com sua
+                    marca.
                   </p>
                 </CardContent>
               </Card>
-            ))}
+              <Card>
+                <CardHeader>
+                  <Users className="w-8 h-8 mb-2" />
+                  <CardTitle>Gerenciamento de Motoristas</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    Ferramentas completas para gerenciar sua frota de motoristas
+                    parceiros.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <MapPin className="w-8 h-8 mb-2" />
+                  <CardTitle>Rastreamento em Tempo Real</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    Acompanhamento em tempo real de veículos e otimização de
+                    rotas.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </section>
-
-        {/* Seção de Coleções com Ícones Visuais */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-4">Nossas Coleções</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {["Festa", "Casual", "Minimalista", "Verão"].map((colecao) => (
-              <Link
-                href={`/colecao/${colecao.toLowerCase()}`}
-                key={colecao}
-                className="text-center"
-              >
-                <div className="bg-muted rounded-full p-4 mb-2 mx-auto w-20 h-20 flex items-center justify-center">
-                  <Image
-                    src="/placeholder.svg?height=40&width=40"
-                    alt={colecao}
-                    width={40}
-                    height={40}
-                  />
+        <section id="how-it-works" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              Como Funciona
+            </h2>
+            <div className="grid gap-6 lg:grid-cols-3">
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white mb-4">
+                  1
                 </div>
-                <p className="text-sm font-medium">{colecao}</p>
-              </Link>
-            ))}
+                <h3 className="text-xl font-bold mb-2">Personalize</h3>
+                <p>
+                  Adapte a plataforma com suas cores, logotipo e recursos
+                  desejados.
+                </p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white mb-4">
+                  2
+                </div>
+                <h3 className="text-xl font-bold mb-2">Integre</h3>
+                <p>
+                  Conecte-se com serviços de pagamento e mapeamento de sua
+                  escolha.
+                </p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white mb-4">
+                  3
+                </div>
+                <h3 className="text-xl font-bold mb-2">Lance</h3>
+                <p>
+                  Publique seus aplicativos e comece a operar seu serviço de
+                  mobilidade.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section
+          id="pricing"
+          className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800"
+        >
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              Planos e Preços
+            </h2>
+            <div className="grid gap-6 lg:grid-cols-3">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Básico</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-4xl font-bold">R$999/mês</p>
+                  <ul className="mt-4 space-y-2">
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4" /> Até 100
+                      motoristas
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4" /> Suporte por email
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4" /> Atualizações
+                      mensais
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6">Escolher Plano</Button>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Profissional</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-4xl font-bold">R$2499/mês</p>
+                  <ul className="mt-4 space-y-2">
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4" /> Até 500
+                      motoristas
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4" /> Suporte
+                      prioritário
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4" /> Atualizações
+                      semanais
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6">Escolher Plano</Button>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Empresarial</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-4xl font-bold">Personalizado</p>
+                  <ul className="mt-4 space-y-2">
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4" /> Motoristas
+                      ilimitados
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4" /> Suporte 24/7
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="mr-2 h-4 w-4" /> Personalizações
+                      avançadas
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6">Contate-nos</Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              Entre em Contato
+            </h2>
+            <div className="mx-auto max-w-lg">
+              <form className="space-y-4">
+                <Input placeholder="Seu Nome" />
+                <Input type="email" placeholder="Seu Email" />
+                <Input placeholder="Sua Empresa" />
+                <textarea
+                  className="w-full h-32 px-3 py-2 text-base text-gray-700 placeholder-gray-400 border rounded-lg focus:shadow-outline"
+                  placeholder="Sua Mensagem"
+                />
+                <Button className="w-full">Enviar Mensagem</Button>
+              </form>
+            </div>
           </div>
         </section>
       </main>
-
-      {/* Botão Flutuante de WhatsApp */}
-      <Button
-        size="icon"
-        className="fixed bottom-4 right-4 rounded-full bg-green-500 hover:bg-green-600 text-white w-12 h-12 flex items-center justify-center"
-      >
-        <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6" />
-        <span className="sr-only">Contato via WhatsApp</span>
-      </Button>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          © 2024 MobiSaaS. Todos os direitos reservados.
+        </p>
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Termos de Serviço
+          </Link>
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Privacidade
+          </Link>
+        </nav>
+      </footer>
     </div>
   );
 }

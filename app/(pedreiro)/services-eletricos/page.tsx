@@ -1,23 +1,59 @@
-"use client"
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Zap, Search, Star, MapPin } from "lucide-react"
+"use client";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Zap, Search, Star, MapPin } from "lucide-react";
 
 const electricalServices = [
-  { name: "Instalação de Lâmpadas", description: "Instalação e substituição de lâmpadas e luminárias", price: "A partir de R$ 80" },
-  { name: "Instalação de Tomadas", description: "Instalação de novas tomadas ou reparo das existentes", price: "A partir de R$ 100" },
-  { name: "Instalação de Ventilador de Teto", description: "Montagem e instalação de ventiladores de teto", price: "A partir de R$ 150" },
-  { name: "Reparo de Curto-Circuito", description: "Diagnóstico e reparo de problemas elétricos", price: "A partir de R$ 120" },
-  { name: "Instalação de Disjuntores", description: "Instalação ou substituição de disjuntores no quadro elétrico", price: "A partir de R$ 90" },
-  { name: "Passagem de Fiação", description: "Instalação de nova fiação elétrica", price: "A partir de R$ 200" },
-]
+  {
+    name: "Instalação de Lâmpadas",
+    description: "Instalação e substituição de lâmpadas e luminárias",
+    price: "A partir de R$ 80",
+  },
+  {
+    name: "Instalação de Tomadas",
+    description: "Instalação de novas tomadas ou reparo das existentes",
+    price: "A partir de R$ 100",
+  },
+  {
+    name: "Instalação de Ventilador de Teto",
+    description: "Montagem e instalação de ventiladores de teto",
+    price: "A partir de R$ 150",
+  },
+  {
+    name: "Reparo de Curto-Circuito",
+    description: "Diagnóstico e reparo de problemas elétricos",
+    price: "A partir de R$ 120",
+  },
+  {
+    name: "Instalação de Disjuntores",
+    description: "Instalação ou substituição de disjuntores no quadro elétrico",
+    price: "A partir de R$ 90",
+  },
+  {
+    name: "Passagem de Fiação",
+    description: "Instalação de nova fiação elétrica",
+    price: "A partir de R$ 200",
+  },
+];
 
 export default function ElectricalServicesPage() {
-  const [selectedCity, setSelectedCity] = useState("Porto Alegre")
+  const [selectedCity, setSelectedCity] = useState("Porto Alegre");
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -51,12 +87,18 @@ export default function ElectricalServicesPage() {
         </div>
 
         <div className="mb-8">
-          <Input className="w-full max-w-md" placeholder="Pesquisar serviço elétrico..." />
+          <Input
+            className="w-full max-w-md"
+            placeholder="Pesquisar serviço elétrico..."
+          />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {electricalServices.map((service, index) => (
-            <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow">
+            <Card
+              key={index}
+              className="cursor-pointer hover:shadow-md transition-shadow"
+            >
               <CardHeader>
                 <CardTitle>{service.name}</CardTitle>
                 <CardDescription>{service.description}</CardDescription>
@@ -81,25 +123,61 @@ export default function ElectricalServicesPage() {
             <div>
               <h3 className="text-lg font-semibold mb-4">ServicePro</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:underline">Sobre nós</a></li>
-                <li><a href="#" className="hover:underline">Como funciona</a></li>
-                <li><a href="#" className="hover:underline">Carreiras</a></li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    Sobre nós
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    Como funciona
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    Carreiras
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Para Você</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:underline">Catálogo de serviços</a></li>
-                <li><a href="#" className="hover:underline">Cidades atendidas</a></li>
-                <li><a href="#" className="hover:underline">Avaliações</a></li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    Catálogo de serviços
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    Cidades atendidas
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    Avaliações
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Para Profissionais</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:underline">Cadastre-se</a></li>
-                <li><a href="#" className="hover:underline">App do Profissional</a></li>
-                <li><a href="#" className="hover:underline">Central de Ajuda</a></li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    Cadastre-se
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    App do Profissional
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:underline">
+                    Central de Ajuda
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
@@ -115,5 +193,5 @@ export default function ElectricalServicesPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

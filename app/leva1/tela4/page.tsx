@@ -1,64 +1,100 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { User, Send, Settings, Search, HelpCircle, CreditCard, Package } from "lucide-react"
+"use client";
+import { useState, useEffect, useRef } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  User,
+  Send,
+  Settings,
+  Search,
+  HelpCircle,
+  CreditCard,
+  Package,
+} from "lucide-react";
 
 type Message = {
-  id: number
-  sender: "user" | "bot"
-  content: string
-  timestamp: Date
-}
+  id: number;
+  sender: "user" | "bot";
+  content: string;
+  timestamp: Date;
+};
 
 export default function Component() {
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, sender: "bot", content: "Welcome to our SaaS Marketplace support! How can I assist you today?", timestamp: new Date() },
-  ])
-  const [inputMessage, setInputMessage] = useState("")
-  const [isTyping, setIsTyping] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+    {
+      id: 1,
+      sender: "bot",
+      content:
+        "Welcome to our SaaS Marketplace support! How can I assist you today?",
+      timestamp: new Date(),
+    },
+  ]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-  useEffect(scrollToBottom, [messages])
+  useEffect(scrollToBottom, [messages]);
 
   const handleSendMessage = () => {
     if (inputMessage.trim() !== "") {
-      const newMessage: Message = { id: messages.length + 1, sender: "user", content: inputMessage, timestamp: new Date() }
-      setMessages([...messages, newMessage])
-      setInputMessage("")
-      setIsTyping(true)
-      
+      const newMessage: Message = {
+        id: messages.length + 1,
+        sender: "user",
+        content: inputMessage,
+        timestamp: new Date(),
+      };
+      setMessages([...messages, newMessage]);
+      setInputMessage("");
+      setIsTyping(true);
+
       // Simulate bot response
       setTimeout(() => {
-        const botResponse = generateBotResponse(inputMessage)
-        setMessages(prevMessages => [...prevMessages, { id: prevMessages.length + 1, sender: "bot", content: botResponse, timestamp: new Date() }])
-        setIsTyping(false)
-      }, 1500)
+        const botResponse = generateBotResponse(inputMessage);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            id: prevMessages.length + 1,
+            sender: "bot",
+            content: botResponse,
+            timestamp: new Date(),
+          },
+        ]);
+        setIsTyping(false);
+      }, 1500);
     }
-  }
+  };
 
   const generateBotResponse = (userMessage: string): string => {
-    const lowerCaseMessage = userMessage.toLowerCase()
-    if (lowerCaseMessage.includes("api") || lowerCaseMessage.includes("integration")) {
-      return "For API integration support, please check our documentation at docs.example.com or contact our developer support team at dev-support@example.com."
-    } else if (lowerCaseMessage.includes("billing") || lowerCaseMessage.includes("payment")) {
-      return "For billing inquiries, please visit our billing portal at billing.example.com or contact our finance team at finance@example.com."
-    } else if (lowerCaseMessage.includes("product") || lowerCaseMessage.includes("recommendation")) {
-      return "I'd be happy to help you find the right product! Can you tell me more about your specific needs or the problem you're trying to solve?"
+    const lowerCaseMessage = userMessage.toLowerCase();
+    if (
+      lowerCaseMessage.includes("api") ||
+      lowerCaseMessage.includes("integration")
+    ) {
+      return "For API integration support, please check our documentation at docs.example.com or contact our developer support team at dev-support@example.com.";
+    } else if (
+      lowerCaseMessage.includes("billing") ||
+      lowerCaseMessage.includes("payment")
+    ) {
+      return "For billing inquiries, please visit our billing portal at billing.example.com or contact our finance team at finance@example.com.";
+    } else if (
+      lowerCaseMessage.includes("product") ||
+      lowerCaseMessage.includes("recommendation")
+    ) {
+      return "I'd be happy to help you find the right product! Can you tell me more about your specific needs or the problem you're trying to solve?";
     } else {
-      return "Thank you for your message. Our support team will get back to you shortly with more information."
+      return "Thank you for your message. Our support team will get back to you shortly with more information.";
     }
-  }
+  };
 
   return (
     <div className="flex h-[600px] max-w-4xl mx-auto border rounded-lg overflow-hidden shadow-lg">
@@ -66,7 +102,9 @@ export default function Component() {
         <div className="flex items-center space-x-4 mb-6">
           <Avatar>
             <AvatarImage src="/placeholder-avatar.jpg" alt="John Doe" />
-            <AvatarFallback><User /></AvatarFallback>
+            <AvatarFallback>
+              <User />
+            </AvatarFallback>
           </Avatar>
           <div>
             <h2 className="text-lg font-semibold">John Doe</h2>
@@ -129,7 +167,9 @@ export default function Component() {
                 </Card>
                 <Card>
                   <CardHeader className="p-4">
-                    <CardTitle className="text-sm">Your Subscriptions</CardTitle>
+                    <CardTitle className="text-sm">
+                      Your Subscriptions
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ul className="list-disc pl-4">
@@ -167,12 +207,17 @@ export default function Component() {
               >
                 <div
                   className={`max-w-[70%] rounded-lg p-3 ${
-                    message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                    message.sender === "user"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted"
                   }`}
                 >
                   <p>{message.content}</p>
                   <p className="text-xs mt-1 opacity-50">
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {message.timestamp.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </p>
                 </div>
               </div>
@@ -190,8 +235,8 @@ export default function Component() {
         <div className="p-4 border-t">
           <form
             onSubmit={(e) => {
-              e.preventDefault()
-              handleSendMessage()
+              e.preventDefault();
+              handleSendMessage();
             }}
             className="flex space-x-2"
           >
@@ -209,5 +254,5 @@ export default function Component() {
         </div>
       </div>
     </div>
-  )
+  );
 }

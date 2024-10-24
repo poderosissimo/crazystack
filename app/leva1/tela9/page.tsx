@@ -1,150 +1,284 @@
-"use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Bell,
+  Home,
+  Settings,
+  CreditCard,
+  Smartphone,
+  Map,
+} from "lucide-react";
 
-export default function BijouxOrderForm() {
-  const [bijouxType, setBijouxType] = useState("");
-  const [bijouxMaterial, setBijouxMaterial] = useState("");
-  const [designDetails, setDesignDetails] = useState("");
+export default function PainelControle() {
+  const [primaryColor, setPrimaryColor] = useState("#007bff");
+  const [secondaryColor, setSecondaryColor] = useState("#6c757d");
+  const [basePrice, setBasePrice] = useState(5);
+  const [comissionRate, setComissionRate] = useState(20);
 
-  // Estados para opcionais e preço base
-  const [hasCravacao, setHasCravacao] = useState(false);
-  const [hasUrgencia, setHasUrgencia] = useState(false);
-  const [hasEmbalagem, setHasEmbalagem] = useState(false);
-  const basePrice = 150;
-
-  // Preços dos opcionais
-  const cravacaoPrice = 50;
-  const urgenciaPrice = 30;
-  const embalagemPrice = 20;
-
-  // Cálculo do preço final
-  const calculateTotalPrice = () => {
-    let totalPrice = basePrice;
-    if (hasCravacao) totalPrice += cravacaoPrice;
-    if (hasUrgencia) totalPrice += urgenciaPrice;
-    if (hasEmbalagem) totalPrice += embalagemPrice;
-    return totalPrice;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const totalPrice = calculateTotalPrice();
-    alert(`Pedido enviado! O preço final é R$${totalPrice}`);
+  const handleSave = () => {
+    // Implementar lógica de salvamento aqui
+    console.log("Configurações salvas");
   };
 
   return (
-    <div className="min-h-screen bg-purple-50 bg-opacity-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+CjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgZmlsbD0iI2ZmZjFmMiI+PC9yZWN0Pgo8Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZjMGNiIiBzdHJva2Utd2lkdGg9IjIiPjwvY2lyY2xlPgo8cGF0aCBkPSJNMzAgMTBjNS41IDAgMTAgNC41IDEwIDEwcy00LjUgMTAtMTAgMTAtMTAtNC41LTEwLTEwIDQuNS0xMCAxMC0xMHoiIGZpbGw9IiNmZmMwY2IiIG9wYWNpdHk9IjAuMyI+PC9wYXRoPgo8L3N2Zz4=')]">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-purple-400 to-purple-300 text-white p-4 md:p-8 animate-fade-in-down">
-        <div className="max-w-4xl mx-auto">
-          <img
-            src="/biju2.png"
-            alt="Ana Miranda Bijoux"
-            className="w-full h-48 object-cover rounded-lg mb-4 shadow-lg"
-          />
-          <h1 className="text-3xl md:text-5xl font-bold mb-2">
-            Bijuteria Personalizada - Ana Miranda Bijoux
-          </h1>
-          <div className="bg-purple-600 text-white inline-block px-6 py-3 rounded-full font-bold text-2xl shadow-lg transform -rotate-2">
-            A partir de R$150
-          </div>
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+      {/* Barra lateral */}
+      <aside className="w-64 bg-white dark:bg-gray-800 p-4">
+        <div className="flex items-center mb-6">
+          <Smartphone className="h-6 w-6 mr-2 text-primary" />
+          <span className="text-lg font-bold">MobiSaaS Admin</span>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-5xl mx-auto p-4 md:p-8 bg-white shadow-lg rounded-lg mt-[-2rem] relative z-10">
-        {/* Order Form */}
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="bijouxType">
-                Tipo de Bijuteria <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="bijouxType"
-                value={bijouxType}
-                onChange={(e) => setBijouxType(e.target.value)}
-                placeholder="Ex: Colar, Brinco, Pulseira"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bijouxMaterial">
-                Material <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="bijouxMaterial"
-                value={bijouxMaterial}
-                onChange={(e) => setBijouxMaterial(e.target.value)}
-                placeholder="Ex: Prata, Ouro, Couro"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="designDetails">
-              Detalhes do Design <span className="text-red-500">*</span>
-            </Label>
-            <Textarea
-              id="designDetails"
-              value={designDetails}
-              onChange={(e) => setDesignDetails(e.target.value)}
-              placeholder="Descreva como gostaria que sua peça fosse"
-            />
-          </div>
-
-          {/* Opcionais */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-purple-600">
-              Opções Extras
-            </h3>
-
-            <div className="flex items-center">
-              <Checkbox
-                id="cravacao"
-                checked={hasCravacao}
-                onCheckedChange={(checked) => setHasCravacao(!!checked)}
-              />
-              <Label htmlFor="cravacao" className="ml-2">
-                Cravação de pedras (+R$50)
-              </Label>
-            </div>
-
-            <div className="flex items-center">
-              <Checkbox
-                id="urgencia"
-                checked={hasUrgencia}
-                onCheckedChange={(checked) => setHasUrgencia(!!checked)}
-              />
-              <Label htmlFor="urgencia" className="ml-2">
-                Urgência no pedido (+R$30)
-              </Label>
-            </div>
-
-            <div className="flex items-center">
-              <Checkbox
-                id="embalagem"
-                checked={hasEmbalagem}
-                onCheckedChange={(checked) => setHasEmbalagem(!!checked)}
-              />
-              <Label htmlFor="embalagem" className="ml-2">
-                Embalagem especial (+R$20)
-              </Label>
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            className="w-full bg-gradient-to-r from-purple-400 to-purple-500 text-white text-lg py-6 rounded-full"
-          >
-            Enviar Pedido (Total: R${calculateTotalPrice()})
+        <nav className="space-y-2">
+          <Button variant="ghost" className="w-full justify-start">
+            <Home className="mr-2 h-4 w-4" />
+            Dashboard
           </Button>
-        </form>
+          <Button variant="ghost" className="w-full justify-start">
+            <Settings className="mr-2 h-4 w-4" />
+            Configurações
+          </Button>
+          <Button variant="ghost" className="w-full justify-start">
+            <CreditCard className="mr-2 h-4 w-4" />
+            Faturamento
+          </Button>
+          <Button variant="ghost" className="w-full justify-start">
+            <Bell className="mr-2 h-4 w-4" />
+            Notificações
+          </Button>
+        </nav>
+      </aside>
+
+      {/* Conteúdo principal */}
+      <main className="flex-1 p-8 overflow-y-auto">
+        <h1 className="text-3xl font-bold mb-6">Painel de Controle</h1>
+
+        <Tabs defaultValue="geral" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="geral">Geral</TabsTrigger>
+            <TabsTrigger value="precos">Preços</TabsTrigger>
+            <TabsTrigger value="app">Aplicativo</TabsTrigger>
+            <TabsTrigger value="integracoes">Integrações</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="geral">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configurações Gerais</CardTitle>
+                <CardDescription>
+                  Configure as informações básicas do seu serviço
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="company-name">Nome da Empresa</Label>
+                  <Input
+                    id="company-name"
+                    placeholder="Sua Empresa de Mobilidade"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="primary-color">Cor Primária</Label>
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="primary-color"
+                      type="color"
+                      value={primaryColor}
+                      onChange={(e) => setPrimaryColor(e.target.value)}
+                      className="w-12 h-12 p-1"
+                    />
+                    <Input
+                      value={primaryColor}
+                      onChange={(e) => setPrimaryColor(e.target.value)}
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="secondary-color">Cor Secundária</Label>
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="secondary-color"
+                      type="color"
+                      value={secondaryColor}
+                      onChange={(e) => setSecondaryColor(e.target.value)}
+                      className="w-12 h-12 p-1"
+                    />
+                    <Input
+                      value={secondaryColor}
+                      onChange={(e) => setSecondaryColor(e.target.value)}
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="precos">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configurações de Preços</CardTitle>
+                <CardDescription>
+                  Defina os preços e comissões do seu serviço
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="base-price">Preço Base por KM (R$)</Label>
+                  <div className="flex items-center space-x-2">
+                    <Slider
+                      id="base-price"
+                      min={1}
+                      max={10}
+                      step={0.1}
+                      value={[basePrice]}
+                      onValueChange={(value) => setBasePrice(value[0])}
+                      className="flex-1"
+                    />
+                    <span className="w-12 text-center">
+                      {basePrice.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="comission-rate">Taxa de Comissão (%)</Label>
+                  <div className="flex items-center space-x-2">
+                    <Slider
+                      id="comission-rate"
+                      min={0}
+                      max={50}
+                      step={1}
+                      value={[comissionRate]}
+                      onValueChange={(value) => setComissionRate(value[0])}
+                      className="flex-1"
+                    />
+                    <span className="w-12 text-center">{comissionRate}%</span>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch id="dynamic-pricing" />
+                  <Label htmlFor="dynamic-pricing">
+                    Habilitar preços dinâmicos
+                  </Label>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="app">
+            <Card>
+              <CardHeader>
+                <CardTitle>Personalização do Aplicativo</CardTitle>
+                <CardDescription>
+                  Configure a aparência e funcionalidades do seu aplicativo
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="app-name">Nome do Aplicativo</Label>
+                  <Input id="app-name" placeholder="MeuApp de Mobilidade" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="app-icon">Ícone do Aplicativo</Label>
+                  <Input id="app-icon" type="file" accept="image/*" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Funcionalidades</Label>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Switch id="feature-chat" />
+                      <Label htmlFor="feature-chat">
+                        Chat entre passageiro e motorista
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch id="feature-rating" />
+                      <Label htmlFor="feature-rating">
+                        Sistema de avaliação
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch id="feature-scheduled-rides" />
+                      <Label htmlFor="feature-scheduled-rides">
+                        Agendamento de corridas
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="integracoes">
+            <Card>
+              <CardHeader>
+                <CardTitle>Integrações</CardTitle>
+                <CardDescription>
+                  Configure integrações com serviços externos
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="payment-gateway">Gateway de Pagamento</Label>
+                  <Select>
+                    <SelectTrigger id="payment-gateway">
+                      <SelectValue placeholder="Selecione um gateway" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="stripe">Stripe</SelectItem>
+                      <SelectItem value="paypal">PayPal</SelectItem>
+                      <SelectItem value="mercadopago">MercadoPago</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="maps-provider">Provedor de Mapas</Label>
+                  <Select>
+                    <SelectTrigger id="maps-provider">
+                      <SelectValue placeholder="Selecione um provedor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="google">Google Maps</SelectItem>
+                      <SelectItem value="mapbox">Mapbox</SelectItem>
+                      <SelectItem value="here">HERE Maps</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="api-key">Chave de API</Label>
+                  <Input
+                    id="api-key"
+                    type="password"
+                    placeholder="Insira sua chave de API"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        <div className="mt-6">
+          <Button onClick={handleSave}>Salvar Alterações</Button>
+        </div>
       </main>
     </div>
   );

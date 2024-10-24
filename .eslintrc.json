@@ -1,8 +1,8 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
-  "rules":{
-    "@next/next/no-duplicate-head":"off",
-    "react-hooks/exhaustive-deps":"off",
-    "react-hooks/rules-of-hooks":"off"
+  "rules": {
+    "@next/next/no-duplicate-head": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react-hooks/rules-of-hooks": "off"
   }
 }
