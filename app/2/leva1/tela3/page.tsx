@@ -1,191 +1,271 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Check, Download, Eye, ArrowLeft, RefreshCcw } from 'lucide-react'
+import { useState, useEffect } from "react"
+import { Search, Filter, Star, Users, DollarSign, ChevronDown, ChevronUp, Instagram, Twitter, Youtube } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
-import Link from 'next/link'
-import QRCode from 'qrcode.react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-// Tipos
-type Ingresso = {
-  id: string
-  eventoNome: string
-  sessao: string
-  tipo: string
-  quantidade: number
-  preco: number
-}
+export default function InfluencerDiscovery() {
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("")
+  const [followerRange, setFollowerRange] = useState([0, 1000000])
+  const [rateRange, setRateRange] = useState([0, 1500])
+  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false)
+  const [sortBy, setSortBy] = useState("relevance")
+  const [viewMode, setViewMode] = useState("grid")
+  const [expandedCard, setExpandedCard] = useState(null)
 
-// Dados mockados do pedido
-const pedido = {
-  numeroPedido: '123456',
-  data: new Date().toLocaleDateString('pt-BR'),
-  ingressos: [
-    { id: '1', eventoNome: 'Show do Metallica', sessao: '15/10/2023 20:00', tipo: 'Inteira', quantidade: 2, preco: 100 },
-    { id: '2', eventoNome: 'Show do Metallica', sessao: '15/10/2023 20:00', tipo: 'Meia', quantidade: 1, preco: 50 },
-    { id: '3', eventoNome: 'Festival de Jazz', sessao: '20/11/2023 19:00', tipo: 'VIP', quantidade: 2, preco: 200 },
-  ] as Ingresso[],
-}
+  const influencers = [
+    { id: 1, name: "Emma Johnson", category: "Lifestyle", followers: 250000, avgRate: 500, rating: 4.8, image: "/placeholder.svg?height=100&width=100&text=EJ", verified: true, engagement: "3.2%", platforms: ["instagram", "youtube"] },
+    { id: 2, name: "Alex Chen", category: "Tech", followers: 500000, avgRate: 800, rating: 4.9, image: "/placeholder.svg?height=100&width=100&text=AC", verified: true, engagement: "4.5%", platforms: ["twitter", "youtube"] },
+    { id: 3, name: "Sophia Rodriguez", category: "Fashion", followers: 1000000, avgRate: 1200, rating: 4.7, image: "/placeholder.svg?height=100&width=100&text=SR", verified: false, engagement: "2.8%", platforms: ["instagram", "twitter"] },
+    { id: 4, name: "Marcus Lee", category: "Fitness", followers: 750000, avgRate: 600, rating: 4.6, image: "/placeholder.svg?height=100&width=100&text=ML", verified: true, engagement: "5.1%", platforms: ["instagram", "youtube", "twitter"] },
+  ]
 
-export default function TelaConfirmacao() {
-  const [downloadStatus, setDownloadStatus] = useState<Record<string, boolean>>({})
-  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null)
-  const [isRefundRequested, setIsRefundRequested] = useState<Record<string, boolean>>({})
-  const [isTransferEnabled, setIsTransferEnabled] = useState<Record<string, boolean>>({})
+  const filteredInfluencers = influencers.filter(influencer => 
+    influencer.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (selectedCategory === "" || influencer.category === selectedCategory) &&
+    influencer.followers >= followerRange[0] && influencer.followers <= followerRange[1] &&
+    influencer.avgRate >= rateRange[0] && influencer.avgRate <= rateRange[1] &&
+    (!showVerifiedOnly || influencer.verified)
+  )
 
-  const handleDownload = (ingressoId: string) => {
-    // Simula o download do ingresso
-    setTimeout(() => {
-      setDownloadStatus(prev => ({ ...prev, [ingressoId]: true }))
-      // Aqui você implementaria a lógica real de download, por exemplo:
-      // window.open(`/api/tickets/download/${ingressoId}`, '_blank')
-    }, 1500)
-  }
+  const sortedInfluencers = [...filteredInfluencers].sort((a, b) => {
+    if (sortBy === "followers") return b.followers - a.followers
+    if (sortBy === "rate") return b.avgRate - a.avgRate
+    if (sortBy === "rating") return b.rating - a.rating
+    return 0 // Default to no sorting (relevance)
+  })
 
-  const handleRefundRequest = (ingressoId: string) => {
-    setIsRefundRequested(prev => ({ ...prev, [ingressoId]: true }))
-    // Aqui você implementaria a lógica real de solicitação de estorno
-    alert('Solicitação de estorno enviada. Nossa equipe entrará em contato.')
-  }
+  useEffect(() => {
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape') {
+        setExpandedCard(null)
+      }
+    }
+    document.addEventListener('keydown', handleEscapeKey)
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [])
 
-  const handleTransferToggle = (ingressoId: string) => {
-    setIsTransferEnabled(prev => ({ ...prev, [ingressoId]: !prev[ingressoId] }))
-  }
-
-  const totalValor = pedido.ingressos.reduce((total, ingresso) => total + ingresso.quantidade * ingresso.preco, 0)
+  const InfluencerCard = ({ influencer, expanded, onExpand }) => (
+    <Card className={`transition-all duration-300 ${expanded ? 'col-span-2' : ''}`}>
+      <CardContent className="p-4">
+        <div className="flex items-start">
+          <Avatar className="w-16 h-16 mr-4">
+            <AvatarImage src={influencer.image} alt={influencer.name} />
+            <AvatarFallback>{influencer.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+          </Avatar>
+          <div className="flex-grow">
+            <div className="flex items-center">
+              <h2 className="text-lg font-semibold">{influencer.name}</h2>
+              {influencer.verified && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <svg className="w-5 h-5 ml-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Verified Influencer</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
+            <p className="text-sm text-gray-500">{influencer.category}</p>
+            <div className="flex items-center mt-2">
+              <Star className="w-4 h-4 text-yellow-400 fill-current" />
+              <span className="ml-1 text-sm">{influencer.rating}</span>
+            </div>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => onExpand(influencer.id)}>
+            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </Button>
+        </div>
+        <div className="flex justify-between mt-4">
+          <div className="flex items-center">
+            <Users className="w-4 h-4 text-gray-400 mr-1" />
+            <span className="text-sm">{influencer.followers.toLocaleString()} followers</span>
+          </div>
+          <div className="flex items-center">
+            <DollarSign className="w-4 h-4 text-gray-400 mr-1" />
+            <span className="text-sm">Avg. ${influencer.avgRate}</span>
+          </div>
+        </div>
+        {expanded && (
+          <div className="mt-4 pt-4 border-t">
+            <p className="text-sm mb-2"><strong>Engagement Rate:</strong> {influencer.engagement}</p>
+            <div className="flex space-x-2 mb-4">
+              {influencer.platforms.includes('instagram') && <Instagram className="w-5 h-5 text-pink-500" />}
+              {influencer.platforms.includes('twitter') && <Twitter className="w-5 h-5 text-blue-400" />}
+              {influencer.platforms.includes('youtube') && <Youtube className="w-5 h-5 text-red-500" />}
+            </div>
+            <Button className="w-full">Contact for Collaboration</Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
 
   return (
-    <div className="container mx-auto p-4">
-      <Card className="w-full max-w-3xl mx-auto">
-        <CardHeader>
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-4">
-            <Check className="h-6 w-6 text-green-600" />
+    <div className="max-w-6xl mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6">Discover Influencers</h1>
+      <Tabs defaultValue="search" className="mb-6">
+        <TabsList>
+          <TabsTrigger value="search">Search</TabsTrigger>
+          <TabsTrigger value="trending">Trending</TabsTrigger>
+          <TabsTrigger value="recommended">Recommended</TabsTrigger>
+        </TabsList>
+        <TabsContent value="search">
+          <div className="flex flex-wrap gap-4 mb-6">
+            <div className="relative flex-grow">
+              <Input
+                type="text"
+                placeholder="Search influencers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            </div>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Categories</SelectItem>
+                <SelectItem value="Lifestyle">Lifestyle</SelectItem>
+                <SelectItem value="Tech">Tech</SelectItem>
+                <SelectItem value="Fashion">Fashion</SelectItem>
+                <SelectItem value="Fitness">Fitness</SelectItem>
+              </SelectContent>
+            </Select>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" onClick={() => document.getElementById('filtersDialog').showModal()}>
+                    <Filter className="mr-2" size={20} />
+                    Filters
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Click to open advanced filters</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
-          <CardTitle className="text-2xl text-center">Compra Confirmada!</CardTitle>
-          <CardDescription className="text-center">
-            Obrigado por sua compra. Seu pedido foi processado com sucesso.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <p className="font-semibold">Número do Pedido: {pedido.numeroPedido}</p>
-              <p className="text-sm text-muted-foreground">Data da Compra: {pedido.data}</p>
-            </div>
-            <Separator />
-            <div>
-              <h3 className="font-semibold mb-2">Detalhes do Pedido</h3>
-              {pedido.ingressos.map((ingresso) => (
-                <Card key={ingresso.id} className="mb-4">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-semibold">{ingresso.eventoNome}</h4>
-                        <p className="text-sm text-muted-foreground">{ingresso.sessao}</p>
-                      </div>
-                      <p className="font-semibold">
-                        R$ {(ingresso.preco * ingresso.quantidade).toFixed(2)}
-                      </p>
-                    </div>
-                    <p className="text-sm">
-                      {ingresso.tipo} - Quantidade: {ingresso.quantidade}
-                    </p>
-                    <div className="mt-4 flex space-x-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="flex items-center" onClick={() => setSelectedTicketId(ingresso.id)}>
-                            <Eye className="mr-2 h-4 w-4" />
-                            Ver Ingresso
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                          <DialogHeader>
-                            <DialogTitle>Detalhes do Ingresso</DialogTitle>
-                            <DialogDescription>
-                              Informações e QR Code do seu ingresso
-                            </DialogDescription>
-                          </DialogHeader>
-                          {selectedTicketId && (
-                            <div className="grid gap-4 py-4">
-                              <div className="flex justify-center">
-                                <QRCode value={`ticket-${selectedTicketId}`} size={200} />
-                              </div>
-                              <div>
-                                <Label className="font-bold">Evento</Label>
-                                <p>{ingresso.eventoNome}</p>
-                              </div>
-                              <div>
-                                <Label className="font-bold">Sessão</Label>
-                                <p>{ingresso.sessao}</p>
-                              </div>
-                              <div>
-                                <Label className="font-bold">Tipo</Label>
-                                <p>{ingresso.tipo}</p>
-                              </div>
-                              <div>
-                                <Label className="font-bold">Quantidade</Label>
-                                <p>{ingresso.quantidade}</p>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <Switch
-                                  id={`ticket-transfer-${ingresso.id}`}
-                                  checked={isTransferEnabled[ingresso.id] || false}
-                                  onCheckedChange={() => handleTransferToggle(ingresso.id)}
-                                />
-                                <Label htmlFor={`ticket-transfer-${ingresso.id}`}>Permitir transferência</Label>
-                              </div>
-                              <Button
-                                variant="destructive"
-                                onClick={() => handleRefundRequest(ingresso.id)}
-                                disabled={isRefundRequested[ingresso.id]}
-                              >
-                                {isRefundRequested[ingresso.id] ? 'Estorno Solicitado' : 'Solicitar Estorno'}
-                              </Button>
-                            </div>
-                          )}
-                        </DialogContent>
-                      </Dialog>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center"
-                        onClick={() => handleDownload(ingresso.id)}
-                        disabled={downloadStatus[ingresso.id]}
-                      >
-                        {downloadStatus[ingresso.id] ? (
-                          <RefreshCcw className="mr-2 h-4 w-4" />
-                        ) : (
-                          <Download className="mr-2 h-4 w-4" />
-                        )}
-                        {downloadStatus[ingresso.id] ? 'Baixar Novamente' : 'Baixar'}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <Separator />
-            <div className="flex justify-between items-center font-semibold">
-              <span>Total</span>
-              <span>R$ {totalValor.toFixed(2)}</span>
+        </TabsContent>
+        <TabsContent value="trending">
+          <p>Trending influencers content here</p>
+        </TabsContent>
+        <TabsContent value="recommended">
+          <p>Recommended influencers based on your preferences</p>
+        </TabsContent>
+      </Tabs>
+      
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center space-x-2">
+          <label htmlFor="viewMode" className="text-sm font-medium">View:</label>
+          <Select value={viewMode} onValueChange={setViewMode}>
+            <SelectTrigger id="viewMode" className="w-[100px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="grid">Grid</SelectItem>
+              <SelectItem value="list">List</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center space-x-2">
+          <label htmlFor="sortBy" className="text-sm font-medium">Sort by:</label>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger id="sortBy" className="w-[150px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="relevance">Relevance</SelectItem>
+              <SelectItem value="followers">Followers</SelectItem>
+              <SelectItem value="rate">Average Rate</SelectItem>
+              <SelectItem value="rating">Rating</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className={`grid gap-4 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
+        {sortedInfluencers.map((influencer) => (
+          <InfluencerCard
+            key={influencer.id}
+            influencer={influencer}
+            expanded={expandedCard === influencer.id}
+            onExpand={(id) => setExpandedCard(expandedCard === id ? null : id)}
+          />
+        ))}
+      </div>
+
+      <dialog id="filtersDialog" className="p-6 rounded-lg shadow-xl backdrop:bg-black backdrop:opacity-50">
+        <h2 className="text-xl font-bold mb-4">Advanced Filters</h2>
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium">Follower Range</label>
+            <Slider
+              min={0}
+              max={1000000}
+              step={10000}
+              value={followerRange}
+              onValueChange={setFollowerRange}
+              className="mt-2"
+            />
+            <div className="flex justify-between text-sm text-gray-500 mt-1">
+              <span>{followerRange[0].toLocaleString()}</span>
+              <span>{followerRange[1].toLocaleString()}</span>
             </div>
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Link href="/eventos" passHref>
-            <Button variant="outline" className="flex items-center">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar para Eventos
-            </Button>
-          </Link>
-          <Button>Minha Conta</Button>
-        </CardFooter>
-      </Card>
+          <div>
+            <label className="text-sm font-medium">Average Rate Range ($)</label>
+            <Slider
+              min={0}
+              max={1500}
+              step={50}
+              value={rateRange}
+              onValueChange={setRateRange}
+              className="mt-2"
+            />
+            <div className="flex justify-between text-sm text-gray-500 mt-1">
+              <span>${rateRange[0]}</span>
+              <span>${rateRange[1]}</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="verified-only"
+              checked={showVerifiedOnly}
+              onCheckedChange={setShowVerifiedOnly}
+            />
+            <label htmlFor="verified-only" className="text-sm font-medium">
+              Show verified influencers only
+            </label>
+          </div>
+        </div>
+        <div className="flex justify-end mt-6 space-x-2">
+          <Button variant="outline" onClick={() => document.getElementById('filtersDialog').close()}>
+            Cancel
+          </Button>
+          <Button onClick={() =>   document.getElementById('filtersDialog').close()}>
+            Apply Filters
+          </Button>
+        </div>
+      </dialog>
     </div>
   )
 }

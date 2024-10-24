@@ -1,158 +1,153 @@
-import Image from "next/image";
-import { MapPin, Star, Phone, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
+import { Bell, DollarSign, Users, Car, TrendingUp, AlertTriangle } from "lucide-react"
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
-const services = [
-  {
-    name: "Corte de Cabelo",
-    description: "Estilo personalizado com as últimas tendências.",
-    price: "R$ 50,00",
-  },
-  {
-    name: "Sobrancelha",
-    description: "Expressão acentuada com modelagem precisa.",
-    price: "R$ 25,00",
-  },
-  {
-    name: "Barba",
-    description: "Modelagem completa para destacar sua masculinidade.",
-    price: "R$ 45,00",
-  },
-  {
-    name: "Massagem",
-    description: "Relaxe e renove com nossos tratamentos revitalizantes.",
-    price: "R$ 35,00",
-  },
-  {
-    name: "Pézinho",
-    description: "Acabamento perfeito para um visual renovado.",
-    price: "R$ 20,00",
-  },
-  {
-    name: "Hidratação",
-    description: "Fios hidratados, macios e brilhantes.",
-    price: "R$ 30,00",
-  },
-];
+// Dados simulados para os gráficos
+const tripData = [
+  { name: '00:00', trips: 120 },
+  { name: '04:00', trips: 80 },
+  { name: '08:00', trips: 250 },
+  { name: '12:00', trips: 200 },
+  { name: '16:00', trips: 300 },
+  { name: '20:00', trips: 220 },
+]
 
-const openingHours = [
-  { day: "Segunda", hours: "Fechado" },
-  { day: "Terça-Feira", hours: "09:00 - 21:00" },
-  { day: "Quarta-Feira", hours: "09:00 - 21:00" },
-  { day: "Quinta-Feira", hours: "09:00 - 21:00" },
-  { day: "Sexta-Feira", hours: "09:00 - 21:00" },
-  { day: "Sábado", hours: "08:00 - 17:00" },
-  { day: "Domingo", hours: "Fechado" },
-];
+const revenueData = [
+  { name: 'Seg', revenue: 5000 },
+  { name: 'Ter', revenue: 5500 },
+  { name: 'Qua', revenue: 6000 },
+  { name: 'Qui', revenue: 5800 },
+  { name: 'Sex', revenue: 7000 },
+  { name: 'Sáb', revenue: 8000 },
+  { name: 'Dom', revenue: 7500 },
+]
 
-export default function Component() {
+export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-background text-gray-100 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
-            <div className="relative aspect-video mb-8">
-              <Image
-                src="/placeholder.svg"
-                alt="Vintage Barber Interior"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg"
-              />
-            </div>
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold mb-2">Vintage Barber</h1>
-              <div className="flex items-center text-sm mb-4">
-                <MapPin className="mr-2 h-4 w-4" />
-                <span>Avenida São Sebastião, 357, São Paulo</span>
-              </div>
-              <div className="flex items-center">
-                <Star className="text-yellow-400 mr-1 h-5 w-5" />
-                <span className="font-bold mr-2">5.0</span>
-                <span className="text-gray-400">(889 avaliações)</span>
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-4 mb-8">
-              {services.map((service) => (
-                <Card key={service.name} className="bg-gray-800">
-                  <CardHeader>
-                    <CardTitle>{service.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-400 mb-4">
-                      {service.description}
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-purple-400">
-                        {service.price}
-                      </span>
-                      <Button variant="outline">Reservar</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-          <div>
-            <Card className="bg-gray-800 mb-8">
-              <CardHeader>
-                <CardTitle>Mapa</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="aspect-square bg-gray-700 rounded-lg"></div>
-              </CardContent>
-            </Card>
-            <Card className="bg-gray-800 mb-8">
-              <CardHeader>
-                <CardTitle>Contato</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <Phone className="mr-2 h-4 w-4" />
-                    <span>(11) 98204-5108</span>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Phone className="mr-2 h-4 w-4" />
-                    <span>(11) 99503-2351</span>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-gray-800">
-              <CardHeader>
-                <CardTitle>Horário de Funcionamento</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {openingHours.map((day) => (
-                  <div key={day.day} className="flex justify-between mb-2">
-                    <span>{day.day}</span>
-                    <span>{day.hours}</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Sobre Nós</h2>
-          <p className="text-gray-400">
-            Bem-vindo à Vintage Barber, onde tradição encontra estilo. Nossa
-            equipe de mestres barbeiros transforma cortes de cabelo e barbas em
-            obras de arte. Em um ambiente acolhedor, promovemos confiança,
-            estilo e uma comunidade unida.
-          </p>
-        </div>
+    <div className="container mx-auto p-6">
+      <header className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Dashboard MobilidadeX</h1>
+        <Select defaultValue="today">
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Selecione o período" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="today">Hoje</SelectItem>
+            <SelectItem value="week">Esta Semana</SelectItem>
+            <SelectItem value="month">Este Mês</SelectItem>
+            <SelectItem value="year">Este Ano</SelectItem>
+          </SelectContent>
+        </Select>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Viagens</CardTitle>
+            <Car className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">1,284</div>
+            <p className="text-xs text-muted-foreground">+12% em relação à semana passada</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Receita Total</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">R$ 15,231.89</div>
+            <p className="text-xs text-muted-foreground">+8% em relação à semana passada</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Usuários Ativos</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">573</div>
+            <p className="text-xs text-muted-foreground">+18% em relação ao mês passado</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Taxa de Crescimento</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">12%</div>
+            <p className="text-xs text-muted-foreground">+2% em relação ao mês passado</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Viagens por Hora</CardTitle>
+            <CardDescription>Número de viagens realizadas nas últimas 24 horas</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={tripData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="trips" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Receita Diária</CardTitle>
+            <CardDescription>Receita total dos últimos 7 dias</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={revenueData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="revenue" stroke="#82ca9d" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold">Alertas e Notificações</h2>
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Pico de Demanda</AlertTitle>
+          <AlertDescription>
+            Esperamos um aumento de 30% na demanda hoje à noite devido a um evento na cidade.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Bell className="h-4 w-4" />
+          <AlertTitle>Atualização do Aplicativo</AlertTitle>
+          <AlertDescription>
+            Nova versão do aplicativo disponível. Recomendamos atualizar todos os motoristas.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Área de Alta Demanda</AlertTitle>
+          <AlertDescription>
+            Região central com escassez de motoristas. Considere oferecer incentivos.
+          </AlertDescription>
+        </Alert>
       </div>
     </div>
-  );
+  )
 }

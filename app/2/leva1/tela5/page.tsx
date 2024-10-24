@@ -1,272 +1,235 @@
-'use client'
-
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { CreditCard, Calendar, Lock } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { toast } from "@/components/ui/use-toast"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Star, BookOpen, ThumbsUp, Zap } from "lucide-react"
 
-// Esquema de validação
-const formSchema = z.object({
-  cardNumber: z.string().regex(/^\d{16}$/, { message: "Número do cartão deve ter 16 dígitos" }),
-  cardName: z.string().min(3, { message: "Nome deve ter pelo menos 3 caracteres" }),
-  expirationMonth: z.string().min(1, { message: "Selecione o mês de expiração" }),
-  expirationYear: z.string().min(1, { message: "Selecione o ano de expiração" }),
-  cvv: z.string().regex(/^\d{3,4}$/, { message: "CVV deve ter 3 ou 4 dígitos" }),
-  address: z.string().min(5, { message: "Endereço deve ter pelo menos 5 caracteres" }),
-  city: z.string().min(2, { message: "Cidade deve ter pelo menos 2 caracteres" }),
-  state: z.string().min(2, { message: "Estado deve ter pelo menos 2 caracteres" }),
-  zipCode: z.string().regex(/^\d{5}(-\d{3})?$/, { message: "CEP inválido" }),
-})
-
-// Tipo para os dados do formulário
-type FormData = z.infer<typeof formSchema>
-
-// Dados mockados do carrinho
-const cartItems = [
-  { id: '1', name: 'Show do Metallica', quantity: 2, price: 100 },
-  { id: '2', name: 'Festival de Jazz', quantity: 1, price: 200 },
-]
-
-export default function TelaPagamento() {
-  const [isProcessing, setIsProcessing] = useState(false)
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      cardNumber: '',
-      cardName: '',
-      expirationMonth: '',
-      expirationYear: '',
-      cvv: '',
-      address: '',
-      city: '',
-      state: '',
-      zipCode: '',
-    },
-  })
-
-  const onSubmit = async (data: FormData) => {
-    setIsProcessing(true)
-    // Simula o processamento do pagamento
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    setIsProcessing(false)
-    toast({
-      title: "Pagamento processado com sucesso!",
-      description: "Seus ingressos foram confirmados.",
-    })
-    console.log(data)
-  }
-
-  const totalAmount = cartItems.reduce((total, item) => total + item.quantity * item.price, 0)
-
+export default function LandingPage() {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Finalizar Compra</h1>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Resumo do Pedido</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {cartItems.map((item) => (
-              <div key={item.id} className="flex justify-between mb-2">
-                <span>{item.name} x{item.quantity}</span>
-                <span>R$ {(item.price * item.quantity).toFixed(2)}</span>
+    <div className="flex flex-col min-h-screen">
+      <header className="px-4 lg:px-6 h-14 flex items-center">
+        <Link className="flex items-center justify-center" href="#">
+          <BookOpen className="h-6 w-6 mr-2" />
+          <span className="font-bold">Editora Canina</span>
+        </Link>
+        <nav className="ml-auto flex gap-4 sm:gap-6">
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#about">
+            Sobre o Livro
+          </Link>
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#author">
+            Autor
+          </Link>
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#buy">
+            Comprar
+          </Link>
+        </nav>
+      </header>
+      <main className="flex-1">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-black text-white">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                  Calixto Salsicha: O Golpe do Terreno Fantasma
+                </h1>
+                <p className="mx-auto max-w-[700px] text-zinc-200 md:text-xl">
+                  Uma aventura canina cheia de reviravoltas, golpes engenhosos e personagens inesquecíveis
+                </p>
               </div>
-            ))}
-            <Separator className="my-4" />
-            <div className="flex justify-between font-bold">
-              <span>Total</span>
-              <span>R$ {totalAmount.toFixed(2)}</span>
+              <div className="space-x-4">
+                <Link
+                  className="inline-flex h-9 items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-black shadow transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-300 disabled:pointer-events-none disabled:opacity-50"
+                  href="#buy"
+                >
+                  Compre Agora
+                </Link>
+                <Link
+                  className="inline-flex h-9 items-center justify-center rounded-md border border-zinc-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50"
+                  href="#about"
+                >
+                  Saiba Mais
+                </Link>
+              </div>
             </div>
-          </CardContent>
-        </Card>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Informações de Pagamento</CardTitle>
-                <CardDescription>Insira os detalhes do seu cartão de crédito</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="cardNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Número do Cartão</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input {...field} placeholder="1234 5678 9012 3456" />
-                          <CreditCard className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="cardName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome no Cartão</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Nome completo" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-3 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="expirationMonth"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Mês</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Mês" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                              <SelectItem key={month} value={month.toString().padStart(2, '0')}>
-                                {month.toString().padStart(2, '0')}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="expirationYear"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ano</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Ano" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
-                              <SelectItem key={year} value={year.toString()}>
-                                {year}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="cvv"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>CVV</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input {...field} placeholder="123" maxLength={4} />
-                            <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Endereço de Cobrança</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Endereço</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Rua, número, complemento" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Cidade</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="Cidade" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="state"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Estado</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="Estado" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="zipCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>CEP</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="00000-000" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-              <CardFooter>
-                <Button type="submit" className="w-full" disabled={isProcessing}>
-                  {isProcessing ? "Processando..." : `Pagar R$ ${totalAmount.toFixed(2)}`}
-                </Button>
-              </CardFooter>
-            </Card>
-          </form>
-        </Form>
-      </div>
+          </div>
+        </section>
+        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-zinc-50">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Sobre o Livro</h2>
+                <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Conheça Calixto Salsicha, um Basset Hound trambiqueiro e astuto, que transformou sua vida em um ciclo
+                  interminável de golpes, mentiras e fugas. Agora, ele está de volta com seu maior e mais audacioso golpe:
+                  vender terrenos inexistentes para os moradores do bairro onde cresceu.
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3 lg:gap-12">
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-2 p-6">
+                  <ThumbsUp className="h-12 w-12 text-zinc-900" />
+                  <h3 className="text-xl font-bold">Personagens Cativantes</h3>
+                  <p className="text-sm text-zinc-500 text-center">
+                    Conheça uma turma peculiar de cães, cada um com sua própria agenda e personalidade única.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-2 p-6">
+                  <Zap className="h-12 w-12 text-zinc-900" />
+                  <h3 className="text-xl font-bold">Trama Envolvente</h3>
+                  <p className="text-sm text-zinc-500 text-center">
+                    Uma história cheia de reviravoltas, perseguições e esquemas audaciosos que vai te prender do início ao fim.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-2 p-6">
+                  <Star className="h-12 w-12 text-zinc-900" />
+                  <h3 className="text-xl font-bold">Humor e Reflexão</h3>
+                  <p className="text-sm text-zinc-500 text-center">
+                    Uma narrativa que mistura humor com reflexões sobre escolhas, consequências e redenção.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+        <section id="character" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Conheça Calixto Salsicha</h2>
+                <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Um Basset Hound com carisma de sobra e uma mente afiada para golpes. Calixto é o anti-herói que você não
+                  conseguirá deixar de amar, mesmo sabendo que não deveria.
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto max-w-3xl space-y-4 pt-12">
+              <Card>
+                <CardContent className="flex items-center gap-4 p-6">
+                  <div className="flex-1 space-y-1">
+                    <h3 className="font-bold">Astúcia Inigualável</h3>
+                    <p className="text-sm text-zinc-500">
+                      Calixto tem um talento natural para elaborar esquemas complexos e convencer até o mais cético dos cães.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="flex items-center gap-4 p-6">
+                  <div className="flex-1 space-y-1">
+                    <h3 className="font-bold">Passado Misterioso</h3>
+                    <p className="text-sm text-zinc-500">
+                      Nascido no Frigorífico Bordon, o passado de Calixto é tão intrigante quanto seus golpes atuais.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="flex items-center gap-4 p-6">
+                  <div className="flex-1 space-y-1">
+                    <h3 className="font-bold">Carisma Irresistível</h3>
+                    <p className="text-sm text-zinc-500">
+                      Mesmo em apuros, Calixto sempre tem um truque na manga e um sorriso no rosto.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+        <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-zinc-50">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">O que estão dizendo</h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-4 p-6 text-center">
+                  <Star className="h-6 w-6 text-yellow-500" />
+                  <p className="text-sm text-zinc-500">
+                    "Uma leitura viciante! Não consegui largar o livro até terminar. Calixto é um personagem inesquecível."
+                  </p>
+                  <p className="font-semibold">- Revista LiteráriaCão</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-4 p-6 text-center">
+                  <Star className="h-6 w-6 text-yellow-500" />
+                  <p className="text-sm text-zinc-500">
+                    "Uma mistura perfeita de humor e suspense. A trama é envolvente e os personagens são cativantes."
+                  </p>
+                  <p className="font-semibold">- Blog Leitores de Patas</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="flex flex-col items-center space-y-4 p-6 text-center">
+                  <Star className="h-6 w-6 text-yellow-500" />
+                  <p className="text-sm text-zinc-500">
+                    "Calixto Salsicha é o anti-herói que não sabíamos que precisávamos. Uma história imperdível!"
+                  </p>
+                  <p className="font-semibold">- Jornal O Latido Literário</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+        <section id="buy" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Adquira Já o Seu Exemplar</h2>
+                <p className="max-w-[600px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Não perca a chance de embarcar nessa aventura canina cheia de reviravoltas!
+                </p>
+              </div>
+              <div className="w-full max-w-sm space-y-2">
+                <form className="flex flex-col space-y-4">
+                  <Button type="submit" className="bg-black text-white hover:bg-zinc-800">
+                    Comprar por R$ 49,90
+                  </Button>
+                </form>
+                <p className="text-xs text-zinc-500">
+                  *Entrega grátis para todo o Brasil. Disponível em formato físico e e-book.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="author" className="w-full py-12 md:py-24 lg:py-32 bg-zinc-50">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Sobre o Autor</h2>
+                <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  João da Silva é um escritor premiado, conhecido por suas histórias envolventes e personagens memoráveis. Com
+                  "Calixto Salsicha: O Golpe do Terreno Fantasma", ele traz sua primeira incursão no mundo da literatura canina,
+                  mesclando sua experiência em narrativas de suspense com um toque de humor único.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+        <p className="text-xs text-zinc-500">© 2024 Editora Canina. Todos os direitos reservados.</p>
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Termos de Serviço
+          </Link>
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Privacidade
+          </Link>
+        </nav>
+      </footer>
     </div>
+  )
+}
+
+function Link({ href, children, ...props }) {
+  return (
+    <a href={href} {...props}>
+      {children}
+    </a>
   )
 }
