@@ -1,113 +1,82 @@
-'use client'
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  ChevronRight,
+  Code,
+  FileCode,
+  Globe,
+  Rocket,
+  Zap,
+  Lock,
+  Star,
+  PlayCircle,
+  CreditCard,
+  LayoutDashboard,
+  Database,
+  MessageSquare,
+  CreditCard as PaymentIcon,
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Icons } from "@/components/ui/icons";
 
-import { useState } from 'react'
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-
-export default function EmailNotificationsSettings() {
-  const [settings, setSettings] = useState({
-    newAnswers: true,
-    newComments: true,
-    votes: false,
-    newFollowers: true,
-    systemUpdates: true,
-    digestFrequency: 'daily'
-  })
-
-  const handleToggle = (setting: keyof typeof settings) => {
-    setSettings(prev => ({ ...prev, [setting]: !prev[setting] }))
-  }
-
-  const handleDigestChange = (value: string) => {
-    setSettings(prev => ({ ...prev, digestFrequency: value }))
-  }
-
-  const saveSettings = () => {
-    // Here you would typically send the settings to your backend
-    console.log('Saving settings:', settings)
-    // Show a success message to the user
-  }
-
+export default function Component() {
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>Email Notification Settings</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="new-answers">New answers to your questions</Label>
-            <Switch
-              id="new-answers"
-              checked={settings.newAnswers}
-              onCheckedChange={() => handleToggle('newAnswers')}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="new-comments">New comments or replies</Label>
-            <Switch
-              id="new-comments"
-              checked={settings.newComments}
-              onCheckedChange={() => handleToggle('newComments')}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="votes">Votes on your content</Label>
-            <Switch
-              id="votes"
-              checked={settings.votes}
-              onCheckedChange={() => handleToggle('votes')}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="new-followers">New followers</Label>
-            <Switch
-              id="new-followers"
-              checked={settings.newFollowers}
-              onCheckedChange={() => handleToggle('newFollowers')}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="system-updates">System updates or announcements</Label>
-            <Switch
-              id="system-updates"
-              checked={settings.systemUpdates}
-              onCheckedChange={() => handleToggle('systemUpdates')}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Email Digest Frequency</Label>
-          <RadioGroup
-            value={settings.digestFrequency}
-            onValueChange={handleDigestChange}
-            className="flex flex-col space-y-1"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="daily" id="daily" />
-              <Label htmlFor="daily">Daily</Label>
+    <div className="flex flex-col min-h-screen bg-black text-gray-100">
+      {/* Existing header code... */}
+      
+      <main className="flex-1">
+        {/* Existing sections... */}
+        
+        {/* New Technologies Used Section */}
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-lime-400 mb-8 text-center">
+              Tecnologias Utilizadas
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-center">
+              {technologies.map((tech, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <div className="w-16 h-16 mb-4">
+                    <tech.icon className="w-full h-full text-lime-400" />
+                  </div>
+                  <span className="text-sm text-gray-300">{tech.name}</span>
+                </div>
+              ))}
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="weekly" id="weekly" />
-              <Label htmlFor="weekly">Weekly</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="never" id="never" />
-              <Label htmlFor="never">Never (receive individual emails)</Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <Button onClick={saveSettings} className="w-full">Save Settings</Button>
-
-        <p className="text-sm text-muted-foreground">
-          You can unsubscribe from all email notifications by clicking the unsubscribe link in any email we send you.
-        </p>
-      </CardContent>
-    </Card>
-  )
+          </div>
+        </section>
+        
+        {/* Existing sections... */}
+      </main>
+      
+      {/* Existing footer code... */}
+    </div>
+  );
 }
+
+const technologies = [
+  { name: "React", icon: Icons.react },
+  { name: "Node.js", icon: Icons.nodejs },
+  { name: "MongoDB", icon: Icons.mongodb },
+  { name: "PostgreSQL", icon: Icons.postgresql },
+  { name: "TypeScript", icon: Icons.typescript },
+  { name: "Next.js", icon: Icons.nextjs },
+  { name: "Fastify", icon: Icons.fastify },
+  { name: "Redis", icon: Icons.redis },
+  { name: "Kafka", icon: Icons.kafka },
+  { name: "Docker", icon: Icons.docker },
+  { name: "GraphQL", icon: Icons.graphql },
+  { name: "Tailwind CSS", icon: Icons.tailwind },
+];
+
+// ... rest of the existing code (modules and topics arrays)
