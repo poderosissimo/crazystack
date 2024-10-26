@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
+import { CookieFooter } from "./_components/CookiesPreferences";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <main>
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
+          <CookieFooter />
         </main>
       </body>
     </html>

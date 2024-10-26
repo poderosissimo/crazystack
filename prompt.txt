@@ -1,0 +1,1 @@
+refactor this code with 12 new improvments (ui design) in each element. responsive in desktop and mobile please. dont use tool,paw,paypalicon,repeat,save and social network icons. aplica tema de cores usando primary,secondary,background e foreground dando contraste.
