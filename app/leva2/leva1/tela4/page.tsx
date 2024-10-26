@@ -1,15 +1,42 @@
-import { useState } from 'react'
-import { Bell, ChevronDown, ChevronUp, CreditCard, Eye, Facebook, Google, Lock, LogOut, Mail, Phone, Trash2, User } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+"use client";
+import { useState } from "react";
+import {
+  Bell,
+  ChevronDown,
+  ChevronUp,
+  CreditCard,
+  Eye,
+  Facebook,
+  Google,
+  Lock,
+  LogOut,
+  Mail,
+  Phone,
+  Trash2,
+  User,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function SettingsScreen() {
-  const [isVisible, setIsVisible] = useState(true)
-  const [pushNotifications, setPushNotifications] = useState(true)
+  const [isVisible, setIsVisible] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(true);
 
   return (
     <div className="container mx-auto p-4 space-y-6">
@@ -35,13 +62,21 @@ export default function SettingsScreen() {
               </div>
               <div>
                 <Label htmlFor="password">Change Password</Label>
-                <Input id="password" type="password" placeholder="New password" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="New password"
+                />
               </div>
               <div className="space-y-2">
                 <Label>Linked Accounts</Label>
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="icon"><Facebook className="h-4 w-4" /></Button>
-                  <Button variant="outline" size="icon"><Google className="h-4 w-4" /></Button>
+                  <Button variant="outline" size="icon">
+                    <Facebook className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon">
+                    <Google className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             </div>
@@ -71,7 +106,9 @@ export default function SettingsScreen() {
               </div>
               <div>
                 <Label>Data Sharing Permissions</Label>
-                <Button variant="outline" className="mt-2">Manage Permissions</Button>
+                <Button variant="outline" className="mt-2">
+                  Manage Permissions
+                </Button>
               </div>
             </div>
           </AccordionContent>
@@ -97,8 +134,11 @@ export default function SettingsScreen() {
               <div>
                 <Label>Notification Preferences</Label>
                 <div className="mt-2 space-y-2">
-                  {['Matches', 'Messages', 'Likes'].map((pref) => (
-                    <div key={pref} className="flex items-center justify-between">
+                  {["Matches", "Messages", "Likes"].map((pref) => (
+                    <div
+                      key={pref}
+                      className="flex items-center justify-between"
+                    >
                       <span>{pref}</span>
                       <Switch />
                     </div>
@@ -120,7 +160,9 @@ export default function SettingsScreen() {
             <Card>
               <CardHeader>
                 <CardTitle>Current Plan: Premium</CardTitle>
-                <CardDescription>Valid until: December 31, 2023</CardDescription>
+                <CardDescription>
+                  Valid until: December 31, 2023
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button variant="outline">Upgrade Plan</Button>
@@ -142,5 +184,5 @@ export default function SettingsScreen() {
         </Button>
       </div>
     </div>
-  )
+  );
 }
