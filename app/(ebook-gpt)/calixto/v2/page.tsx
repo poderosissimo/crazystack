@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,16 +29,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className={`flex flex-col min-h-screen ${darkMode ? "dark" : ""}`}>
-      <style jsx global>{`
-        :root {
-          --color-primary: ${darkMode ? "#fbbf24" : "#f59e0b"};
-          --color-secondary: ${darkMode ? "#60a5fa" : "#3b82f6"};
-          --color-accent: ${darkMode ? "#f472b6" : "#ec4899"};
-          --color-background: ${darkMode ? "#1f2937" : "#f9fafb"};
-          --color-text: ${darkMode ? "#f9fafb" : "#1f2937"};
-        }
-      `}</style>
+    <div className={`flex flex-col min-h-screen dark`}>
       <div
         className="fixed top-0 left-0 right-0 h-1 bg-primary z-50"
         style={{ width: `${scrollProgress}%` }}
@@ -45,46 +37,36 @@ export default function LandingPage() {
       <header className="sticky top-0 px-4 lg:px-6 h-16 flex items-center justify-between bg-background/80 backdrop-blur-sm z-40">
         <Link className="flex items-center justify-center" href="#">
           <BookOpen className="h-6 w-6 mr-2 text-primary" />
-          <span className="font-bold text-lg">Editora Canina</span>
+          <span className="font-bold text-lg text-foreground">
+            Editora Canina
+          </span>
         </Link>
         <nav className="hidden md:flex gap-4 sm:gap-6">
           <Link
-            className="text-sm font-medium hover:text-primary transition-colors"
+            className="text-sm font-medium hover:text-primary text-foreground"
             href="#about"
           >
             Sobre o Livro
           </Link>
           <Link
-            className="text-sm font-medium hover:text-primary transition-colors"
+            className="text-sm font-medium hover:text-primary text-foreground"
             href="#character"
           >
             Personagem
           </Link>
           <Link
-            className="text-sm font-medium hover:text-primary transition-colors"
+            className="text-sm font-medium hover:text-primary text-foreground"
             href="#author"
           >
             Autor
           </Link>
           <Link
-            className="text-sm font-medium hover:text-primary transition-colors"
+            className="text-sm font-medium hover:text-primary text-foreground"
             href="#buy"
           >
             Comprar
           </Link>
         </nav>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setDarkMode(!darkMode)}
-          className="ml-auto md:ml-0"
-        >
-          {darkMode ? (
-            <Sun className="h-5 w-5" />
-          ) : (
-            <Moon className="h-5 w-5" />
-          )}
-        </Button>
       </header>
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-br from-primary via-secondary to-accent text-white">
@@ -101,7 +83,7 @@ export default function LandingPage() {
               </div>
               <div className="space-x-4 animate-fade-in-up animation-delay-400">
                 <Link
-                  className="inline-flex h-9 items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-primary shadow transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-300 disabled:pointer-events-none disabled:opacity-50"
+                  className="text-background inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary shadow transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-300 disabled:pointer-events-none disabled:opacity-50"
                   href="#buy"
                 >
                   Compre Agora
