@@ -492,37 +492,56 @@ export default function SaasUIGenerator() {
     colorScheme: "light",
   })
   const [uiElements, setUiElements] = useState({
-    header: false,
-    footer: false,
-    sidebar: false,
-    navigationMenu: false,
-    searchBar: false,
-    loginForm: false,
-    signupForm: false,
-    dataTable: false,
+    form:true,
+    calendar:true,
+    popover:true,
+    input:true,
+    slider:true,
+    label:true,
+    table: false,
     chart: false,
-    modal: false,
-    tooltip: false,
-    accordion: false,
-    tabs: false,
+    sidebar:false,
+    avatar:true,
+    collapsible:true,
+    button:true,
+    drawer:true,
+    menubar:true,
+    progress:true,
+    tooltip: true,
+    accordion: true,
+    separator:true,
+    sheet:true,
+    skeleton:true,
+    tabs: true,
+    toggle:true,
     carousel: false,
     pagination: false,
     breadcrumbs: false,
-    notificationSystem: false,
-    userProfile: false,
-    settingsPanel: false,
+    select:true,
+    card:true,
   })
   const [advancedParams, setAdvancedParams] = useState({
-    includeAccessibility: true,
-    darkModeSupport: false,
-    useGridLayout: false,
-    includeFormValidation: false,
-    useCustomComponents: false,
-    optimizeForPerformance: false,
     responsiveDesign: true,
-    animatedTransitions: false,
+    animatedTransitions: true,
     errorHandling: false,
+    atomicDesign:false,
+    cleanCode:false,
+    supabase:false,
+    useCallback:true,
+    useMemo:true,
+    solidPrinciples:false,
+    mockDetalhado:false,
+    reactHookForm:false,
+    zodValidation:false,
+    datefns:true,
+    notificationSystem: false,
+    userProfile: false,
+    tanstackReactQuery:false,
     loadingStates: false,
+    complexCard:false,
+    complexAccordion:false,
+    heroSection:false,
+    settingsPanel: false
   })
 
   const handleScreenParamChange = (param, value) => {
@@ -553,21 +572,16 @@ export default function SaasUIGenerator() {
     const operationAreaLabel = operationAreas.find(area => area.value === operationArea)?.label
 
     const prompt = `
-Crie uma tela de ${screenTypeLabel} para um aplicativo SaaS do tipo ${saasTypeLabel} na área de ${operationAreaLabel} com as seguintes especificações:
+Create a ${screenTypeLabel} screen for a SaaS application of type ${saasTypeLabel} in the area of ${operationAreaLabel} with the following specifications:
 
-Nome da Tela: ${screenParams.name}
-Descrição: ${screenParams.description}
-Esquema de Cores: ${screenParams.colorScheme}
-
-Elementos de UI a serem incluídos:
+UI elements to include:
 ${selectedElements}
 
-Recursos avançados a serem implementados:
-${advancedFeatures}
+Advanced features to implement:
+${advancedFeatures}.
+Do not use tool, paw, PayPal icon, repeat, save, and social network icons. Create 30 parameters. If the code repeats more than once, create a reusable component in same file.
+`;
 
-Por favor, gere um código React completo para esta tela, utilizando Tailwind CSS para estilização. 
-O código deve ser responsivo, acessível e otimizado para performance. 
-    `
     setPrompt(prompt.trim())
   }
 
