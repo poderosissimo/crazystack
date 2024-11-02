@@ -1,175 +1,91 @@
 "use client";
-import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import { Smile, Image as ImageIcon, Mic, Send, ArrowLeft } from "lucide-react";
+import Image from "next/image";
+import React from "react";
+import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 
-// Mock data for matches
-const matches = [
-  {
-    id: 1,
-    name: "Alice",
-    picture: "/placeholder.svg?height=40&width=40",
-    unreadCount: 3,
-    online: true,
-  },
-  {
-    id: 2,
-    name: "Bob",
-    picture: "/placeholder.svg?height=40&width=40",
-    unreadCount: 0,
-    online: false,
-  },
-  {
-    id: 3,
-    name: "Charlie",
-    picture: "/placeholder.svg?height=40&width=40",
-    unreadCount: 1,
-    online: true,
-  },
-  {
-    id: 4,
-    name: "Diana",
-    picture: "/placeholder.svg?height=40&width=40",
-    unreadCount: 2,
-    online: true,
-  },
-  {
-    id: 5,
-    name: "Ethan",
-    picture: "/placeholder.svg?height=40&width=40",
-    unreadCount: 0,
-    online: false,
-  },
-];
-
-export default function Component() {
-  const [selectedMatch, setSelectedMatch] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [message, setMessage] = useState("");
-
-  const filteredMatches = matches.filter((match) =>
-    match.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+export default function AppleCardsCarouselDemo() {
+  const cards = data.map((card, index) => (
+    <Card key={card.src} card={card} index={index} />
+  ));
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-background">
-      {/* Matches List */}
-      <div
-        className={`w-full md:w-1/3 border-r ${selectedMatch ? "hidden md:block" : "block"}`}
-      >
-        <div className="p-4">
-          <Input
-            placeholder="Search matches"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-4"
-          />
-          <ScrollArea className="h-[calc(100vh-8rem)]">
-            {filteredMatches.map((match) => (
-              <div
-                key={match.id}
-                className="flex items-center p-2 hover:bg-muted cursor-pointer"
-                onClick={() => setSelectedMatch(match)}
-              >
-                <Avatar className="h-12 w-12 mr-4">
-                  <AvatarImage src={match.picture} alt={match.name} />
-                  <AvatarFallback>{match.name[0]}</AvatarFallback>
-                </Avatar>
-                <div className="flex-grow">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">{match.name}</span>
-                    {match.unreadCount > 0 && (
-                      <Badge
-                        variant="destructive"
-                        className="rounded-full px-2"
-                      >
-                        {match.unreadCount}
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {match.online ? "Online" : "Offline"}
-                  </div>
-                </div>
-                {match.online && (
-                  <div className="w-3 h-3 bg-green-500 rounded-full ml-2"></div>
-                )}
-              </div>
-            ))}
-          </ScrollArea>
-        </div>
-      </div>
-
-      {/* Chat Screen */}
-      <div
-        className={`flex-grow flex flex-col ${selectedMatch ? "block" : "hidden md:block"}`}
-      >
-        {selectedMatch ? (
-          <>
-            <div className="p-4 border-b flex items-center">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="mr-2 md:hidden"
-                onClick={() => setSelectedMatch(null)}
-              >
-                <ArrowLeft className="h-6 w-6" />
-              </Button>
-              <Avatar className="h-10 w-10 mr-4">
-                <AvatarImage
-                  src={selectedMatch.picture}
-                  alt={selectedMatch.name}
-                />
-                <AvatarFallback>{selectedMatch.name[0]}</AvatarFallback>
-              </Avatar>
-              <h2 className="text-xl font-semibold">{selectedMatch.name}</h2>
-            </div>
-            <ScrollArea className="flex-grow p-4">
-              {/* Chat messages would go here */}
-              <div className="space-y-4">
-                <div className="bg-muted p-3 rounded-lg max-w-[70%]">
-                  Hi there! How are you?
-                </div>
-                <div className="bg-primary text-primary-foreground p-3 rounded-lg max-w-[70%] ml-auto">
-                  I'm doing great, thanks for asking! How about you?
-                </div>
-                {/* Add more mock messages as needed */}
-              </div>
-            </ScrollArea>
-            <div className="p-4 border-t">
-              <div className="flex items-center">
-                <Button variant="ghost" size="icon">
-                  <Smile className="h-6 w-6" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <ImageIcon className="h-6 w-6" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <Mic className="h-6 w-6" />
-                </Button>
-                <Input
-                  placeholder="Type a message..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="flex-grow mx-2"
-                />
-                <Button>
-                  <Send className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Send</span>
-                </Button>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground">
-            Select a match to start chatting
-          </div>
-        )}
-      </div>
+    <div className="w-full h-full py-20">
+      <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-neutral-800 dark:text-neutral-200 font-sans">
+        Get to know your iSad.
+      </h2>
+      <Carousel items={cards} />
     </div>
   );
 }
+
+const DummyContent = () => {
+  return (
+    <>
+      {[...new Array(3).fill(1)].map((_, index) => {
+        return (
+          <div
+            key={"dummy-content" + index}
+            className="bg-[#F5F5F7] dark:bg-neutral-800 p-8 md:p-14 rounded-3xl mb-4"
+          >
+            <p className="text-neutral-600 dark:text-neutral-400 text-base md:text-2xl font-sans max-w-3xl mx-auto">
+              <span className="font-bold text-neutral-700 dark:text-neutral-200">
+                The first rule of Apple club is that you boast about Apple club.
+              </span>{" "}
+              Keep a journal, quickly jot down a grocery list, and take amazing
+              class notes. Want to convert those notes to text? No problem.
+              Langotiya jeetu ka mara hua yaar is ready to capture every
+              thought.
+            </p>
+            <Image
+              src="https://assets.aceternity.com/macbook.png"
+              alt="Macbook mockup from Aceternity UI"
+              height="500"
+              width="500"
+              className="md:w-1/2 md:h-1/2 h-full w-full mx-auto object-contain"
+            />
+          </div>
+        );
+      })}
+    </>
+  );
+};
+
+const data = [
+  {
+    category: "Artificial Intelligence",
+    title: "You can do more with AI.",
+    src: "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=3556&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    content: <DummyContent />,
+  },
+  {
+    category: "Productivity",
+    title: "Enhance your productivity.",
+    src: "https://images.unsplash.com/photo-1531554694128-c4c6665f59c2?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    content: <DummyContent />,
+  },
+  {
+    category: "Product",
+    title: "Launching the new Apple Vision Pro.",
+    src: "https://images.unsplash.com/photo-1713869791518-a770879e60dc?q=80&w=2333&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    content: <DummyContent />,
+  },
+
+  {
+    category: "Product",
+    title: "Maps for your iPhone 15 Pro Max.",
+    src: "https://images.unsplash.com/photo-1599202860130-f600f4948364?q=80&w=2515&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    content: <DummyContent />,
+  },
+  {
+    category: "iOS",
+    title: "Photography just got better.",
+    src: "https://images.unsplash.com/photo-1602081957921-9137a5d6eaee?q=80&w=2793&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    content: <DummyContent />,
+  },
+  {
+    category: "Hiring",
+    title: "Hiring for a Staff Software Engineer",
+    src: "https://images.unsplash.com/photo-1511984804822-e16ba72f5848?q=80&w=2048&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    content: <DummyContent />,
+  },
+];

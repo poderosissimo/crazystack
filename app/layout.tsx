@@ -35,7 +35,7 @@ export default function RootLayout({
         <main>
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
-          <CookieFooter />
+          
         </main>
       </body>
     </html>
